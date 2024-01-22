@@ -16,10 +16,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.hpcc.expo-redux-template",
-      "runtimeVersion": {
-        "policy": "sdkVersion"
-      }
+      "bundleIdentifier": "com.hpcc.expo-redux-template"
     },
     "android": {
       "adaptiveIcon": {
@@ -27,18 +24,12 @@
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.hpcc.expo_redux_template",
-      "blockedPermissions": ["android.permission.RECORD_AUDIO"],
-
-      "runtimeVersion": {
-        "policy": "sdkVersion"
-      }
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    },
-    "plugins": [],
-    "runtimeVersion": {
-      "policy": "sdkVersion"
     }
   }
 }

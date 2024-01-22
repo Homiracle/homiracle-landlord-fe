@@ -8,11 +8,16 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { ApplicationNavigator } from './Navigation';
 import theme from './Theme';
 import { PaperProvider } from 'react-native-paper';
+import { StatusBar } from 'expo-status-bar';
+import { LogBox } from 'react-native';
 
 // language
 i18n.locale = Localization.locale;
 i18n.enableFallback = true;
 i18n.defaultLocale = Language.ENGLISH;
+
+LogBox.ignoreLogs(['In React 18, SSRProvider is not necessary and is a noop. You can remove it from your app.']);
+
 
 export default function App() {
   return (
@@ -22,6 +27,7 @@ export default function App() {
           <PersistGate loading={null} persistor={persistor}>
             <ApplicationNavigator />
           </PersistGate>
+          <StatusBar style='auto' />
         </PaperProvider>
       </Provider>
     </NativeBaseProvider>

@@ -6,6 +6,7 @@ import HomeIconSvg from './../../static/icon/homeIcon';
 import RoomIconSvg from './../../static/icon/roomIconSvg';
 import ProfileIconSvg from './../../static/icon/ProfileIconSvg';
 import HistoryIconSvg from './../../static/icon/HistoryIconSvg';
+import { WelcomeContainer } from '../../Screens/Welcome';
 const Tab = createBottomTabNavigator();
 
 // @refresh reset

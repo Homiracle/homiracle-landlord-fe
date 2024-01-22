@@ -15,13 +15,13 @@ npm install -g expo-cli
 To create a new project using this template, please clone this repository. Then run:
 
 ```bash
-yarn
+npm install
 ```
 
 Then start by
 
 ```
-yarn start
+npm run start
 ```
 
 ## SVG Usage
@@ -73,13 +73,6 @@ then setup the Svg tag: add height, weight and color from props:
 ## Prettier format
 
 To apply style to your code, open your terminal and run this command
-
-```
-yarn format
-
-```
-
-or
 
 ```
 npm run format
