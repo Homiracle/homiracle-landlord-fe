@@ -6,15 +6,36 @@ import { MainNavigator } from './Main';
 import { WelcomeContainer } from '../Screens/Welcome';
 import { RootScreens } from '../Screens';
 import { OnboardingContainer } from '../Screens/Onboarding';
+import { SignInContainer } from '../Screens/SignIn';
+import { SignUpContainer } from '../Screens/SignUp';
 
 export type RootStackParamList = {
   [RootScreens.MAIN]: undefined;
   [RootScreens.WELCOME]: undefined;
   [RootScreens.ONBOARDING]: undefined;
-};
+  [RootScreens.SIGNIN]: undefined;
+  [RootScreens.SIGNUP]: undefined;
+}
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
-
+const SignStack = createNativeStackNavigator<RootStackParamList>();
+function SignStackF(){
+  return(
+        <SignStack.Navigator
+         screenOptions={{ headerShown: true, gestureEnabled: false }}
+         initialRouteName = {RootScreens.SIGNIN}
+        >
+            <SignStack.Screen
+                name = {RootScreens.SIGNIN}
+                component={SignInContainer}
+            />
+            <SignStack.Screen
+                name= {RootScreens.SIGNUP}
+                component={SignUpContainer}
+            />
+        </SignStack.Navigator>
+    );
+}
 // @refresh reset
 const ApplicationNavigator = () => {
   return (
@@ -28,10 +49,10 @@ const ApplicationNavigator = () => {
           name={RootScreens.ONBOARDING}
           component={OnboardingContainer}
         />
-        {/* <RootStack.Screen
-          name={RootScreens.WELCOME}
-          component={WelcomeContainer}
-        /> */}
+        <RootStack.Screen
+          name ={RootScreens.SIGNIN}
+          component={SignStackF}
+        />
         <RootStack.Screen
           name={RootScreens.MAIN}
           component={MainNavigator}

@@ -20,6 +20,7 @@ export const MainNavigator = () => {
         tabBarLabelPosition: 'below-icon',
         tabBarInactiveTintColor: '#6B7280',
         tabBarLabelStyle: { fontWeight: '600' },
+        headerShown: false,
       }}
     >
       <Tab.Screen

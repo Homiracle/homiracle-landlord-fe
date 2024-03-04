@@ -4,4 +4,7 @@ export enum RootScreens {
   ONBOARDING = 'Onboarding',
   NOT_FOUND = '*',
   HOME = 'Home',
+  SIGNIN ='SignIn',
+  SIGNUP ='SignUp',
+  
 }

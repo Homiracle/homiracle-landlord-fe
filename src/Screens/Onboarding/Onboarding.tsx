@@ -77,7 +77,7 @@ export const Onboarding = (props: {
               mode='contained'
               buttonColor='#10B981'
               style={{ width: 120, borderRadius: 10, alignSelf: 'center' }}
-              onPress={() => props.onNavigate(RootScreens.MAIN)}
+              onPress={() => props.onNavigate(RootScreens.SIGNIN)}
             >
               Bắt đầu
             </Button>
