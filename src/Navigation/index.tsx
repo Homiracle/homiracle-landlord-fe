@@ -15,26 +15,21 @@ export type RootStackParamList = {
   [RootScreens.ONBOARDING]: undefined;
   [RootScreens.SIGNIN]: undefined;
   [RootScreens.SIGNUP]: undefined;
-}
+  [RootScreens.AUTH]: undefined;
+};
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 const SignStack = createNativeStackNavigator<RootStackParamList>();
-function SignStackF(){
-  return(
-        <SignStack.Navigator
-         screenOptions={{ headerShown: true, gestureEnabled: false }}
-         initialRouteName = {RootScreens.SIGNIN}
-        >
-            <SignStack.Screen
-                name = {RootScreens.SIGNIN}
-                component={SignInContainer}
-            />
-            <SignStack.Screen
-                name= {RootScreens.SIGNUP}
-                component={SignUpContainer}
-            />
-        </SignStack.Navigator>
-    );
+function SignStackF() {
+  return (
+    <SignStack.Navigator
+      screenOptions={{ headerShown: true, gestureEnabled: false }}
+      initialRouteName={RootScreens.SIGNIN}
+    >
+      <SignStack.Screen name={RootScreens.SIGNIN} component={SignInContainer} />
+      <SignStack.Screen name={RootScreens.SIGNUP} component={SignUpContainer} />
+    </SignStack.Navigator>
+  );
 }
 // @refresh reset
 const ApplicationNavigator = () => {
@@ -49,10 +44,7 @@ const ApplicationNavigator = () => {
           name={RootScreens.ONBOARDING}
           component={OnboardingContainer}
         />
-        <RootStack.Screen
-          name ={RootScreens.SIGNIN}
-          component={SignStackF}
-        />
+        <RootStack.Screen name={RootScreens.AUTH} component={SignStackF} />
         <RootStack.Screen
           name={RootScreens.MAIN}
           component={MainNavigator}

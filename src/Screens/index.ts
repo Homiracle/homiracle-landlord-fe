@@ -6,5 +6,5 @@ export enum RootScreens {
   HOME = 'Home',
   SIGNIN ='SignIn',
   SIGNUP ='SignUp',
-  
+  AUTH = 'Auth',
 }
