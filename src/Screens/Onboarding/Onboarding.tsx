@@ -1,9 +1,7 @@
 import React from 'react';
-import { i18n, LocalizationKey } from '@/Localization';
-import { View, Text, StyleSheet } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
+import { View, StyleSheet } from 'react-native';
 import OnboardingPlugin from 'react-native-onboarding-swiper';
-import { RootScreens } from '..';
+import { RootScreens } from '../../Constants/RootScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Onboarding1 from '../../static/image/Onboarding1';
 import Onboarding2 from '../../static/image/Onboarding2';
@@ -77,7 +75,7 @@ export const Onboarding = (props: {
               mode='contained'
               buttonColor='#10B981'
               style={{ width: 120, borderRadius: 10, alignSelf: 'center' }}
-              onPress={() => props.onNavigate(RootScreens.MAIN)}
+              onPress={() => props.onNavigate('AuthStack' as never)}
             >
               Bắt đầu
             </Button>

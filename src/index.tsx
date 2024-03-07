@@ -10,14 +10,16 @@ import theme from './Theme';
 import { PaperProvider } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
 import { LogBox } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 // language
 i18n.locale = Localization.locale;
 i18n.enableFallback = true;
-i18n.defaultLocale = Language.ENGLISH;
+i18n.defaultLocale = Language.VIETNAMESE;
 
-LogBox.ignoreLogs(['In React 18, SSRProvider is not necessary and is a noop. You can remove it from your app.']);
-
+LogBox.ignoreLogs([
+  'In React 18, SSRProvider is not necessary and is a noop. You can remove it from your app.',
+]);
 
 export default function App() {
   return (
