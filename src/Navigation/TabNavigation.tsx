@@ -1,16 +1,22 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { HomeContainer } from '../../Screens/Home';
-import { useAppTheme } from './../../Theme';
-import HomeIconSvg from './../../static/icon/homeIcon';
-import RoomIconSvg from './../../static/icon/roomIconSvg';
-import ProfileIconSvg from './../../static/icon/ProfileIconSvg';
-import HistoryIconSvg from './../../static/icon/HistoryIconSvg';
-import { WelcomeContainer } from '../../Screens/Welcome';
+import { useAppTheme } from '../Theme';
+import {
+  HomeStack,
+  RoomingHouseStack,
+  InvoiceStack,
+  FinanceStack,
+  ProfileStack,
+} from './Stacks';
+import HomeIconSvg from '../static/icon/homeIcon';
+import RoomIconSvg from '../static/icon/roomIconSvg';
+import HistoryIconSvg from '../static/icon/HistoryIconSvg';
+import ProfileIconSvg from '../static/icon/ProfileIconSvg';
+
 const Tab = createBottomTabNavigator();
 
 // @refresh reset
-export const MainNavigator = () => {
+export const TabNavigator = () => {
   const theme = useAppTheme();
   return (
     <Tab.Navigator
@@ -24,8 +30,8 @@ export const MainNavigator = () => {
       }}
     >
       <Tab.Screen
-        name='Home'
-        component={HomeContainer}
+        name='HomeStack'
+        component={HomeStack}
         options={{
           tabBarLabel: 'Trang chủ',
           tabBarIcon: ({ color, size }) => (
@@ -34,28 +40,38 @@ export const MainNavigator = () => {
         }}
       />
       <Tab.Screen
-        name='Room'
-        component={HomeContainer}
+        name='RoomingHouseStack'
+        component={RoomingHouseStack}
         options={{
-          tabBarLabel: 'Phòng',
+          tabBarLabel: 'Nhà trọ',
           tabBarIcon: ({ color, size }) => (
             <RoomIconSvg width={size} height={size} color={color} />
           ),
         }}
       />
       <Tab.Screen
-        name='History'
-        component={HomeContainer}
+        name='InvoiceStack'
+        component={InvoiceStack}
         options={{
-          tabBarLabel: 'Lịch sử GD',
+          tabBarLabel: 'Hoá đơn',
           tabBarIcon: ({ color, size }) => (
             <HistoryIconSvg width={size} height={size} color={color} />
           ),
         }}
       />
       <Tab.Screen
-        name='Profile'
-        component={HomeContainer}
+        name='FinanceStack'
+        component={FinanceStack}
+        options={{
+          tabBarLabel: 'Tài chính',
+          tabBarIcon: ({ color, size }) => (
+            <HistoryIconSvg width={size} height={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name='ProfileStack'
+        component={ProfileStack}
         options={{
           tabBarLabel: 'Hồ sơ',
           tabBarIcon: ({ color, size }) => (

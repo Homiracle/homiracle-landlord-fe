@@ -1,10 +1,11 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import Login from "../../static/image/login";
-import Logo from "../../static/image/logo";
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import Login from '../../static/image/login';
+import Logo from '../../static/image/logo';
 import { useNavigation } from '@react-navigation/native';
-import { RootScreens } from "../index";
-import {TextInput} from "react-native-paper"
+import { RootScreens } from '../../Constants/RootScreen';
+import { TextInput } from 'react-native-paper';
+
 export const SignIn = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
@@ -14,17 +15,19 @@ export const SignIn = () => {
     setShowPassword(!showPassword);
   };
   const handleLogin = () => {
-    navigation.navigate(RootScreens.MAIN as never);
+    navigation.navigate('TabNavigator' as never);
   };
   const handleSignUp = () => {
-    navigation.navigate('SignUp' as never);
-  }
+    navigation.navigate(RootScreens.SIGNIN as never);
+  };
   return (
     <View style={styles.container}>
       <Login />
       <View style={styles.container1}>
-        <View style={[styles.leftContainer, { flex: 8}]}>
-          <Text style={styles.sloganText}>Quản lý căn hộ của bạn ở bất cứ đâu</Text>
+        <View style={[styles.leftContainer, { flex: 8 }]}>
+          <Text style={styles.sloganText}>
+            Quản lý căn hộ của bạn ở bất cứ đâu
+          </Text>
         </View>
         <View style={[styles.rightContainer, { flex: 5 }]}>
           <Logo />
@@ -32,32 +35,34 @@ export const SignIn = () => {
       </View>
       <TextInput
         style={styles.input}
-        label="Email"
-        onChangeText={(text) => setEmail(text)}
+        label='Email'
+        onChangeText={text => setEmail(text)}
         value={email}
         mode='outlined'
       />
       <TextInput
         style={styles.input}
-        label="Password"
-        onChangeText={(text) => setPassword(text)}
+        label='Password'
+        onChangeText={text => setPassword(text)}
         value={password}
         mode='outlined'
         secureTextEntry={!showPassword}
         right={
-        <TextInput.Icon
-          icon={showPassword ? "eye-off" : "eye"}
-          onPress={handleTogglePasswordVisibility}
-          style={{
-            paddingTop: 20,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        />
-      }
+          <TextInput.Icon
+            icon={showPassword ? 'eye-off' : 'eye'}
+            onPress={handleTogglePasswordVisibility}
+            style={{
+              paddingTop: 20,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          />
+        }
       />
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Main' as never)}>
-        <Text style={{ color: '#006c49', fontSize: 14, fontWeight: 'bold' }}>Đăng nhập</Text>
+      <TouchableOpacity style={styles.button} onPress={handleLogin}>
+        <Text style={{ color: '#006c49', fontSize: 14, fontWeight: 'bold' }}>
+          Đăng nhập
+        </Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.registerLink} onPress={handleSignUp}>
         <Text style={{ color: '#434343' }}>Bạn chưa có tài khoản? </Text>
@@ -80,13 +85,13 @@ const styles = StyleSheet.create({
   logo: {
     width: 148,
     height: 148,
-    paddingRight: 5
+    paddingRight: 5,
   },
   sloganText: {
     color: '#434343',
     paddingLeft: 30,
     paddingTop: 20,
-    fontSize: 20
+    fontSize: 20,
   },
   input: {
     width: 250,
@@ -123,7 +128,7 @@ const styles = StyleSheet.create({
   },
   container1: {
     flexDirection: 'row',
-    marginTop: 25
+    marginTop: 25,
   },
 });
 
