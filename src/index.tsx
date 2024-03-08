@@ -8,9 +8,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { ApplicationNavigator } from './Navigation';
 import theme from './Theme';
 import { PaperProvider } from 'react-native-paper';
-import { StatusBar } from 'expo-status-bar';
 import { LogBox } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 // language
 i18n.locale = Localization.locale;
@@ -29,7 +27,6 @@ export default function App() {
           <PersistGate loading={null} persistor={persistor}>
             <ApplicationNavigator />
           </PersistGate>
-          <StatusBar style='auto' />
         </PaperProvider>
       </Provider>
     </NativeBaseProvider>
