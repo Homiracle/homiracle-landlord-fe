@@ -3,6 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import {
   RoomingHouseContainer,
   CreateRoomingHouseContainer,
+  RoomingHouseDetailContainer,
 } from '../../Screens';
 import { RootScreens } from '../../Constants/RootScreen';
 import { RootStackParamList } from '../../Constants/RootStackParam';
@@ -15,8 +16,12 @@ export const RoomingHouseStack = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen
-        name={RootScreens.ROOMING_HOUSE}
+        name={RootScreens.ROOMING_HOUSE_LIST}
         component={RoomingHouseContainer}
+      />
+      <Stack.Screen
+        name={RootScreens.ROOMING_HOUSED_DETAIL}
+        component={RoomingHouseDetailContainer}
       />
       <Stack.Screen
         name={RootScreens.CREATE_ROOMING_HOUSE}
