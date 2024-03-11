@@ -5,7 +5,10 @@ import { useNavigation } from '@react-navigation/native';
 import { RootScreens } from '../../Constants/RootScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { HouseItemProps, HouseItem, Header } from '../../Components';
-import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
 export const RoomingHouseList = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
@@ -56,20 +59,20 @@ export const RoomingHouseList = () => {
         mode='center-aligned'
         onNotification={() => {
           console.log('notification');
-         }}>
-          <Searchbar
+        }}
+      >
+        <Searchbar
           style={{
             width: wp('90%'),
             left: wp('5%'),
           }}
-          placeholder="Search"
+          placeholder='Search'
           onChangeText={setSearchQuery}
           value={searchQuery}
         ></Searchbar>
       </Header>
       <Button
-        style={{
-        }}
+        style={{}}
         onPress={() => {
           navigation.navigate(RootScreens.CREATE_ROOMING_HOUSE as never);
         }}
@@ -81,18 +84,21 @@ export const RoomingHouseList = () => {
         style={{
           flexDirection: 'column',
           alignItems: 'center',
-        }}>
-          <FlatList
-            data={houseList}
-            renderItem={({item}) => (<HouseItem 
+        }}
+      >
+        <FlatList
+          data={houseList}
+          renderItem={({ item }) => (
+            <HouseItem
               house_id={item.house_id}
               house_name={item.house_name}
               address={item.address}
               num_of_room={item.num_of_room}
               num_of_tenant={item.num_of_tenant}
-            ></HouseItem>)}
-            keyExtractor={item => item.house_id}
-          />
+            ></HouseItem>
+          )}
+          keyExtractor={item => item.house_id}
+        />
       </View>
     </View>
   );

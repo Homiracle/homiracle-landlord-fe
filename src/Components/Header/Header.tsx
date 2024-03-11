@@ -33,7 +33,7 @@ export const Header: React.FC<HeaderProps> = ({
     header: {
       backgroundColor: theme.colors.primary,
       zIndex: 2,
-      elevation: 1,
+      // elevation: 1,
     },
     scrollViewContainer: {
       ...StyleSheet.absoluteFillObject,
