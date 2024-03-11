@@ -6,7 +6,8 @@ export type RootStackParamList = {
   [RootScreens.SIGNIN]: undefined;
   [RootScreens.SIGNUP]: undefined;
   [RootScreens.HOME]: undefined;
-  [RootScreens.ROOMING_HOUSE]: undefined;
+  [RootScreens.ROOMING_HOUSE_LIST]: undefined;
+  [RootScreens.ROOMING_HOUSED_DETAIL]: undefined;
   [RootScreens.INVOICE]: undefined;
   [RootScreens.FINANCE]: undefined;
   [RootScreens.PROFILE]: undefined;

@@ -1,6 +1,6 @@
 import React from "react";
-import { RoomingHouse } from "./RoomingHouse";
+import { RoomingHouseList } from "./RoomingHouse";
 
 export const RoomingHouseContainer = () => {
-  return <RoomingHouse />;
+  return <RoomingHouseList />;
 };
