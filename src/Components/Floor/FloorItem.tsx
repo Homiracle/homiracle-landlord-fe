@@ -1,6 +1,7 @@
 import { useAppTheme } from "../../Theme";
 import React from "react";
 import { Image, Text, TouchableOpacity } from "react-native";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 export interface FloorItemProps {
     floor_id: number,
@@ -20,6 +21,9 @@ export const FloorItem = ({
             width: 159,
             height: 155,
             borderRadius: 10,
+            backgroundColor: 'white',
+            marginHorizontal: 10,
+            marginVertical: 10,
          }}>
             <Image
                 style={{
@@ -30,7 +34,7 @@ export const FloorItem = ({
                     top: 10,
                 }}
                 source={{
-                    uri: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6oTAqAAAAEXRFWHRTb2Z0d2FyZQBwbmdjcnVzaEB1SfMAAABQSURBVGje7dSxCQBACARB+2/ab8BEeQNhFi6WSYzYLYudDQYGBgYGBgYGBgYGBgYGBgZmcvDqYGBgmhivGQYGBgYGBgYGBgYGBgYGBgbmQw+P/eMrC5UTVAAAAABJRU5ErkJggg=='
+                    uri: 'https://file4.batdongsan.com.vn/resize/1275x717/2024/03/07/20240307114527-38f0_wm.jpg'
                 }}
                 alt='this is a image of floor'
             >
@@ -40,26 +44,36 @@ export const FloorItem = ({
                     width: 80,
                     position: 'absolute',
                     left:10,
-                    top: 124,
-                }, homiralceTheme.fonts.bodyMedium]}
+                    bottom: 7,
+                }, homiralceTheme.fonts.titleMedium]}
                 ellipsizeMode="tail"
                 numberOfLines={1}
             >
-            Tầng {floor_name}     
+            Tầng {floor_name}   
             </Text>
+
+            <Icon 
+                style={{
+                    right: 24,
+                    bottom: 7,
+                    position: 'absolute',
+                }}
+                name='home-variant'size={24} color={homiralceTheme.colors.primary}
+            />
 
             <Text 
                 style={[{
                     position: 'absolute',
-                    top: 127,
-                    left: 136,
+                    bottom: 9,
+                    right: 14,
                     color: homiralceTheme.colors.primary,
+                    fontWeight: '500',
                 }, homiralceTheme.fonts.bodySmall]}
                 ellipsizeMode="tail"
                 numberOfLines={1}   
             >
-
-                </Text>
+            {num_of_room}
+            </Text>
             
         </TouchableOpacity>
     );

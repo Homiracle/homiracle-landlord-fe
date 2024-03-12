@@ -5,9 +5,8 @@ import { Image, Text, TouchableOpacity, View } from "react-native";
 import { position } from 'native-base/lib/typescript/theme/styled-system';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { Button, Icon } from 'react-native-paper';
 import { RootScreens } from '../../Constants/RootScreen';
-
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 export interface HouseItemProps {
     house_id: string,
@@ -81,12 +80,21 @@ export const HouseItem = ({
                     height: 41,
                     position: 'absolute',
                     left: 175,
-                    top: 38,
-                }, homiralceTheme.fonts.bodyMedium]}
+                    top: 35,
+                }, homiralceTheme.fonts.bodySmall]}
                 numberOfLines={2}
                 ellipsizeMode='tail'
             >{address}</Text>
 
+            
+            <Icon 
+                style={{
+                    right: 138,
+                    bottom: 9,
+                    position: 'absolute',
+                }}
+                name='home-variant'size={24} color={homiralceTheme.colors.primary}
+            />
             <Text
                 style={[
                     {
@@ -100,6 +108,14 @@ export const HouseItem = ({
                 {num_of_room}
             </Text>
 
+            <Icon 
+                style={{
+                    right: 52,
+                    bottom: 9,
+                    position: 'absolute',
+                }}
+                name='account'size={24} color={homiralceTheme.colors.primary}
+            />
             <Text
                 style={[
                     {
