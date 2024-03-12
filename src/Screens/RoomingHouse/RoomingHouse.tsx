@@ -97,6 +97,7 @@ export const RoomingHouseList = () => {
         <FlatList
           data={houseList}
           contentContainerStyle={{justifyContent: 'center', alignSelf: 'center'}}
+          showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
             <HouseItem
               house_id={item.house_id}
