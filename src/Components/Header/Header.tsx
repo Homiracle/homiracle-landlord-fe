@@ -1,16 +1,17 @@
 import { Box } from 'native-base';
 import { useAppTheme } from '../../Theme';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { Appbar } from 'react-native-paper';
 import { CustomStatusBar } from '../StatusBar';
 
 export interface HeaderProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   title: string;
   mode?: 'center-aligned' | 'medium' | 'small' | 'large';
-  height?: number;
+  height?: number | string;
   top?: number | string;
+  scroll?: 'horizontal' | 'vertical' | 'none';
   onBack?: () => void;
   onNotification?: () => void;
 }
@@ -20,6 +21,7 @@ export const Header: React.FC<HeaderProps> = ({
   title,
   height,
   mode = 'small',
+  scroll = 'none',
   onBack,
   onNotification,
 }) => {
@@ -27,18 +29,43 @@ export const Header: React.FC<HeaderProps> = ({
 
   const styles = StyleSheet.create({
     container: {
-      position: 'absolute',
-      top: 64,
+      flex: 1,
+      position: 'relative',
     },
     header: {
       backgroundColor: theme.colors.primary,
+      zIndex: 2,
+      // elevation: 1,
+    },
+    scrollViewContainer: {
+      ...StyleSheet.absoluteFillObject,
+      zIndex: 0, // Đảm bảo ScrollView nằm dưới Header và Box
+      top: 64,
+    },
+    viewContainer: {
+      position: 'absolute',
+      top: 64,
+    },
+    scrollView: {
+      flex: 1,
+    },
+    box: {
+      zIndex: 0, // Đảm bảo Box nằm dưới ScrollView
+      elevation: 0, // Đảm bảo Box nằm dưới ScrollView trên Android
     },
   });
 
   return (
-    <View>
+    <View style={scroll !== 'none' ? styles.container : {}}>
       <CustomStatusBar backgroundColor={theme.colors.primary} />
-      <Appbar.Header mode={mode} style={styles.header}>
+      <Appbar.Header
+        mode={mode}
+        style={
+          scroll !== 'none'
+            ? styles.header
+            : { backgroundColor: theme.colors.primary }
+        }
+      >
         {onBack && (
           <Appbar.BackAction onPress={onBack} color={theme.colors.onPrimary} />
         )}
@@ -59,8 +86,23 @@ export const Header: React.FC<HeaderProps> = ({
         height={height}
         backgroundColor={theme.colors.primary}
         borderBottomRadius={20}
+        style={scroll !== 'none' ? styles.box : {}}
       />
-      <View style={styles.container}>{children}</View>
+
+      {scroll !== 'none' ? (
+        <View style={styles.scrollViewContainer}>
+          <ScrollView
+            style={styles.scrollView}
+            horizontal={scroll === 'horizontal'}
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
+          >
+            {children}
+          </ScrollView>
+        </View>
+      ) : (
+        <View style={styles.viewContainer}>{children}</View>
+      )}
     </View>
   );
 };
