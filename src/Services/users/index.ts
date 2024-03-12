@@ -30,13 +30,25 @@ export interface User {
   website: string;
 }
 
+export interface userSignin {
+  email: string;
+  password: string;
+} 
+
 const userApi = API.injectEndpoints({
   endpoints: build => ({
     getUser: build.query<User, string>({
       query: id => `users/${id}`,
     }),
+    signin: build.mutation<userSignin, Partial<userSignin>>({
+      query: credentials => ({
+        url: 'auth/signin',
+        method: 'POST',
+        body: credentials,
+      }),
+    }),
   }),
   overrideExisting: true,
 });
 
-export const { useLazyGetUserQuery } = userApi;
+export const { useSigninMutation, useLazyGetUserQuery } = userApi;
