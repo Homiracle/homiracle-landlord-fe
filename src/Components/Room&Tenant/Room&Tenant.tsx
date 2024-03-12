@@ -2,6 +2,7 @@ import { useAppTheme } from "../../Theme"
 import React from "react";
 import { Text, View } from "react-native";
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 export interface RoomAndTenantProps {
     num_of_room: number,
@@ -30,26 +31,46 @@ export const RoomAndTenant = ({
                 height: 68,
                 borderRadius: 10,
                 backgroundColor: 'white',
+                alignItems: 'center',
+                flexDirection: 'row',
+                gap: 10,
             }}
             >
+                <View
+                    style={{
+                        paddingLeft: 18,
+                        width: 90
+                    }}>
                 <Text 
                 style={[
-                    {
-                        top: 15,
-                        left: 18,
-
-                    }, homiralceTheme.fonts.titleMedium
+                    homiralceTheme.fonts.titleMedium
                 ]}
                 >{num_of_tenant}</Text>
 
                 <Text
                 style={[
-                    {
-                        top: 20,
-                        left: 18,
-                    }, homiralceTheme.fonts.bodySmall
+                   homiralceTheme.fonts.bodySmall
                 ]}
                 >Phòng trống</Text>
+                </View>
+                
+
+                <View
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        width: 48,
+                        height: 48,
+                        borderRadius: 24,
+                        backgroundColor: '#6FFBBE',
+                    }}>
+                    <Icon 
+                        name='home-variant'
+                        size={24}
+                        color='white'
+                    />
+                </View>
             </View>
         
             <View
@@ -58,25 +79,45 @@ export const RoomAndTenant = ({
                 height: 68,
                 borderRadius: 10,
                 backgroundColor: 'white',
+                alignItems: 'center',
+                flexDirection: 'row',
+                gap: 10,
             }}>
+                <View
+                    style={{
+                        paddingLeft: 18,
+                        width: 90,
+                    }}>
                 <Text 
                 style={[
-                    {
-                        top: 15,
-                        left: 18,
-
-                    }, homiralceTheme.fonts.titleMedium
+                    homiralceTheme.fonts.titleMedium
                 ]}
                 >{num_of_room}</Text>
 
                 <Text
                 style={[
-                    {
-                        top: 20,
-                        left: 18,
-                    }, homiralceTheme.fonts.bodySmall
+                    homiralceTheme.fonts.bodySmall
                 ]}
                 >Người ở</Text>
+                </View>
+
+                <View
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        width: 48,
+                        height: 48,
+                        borderRadius: 24,
+                        backgroundColor: '#FFDBCB',
+                    }}>
+                    <Icon 
+                        name='account'
+                        size={24}
+                        color='white'
+                    />
+                </View>
+                
             </View>
         </View>
         

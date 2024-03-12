@@ -44,22 +44,30 @@ export const FloorItem = ({
                     width: 80,
                     position: 'absolute',
                     left:10,
-                    top: 124,
-                }, homiralceTheme.fonts.bodyMedium]}
+                    bottom: 7,
+                }, homiralceTheme.fonts.titleMedium]}
                 ellipsizeMode="tail"
                 numberOfLines={1}
             >
             Tầng {floor_name}   
             </Text>
 
-            <Icon name='door-closed'size={24} color={homiralceTheme.colors.primary}/>
+            <Icon 
+                style={{
+                    right: 24,
+                    bottom: 7,
+                    position: 'absolute',
+                }}
+                name='home-variant'size={24} color={homiralceTheme.colors.primary}
+            />
 
             <Text 
                 style={[{
                     position: 'absolute',
-                    top: 127,
-                    left: 136,
+                    bottom: 9,
+                    right: 14,
                     color: homiralceTheme.colors.primary,
+                    fontWeight: '500',
                 }, homiralceTheme.fonts.bodySmall]}
                 ellipsizeMode="tail"
                 numberOfLines={1}   
