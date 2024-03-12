@@ -1,34 +1,34 @@
-import { FlatList } from "native-base";
-import React from "react";
+import { FlatList, ScrollView } from "native-base";
+import React, { Children, useState } from "react";
 import { TabButton, TabButtonProps } from "./TabButton";
+import { StyleSheet, View } from "react-native";
 
 export interface TabViewProps {
-    tab: {
-        tabbutton: TabButtonProps,
-        content?: React.ReactNode,
-    }[];
+    default: string,
+    children: React.ReactNode;
 }
 
 export const TabView: React.FC<TabViewProps> = ({
-    tab,
+    children,
 }) => {
-    
+    const styles = StyleSheet.create({
+        scrollView: {
+            flex: 1,
+        }
+    })
     return (
-        <FlatList 
+        <View
             style={{
                 margin: 10,
-            }}
-            data={tab}
-            horizontal={true}
-            contentContainerStyle={{alignItems: 'center', gap: 5}}
-            renderItem={({item}) => (
-                <TabButton
-                    name={item.tabbutton.name}
-                    isClicked={item.tabbutton.isClicked}
-                    number={item.tabbutton.number}
-                />
-            )}
-        >
-        </FlatList>
+            }}>
+            <ScrollView
+                contentContainerStyle={{
+                    gap: 8,
+                }}
+                horizontal={true}
+            >{children}</ScrollView>
+        </View>
+
+        
     )
 }
