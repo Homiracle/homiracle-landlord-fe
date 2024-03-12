@@ -1,6 +1,7 @@
 import { useAppTheme } from "../../Theme"
 import React from "react";
 import { Text, View } from "react-native";
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 export interface RoomAndTenantProps {
     num_of_room: number,
@@ -16,8 +17,9 @@ export const RoomAndTenant = ({
         <View
             style={{
                 display: 'flex',
-                width: 334,
+                width: 400,
                 height: 68,
+                flexDirection: 'row',
                 justifyContent: 'center',
                 alignItems: 'flex-start',
                 gap: 14,
@@ -43,7 +45,7 @@ export const RoomAndTenant = ({
                 <Text
                 style={[
                     {
-                        top:41,
+                        top: 20,
                         left: 18,
                     }, homiralceTheme.fonts.bodySmall
                 ]}
@@ -55,6 +57,7 @@ export const RoomAndTenant = ({
                 width: 160,
                 height: 68,
                 borderRadius: 10,
+                backgroundColor: 'white',
             }}>
                 <Text 
                 style={[
@@ -69,7 +72,7 @@ export const RoomAndTenant = ({
                 <Text
                 style={[
                     {
-                        top:41,
+                        top: 20,
                         left: 18,
                     }, homiralceTheme.fonts.bodySmall
                 ]}
