@@ -2,12 +2,17 @@ import { useAppTheme } from "../../Theme";
 import React from "react";
 import { Image, Text, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootScreens } from '../../Constants/RootScreen';
 export interface FloorItemProps {
-    floor_id: number,
+    floor_id: string,
     floor_name: string,
     num_of_room: number,
 }
+export type RootStackParamList = {
+    FloorDetail: { floor_id: string } | undefined;
+  };
 
 export const FloorItem = ({
     floor_id,
@@ -15,6 +20,7 @@ export const FloorItem = ({
     num_of_room,
 }: FloorItemProps) => {
     const homiralceTheme = useAppTheme();
+    const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
     return (
         <TouchableOpacity
          style={{
@@ -24,7 +30,10 @@ export const FloorItem = ({
             backgroundColor: 'white',
             marginHorizontal: 10,
             marginVertical: 10,
-         }}>
+         }}
+         onPress={() => {
+            navigation.navigate(RootScreens.FLOORDETAIL, {floor_id});
+        }}>
             <Image
                 style={{
                     width: 137,

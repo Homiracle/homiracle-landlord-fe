@@ -26,7 +26,7 @@ export const RoomingHouseDetail = () => {
     num_of_room: number,
     num_of_tenant: number,
     floor: {
-        floor_id: number,
+        floor_id: string,
         floor_name: string,
         num_of_room: number,
     }[],
@@ -37,51 +37,51 @@ export const RoomingHouseDetail = () => {
     num_of_room: 1,
     num_of_tenant: 1,
     floor: [{
-        floor_id: 1,
+        floor_id: '1',
         floor_name: '2',
         num_of_room: 1,
         },
         {
-            floor_id: 2,
+            floor_id: '2',
             floor_name: '2',
             num_of_room: 1,
         },
         {
-            floor_id: 3,
+            floor_id: '3',
             floor_name: '2',
             num_of_room: 1,
         },
         {
-          floor_id: 3,
+          floor_id: '4',
           floor_name: '2',
           num_of_room: 1,
       },
       {
-        floor_id: 3,
+        floor_id: '5',
         floor_name: '2',
         num_of_room: 1,
     },
     {
-      floor_id: 3,
+      floor_id: '6',
       floor_name: '2',
       num_of_room: 1,
   },{
-    floor_id: 3,
+    floor_id: '7',
     floor_name: '2',
     num_of_room: 1,
 },
 {
-  floor_id: 3,
+  floor_id: '8',
   floor_name: '2',
   num_of_room: 1,
 },
 {
-  floor_id: 3,
+  floor_id: '9',
   floor_name: '2',
   num_of_room: 1,
 },
 {
-  floor_id: 3,
+  floor_id: '10',
   floor_name: '2',
   num_of_room: 1,
 },
@@ -151,6 +151,7 @@ export const RoomingHouseDetail = () => {
             floor_id={item.floor_id}
             floor_name={item.floor_name}
             num_of_room={item.num_of_room}/>)}
+          keyExtractor={item => item.floor_id}  
           />
 
 
