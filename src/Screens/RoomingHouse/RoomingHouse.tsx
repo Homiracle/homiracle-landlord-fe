@@ -50,11 +50,25 @@ export const RoomingHouseList = () => {
       num_of_room: 10,
       num_of_tenant: 20,
     },
+    {
+      house_id: '6',
+      house_name: 'nha tro xuan hong',
+      address: '127 ly thuong kiet abc xyz',
+      num_of_room: 10,
+      num_of_tenant: 20,
+    },
+    {
+      house_id: '7',
+      house_name: 'nha tro xuan hong',
+      address: '127 ly thuong kiet abc xyz',
+      num_of_room: 10,
+      num_of_tenant: 20,
+    },
   ];
   return (
     <View>
       <Header
-        title='Danh sach nha tro'
+        title='Danh sách nhà trọ'
         height={20}
         mode='center-aligned'
         onNotification={() => {
@@ -66,7 +80,7 @@ export const RoomingHouseList = () => {
             width: wp('90%'),
             left: wp('5%'),
           }}
-          placeholder='Search'
+          placeholder='Tìm nhà trọ'
           onChangeText={setSearchQuery}
           value={searchQuery}
         ></Searchbar>
@@ -80,14 +94,9 @@ export const RoomingHouseList = () => {
         create rooming house
       </Button>
 
-      <View
-        style={{
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
         <FlatList
           data={houseList}
+          contentContainerStyle={{justifyContent: 'center', alignSelf: 'center'}}
           renderItem={({ item }) => (
             <HouseItem
               house_id={item.house_id}
@@ -99,7 +108,6 @@ export const RoomingHouseList = () => {
           )}
           keyExtractor={item => item.house_id}
         />
-      </View>
     </View>
   );
 };

@@ -4,9 +4,10 @@ import { Button, Searchbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { RootScreens } from '../../Constants/RootScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { FloorItem, Header, RoomAndTenant } from '../../Components';
-import { TabView, SceneMap } from 'react-native-tab-view'
+import { FloorItem, Header, RoomAndTenant, TabView } from '../../Components';
+import { SceneMap } from 'react-native-tab-view'
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import { TabButtonProps } from '@/Components/TabView/TabButton';
 
 export const RoomingHouseDetail = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
@@ -86,8 +87,50 @@ export const RoomingHouseDetail = () => {
   floor_name: '2',
   num_of_room: 1,
 },
+{
+  floor_id: 3,
+  floor_name: '2',
+  num_of_room: 1,
+},
+{
+  floor_id: 3,
+  floor_name: '2',
+  num_of_room: 1,
+},
     ]
-  }
+  };
+
+  const tabbar: {tabbutton: TabButtonProps, contents?: React.ReactNode}[] = [
+    {
+      tabbutton:{
+        name: 'tầng',
+        number: 12,
+        isClicked: true,
+      }
+    },
+    {
+      tabbutton:{
+        name: 'thiết bị',
+        number: 12,
+        isClicked: false,
+      }
+    },
+    {
+      tabbutton:{
+        name: 'dịch vụ',
+        number: 12,
+        isClicked: false,
+      }
+    },
+    {
+      tabbutton:{
+        name: 'khách thuê',
+        number: 12,
+        isClicked: false,
+      }
+    },
+  ];
+
   return (
     <View>
         <Header
@@ -107,11 +150,8 @@ export const RoomingHouseDetail = () => {
         </Header>
 
         <TabView
-        navigationState={{ index, routes }}
-        renderScene={renderScene}
-        onIndexChange={setIndex}
-        initialLayout={{ width: wp('100%') }}
-        />
+            tab={tabbar}>
+        </TabView>
 
         <Searchbar
           style={{
@@ -119,22 +159,13 @@ export const RoomingHouseDetail = () => {
             width: wp('90%'),
             left: wp('5%'),
           }}
-          placeholder="Search"
+          placeholder="Tìm phòng"
           onChangeText={setSearchQuery}
           value={searchQuery}
         ></Searchbar>
 
-        <View
-        style={{
-          width: wp('100%'),
-          justifyContent: 'center',
-          paddingLeft: wp('7%'),
-        }}>
           <FlatList
-          style={{
-            alignSelf: 'flex-start',
-          }}
-          contentContainerStyle={{justifyContent: 'center'}}
+          contentContainerStyle={{justifyContent: 'center', alignSelf: 'center'}}
           horizontal={false}
           numColumns={2}
           data={data.floor}
@@ -143,7 +174,9 @@ export const RoomingHouseDetail = () => {
             floor_name={item.floor_name}
             num_of_room={item.num_of_room}/>)}
           />
-        </View>
+
+
+          
     </View>
   );
 };
