@@ -9,12 +9,46 @@ import {
 } from 'react-native-responsive-screen';
 import { StyleSheet, TextInput } from 'react-native';
 import { Button, Surface, Portal } from 'react-native-paper';
+import { Picker } from '@react-native-picker/picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import moment from 'moment';
+import { RoomingHouse, useCreateRoomingHouseMutation } from '../../Services';
 
 export const CreateRoomingHouse = () => {
   const theme = useAppTheme();
   const navigation = useNavigation();
   const [backDialog, showBackDialog] = React.useState(false);
   const [cancelDialog, showCancelDialog] = React.useState(false);
+  const [datetimePicker, showDatetimePicker] = React.useState({
+    openingHour: false,
+    closingHour: false,
+  });
+  const pickerRef = React.useRef(null);
+  const [roomingHouseData, setRoomingHouseData] = React.useState<RoomingHouse>({
+    name: '',
+    opening_hour: '',
+    closing_hour: '',
+    number_of_period_days: 0,
+    closing_money_date: 0,
+    start_receiving_money_date: 0,
+    end_receiving_money_date: 0,
+    landlord: {
+      user_id: '',
+    },
+    address: {
+      province: '',
+      district: '',
+      commune: '',
+      street: '',
+    },
+    reference_cost: {
+      deposit: 0,
+      water_cost: 0,
+      power_cost: 0,
+      cost_per_person: 0,
+      cost_per_room: 0,
+    },
+  });
 
   const styles = StyleSheet.create({
     container: {
@@ -63,13 +97,83 @@ export const CreateRoomingHouse = () => {
     },
   });
 
+  // const pickerOpen = () => {
+  //   (pickerRef.current as any)?.focus();
+  // };
+  // const pickerClose = () => {
+  //   (pickerRef.current as any)?.blur();
+  // };
+
   const onBack = () => {
     showBackDialog(true);
     console.log('back');
   };
 
+  const handleInputChange = (
+    fieldName: string,
+    text: string | number,
+    nestedField?: string,
+  ) => {
+    console.log(fieldName, text);
+    setRoomingHouseData(prevData => {
+      if (nestedField) {
+        return {
+          ...prevData,
+          [fieldName]: {
+            ...prevData[fieldName],
+            [nestedField]: text,
+          },
+        };
+      }
+      return {
+        ...prevData,
+        [fieldName]: text,
+      };
+    });
+  };
+
+  const [createRoomingHouse, { data, isLoading, isError }] =
+    useCreateRoomingHouseMutation();
+
+  const handleSubmit = async () => {
+    console.log(roomingHouseData);
+    try {
+      const result = await createRoomingHouse(roomingHouseData as Partial<RoomingHouse>);
+      console.log(result); // Xử lý dữ liệu trả về từ API
+    } catch (error) {
+      console.error('Error creating rooming house:', error);
+    }
+  };
+
   return (
     <View style={styles.container}>
+      {(datetimePicker.closingHour || datetimePicker.openingHour) && (
+        <DateTimePicker
+          value={new Date()}
+          mode='time'
+          is24Hour={true}
+          display='default'
+          onChange={(event, selectedDate) => {
+            if (datetimePicker.closingHour) {
+              showDatetimePicker({ ...datetimePicker, closingHour: false });
+              if (selectedDate) {
+                handleInputChange(
+                  'closing_hour',
+                  moment(selectedDate).format('HH:mm'),
+                );
+              }
+            } else if (datetimePicker.openingHour) {
+              showDatetimePicker({ ...datetimePicker, openingHour: false });
+              if (selectedDate) {
+                handleInputChange(
+                  'opening_hour',
+                  moment(selectedDate).format('HH:mm'),
+                );
+              }
+            }
+          }}
+        />
+      )}
       <Portal>
         <CustomDialog
           visible={backDialog}
@@ -93,6 +197,7 @@ export const CreateRoomingHouse = () => {
         height={hp(8)}
         mode='center-aligned'
         onBack={onBack}
+        scroll='vertical'
       >
         <View style={styles.content}>
           <Surface style={styles.surface}>
@@ -112,22 +217,51 @@ export const CreateRoomingHouse = () => {
                 <TextInput
                   placeholder='Nhập tên tòa nhà'
                   style={styles.textInput}
+                  onChangeText={text => handleInputChange('name', text)}
                 />
+              </View>
+              <View>
+                <Text style={styles.subTitle}>Tỉnh/Thành phố</Text>
+                <Picker
+                  ref={pickerRef}
+                  selectedValue={roomingHouseData.address.province}
+                  onValueChange={itemValue =>
+                    handleInputChange('address', itemValue, 'province')
+                  }
+                  mode='dialog'
+                >
+                  <Picker.Item label='Hà Nội' value={1} />
+                  <Picker.Item label='TP. Hồ Chí Minh' value={2} />
+                </Picker>
               </View>
               <View style={{ flexDirection: 'row', gap: wp(2) }}>
                 <View style={{ flex: 1 }}>
-                  <Text style={styles.subTitle}>Tỉnh/Thành phố</Text>
-                  <TextInput
-                    placeholder='Tỉnh/Thành phố'
-                    style={styles.textInput}
-                  />
+                  <Text style={styles.subTitle}>Quận/Huyện</Text>
+                  <Picker
+                    ref={pickerRef}
+                    selectedValue={roomingHouseData.address.district}
+                    onValueChange={itemValue =>
+                      handleInputChange('address', itemValue, 'district')
+                    }
+                    mode='dialog'
+                  >
+                    <Picker.Item label='Quận Ba Đình' value={1} />
+                    <Picker.Item label='Quận 10' value={2} />
+                  </Picker>
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text style={styles.subTitle}>Quận/Huyện</Text>
-                  <TextInput
-                    placeholder='Quận/Huyện'
-                    style={styles.textInput}
-                  />
+                  <Text style={styles.subTitle}>Phường/Xã</Text>
+                  <Picker
+                    ref={pickerRef}
+                    selectedValue={roomingHouseData.address.commune}
+                    onValueChange={itemValue =>
+                      handleInputChange('address', itemValue, 'commune')
+                    }
+                    mode='dialog'
+                  >
+                    <Picker.Item label='Phường A' value={1} />
+                    <Picker.Item label='Phường B' value={2} />
+                  </Picker>
                 </View>
               </View>
               <View>
@@ -135,6 +269,9 @@ export const CreateRoomingHouse = () => {
                 <TextInput
                   placeholder='Nhập địa chỉ'
                   style={styles.textInput}
+                  onChangeText={text =>
+                    handleInputChange('address', text, 'street')
+                  }
                 />
               </View>
             </View>
@@ -156,6 +293,10 @@ export const CreateRoomingHouse = () => {
                 <TextInput
                   placeholder='Nhập tiền cọc tham khảo'
                   style={styles.textInput}
+                  onChangeText={text =>
+                    handleInputChange('reference_cost', text, 'deposit')
+                  }
+                  keyboardType='numeric'
                 />
               </View>
               <View>
@@ -163,6 +304,10 @@ export const CreateRoomingHouse = () => {
                 <TextInput
                   placeholder='Nhập giá phòng tham khảo'
                   style={styles.textInput}
+                  onChangeText={text =>
+                    handleInputChange('reference_cost', text, 'cost_per_room')
+                  }
+                  keyboardType='numeric'
                 />
               </View>
               <View>
@@ -170,6 +315,10 @@ export const CreateRoomingHouse = () => {
                 <TextInput
                   placeholder='Nhập giá điện tham khảo'
                   style={styles.textInput}
+                  onChangeText={text =>
+                    handleInputChange('reference_cost', text, 'power_cost')
+                  }
+                  keyboardType='numeric'
                 />
               </View>
               <View>
@@ -177,14 +326,18 @@ export const CreateRoomingHouse = () => {
                 <TextInput
                   placeholder='Nhập giá nước tham khảo'
                   style={styles.textInput}
+                  onChangeText={text =>
+                    handleInputChange('reference_cost', text, 'water_cost')
+                  }
+                  keyboardType='numeric'
                 />
               </View>
-              <View>
+              {/* <View>
                 <Text style={styles.subTitle}>Phí dịch vụ chung cho phòng</Text>
               </View>
               <View>
                 <Text style={styles.subTitle}>Phí dịch vụ theo đầu người</Text>
-              </View>
+              </View> */}
             </View>
           </Surface>
           <Surface style={styles.surface}>
@@ -202,36 +355,92 @@ export const CreateRoomingHouse = () => {
               <View style={{ flexDirection: 'row', gap: wp(2) }}>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.subTitle}>Giờ mở cửa</Text>
-                  <TextInput placeholder='05:00' style={styles.textInput} />
+                  <TextInput
+                    placeholder='05:00'
+                    style={styles.textInput}
+                    onChangeText={text =>
+                      handleInputChange('opening_hour', text)
+                    }
+                    onFocus={() =>
+                      showDatetimePicker({
+                        ...datetimePicker,
+                        openingHour: true,
+                      })
+                    }
+                    showSoftInputOnFocus
+                    value={roomingHouseData.opening_hour}
+                  />
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.subTitle}>Giờ đóng cửa</Text>
-                  <TextInput placeholder='23:00' style={styles.textInput} />
+                  <TextInput
+                    placeholder='23:00'
+                    style={styles.textInput}
+                    onChangeText={text =>
+                      handleInputChange('closing_hour', text)
+                    }
+                    showSoftInputOnFocus
+                    value={roomingHouseData.closing_hour}
+                    onFocus={() =>
+                      showDatetimePicker({
+                        ...datetimePicker,
+                        closingHour: true,
+                      })
+                    }
+                  />
                 </View>
               </View>
               <View style={{ flexDirection: 'row', gap: wp(2) }}>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.subTitle}>Ngày chốt tiền</Text>
-                  <TextInput placeholder='31' style={styles.textInput} />
+                  <TextInput
+                    placeholder='31'
+                    style={styles.textInput}
+                    onChangeText={text =>
+                      handleInputChange('closing_money_date', text)
+                    }
+                    keyboardType='numeric'
+                  />
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.subTitle}>Số ngày báo trước</Text>
-                  <TextInput placeholder='5' style={styles.textInput} />
+                  <TextInput
+                    placeholder='5'
+                    style={styles.textInput}
+                    onChangeText={text =>
+                      handleInputChange('number_of_period_days', text)
+                    }
+                    keyboardType='numeric'
+                  />
                 </View>
               </View>
               <View style={{ flexDirection: 'row', gap: wp(2) }}>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.subTitle}>Ngày bắt đầu nộp tiền</Text>
-                  <TextInput placeholder='1' style={styles.textInput} />
+                  <TextInput
+                    placeholder='1'
+                    style={styles.textInput}
+                    onChangeText={text =>
+                      handleInputChange('start_receiving_money_date', text)
+                    }
+                    keyboardType='numeric'
+                  />
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.subTitle}>Ngày hết hạn nộp tiền</Text>
-                  <TextInput placeholder='10' style={styles.textInput} />
+                  <TextInput
+                    placeholder='10'
+                    style={styles.textInput}
+                    onChangeText={text =>
+                      handleInputChange('end_receiving_money_date', text)
+                    }
+                    keyboardType='numeric'
+                  />
                 </View>
               </View>
             </View>
           </Surface>
-          <Surface style={styles.surface}>
+          {/* <Surface style={styles.surface}>
             <Text style={[theme.fonts.titleMedium, styles.title]}>
               Quy định chung của nhà trọ
             </Text>
@@ -251,14 +460,16 @@ export const CreateRoomingHouse = () => {
                 />
               </View>
             </View>
-          </Surface>
+          </Surface> */}
         </View>
         <View style={styles.buttonContainer}>
           <Button
             buttonColor={theme.colors.error}
             textColor={theme.colors.onPrimary}
             style={styles.button}
-            onPress={() => {showCancelDialog(true)}}
+            onPress={() => {
+              showCancelDialog(true);
+            }}
           >
             Hủy
           </Button>
@@ -266,7 +477,7 @@ export const CreateRoomingHouse = () => {
             buttonColor={theme.colors.primary}
             textColor={theme.colors.onPrimary}
             style={styles.button}
-            onPress={() => {}}
+            onPress={handleSubmit}
           >
             Tạo nhà trọ
           </Button>
