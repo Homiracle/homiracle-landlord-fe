@@ -7,6 +7,7 @@ export interface TabButtonProps {
     isClicked: boolean;
     name: string;
     number?: number;
+    content?: React.ReactNode;
 }
 
 export const TabButton: React.FC<TabButtonProps> = ({
