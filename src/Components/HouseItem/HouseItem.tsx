@@ -114,7 +114,7 @@ export const HouseItem = ({
                     bottom: 9,
                     position: 'absolute',
                 }}
-                name='account'size={24} color={homiralceTheme.colors.primary}
+                name='account-multiple'size={24} color={homiralceTheme.colors.primary}
             />
             <Text
                 style={[

@@ -18,16 +18,15 @@ export const RoomAndTenant = ({
         <View
             style={{
                 display: 'flex',
-                width: 400,
-                height: 68,
+                width: wp('100%'),
                 flexDirection: 'row',
                 justifyContent: 'center',
-                alignItems: 'flex-start',
-                gap: 14,
+                gap: wp('2%'),
+                alignSelf: 'center',
         }}>
             <View 
             style={{
-                width: 160,
+                width: wp('40%'),
                 height: 68,
                 borderRadius: 10,
                 backgroundColor: 'white',
@@ -75,7 +74,7 @@ export const RoomAndTenant = ({
         
             <View
             style={{
-                width: 160,
+                width: wp('40%'),
                 height: 68,
                 borderRadius: 10,
                 backgroundColor: 'white',
@@ -112,7 +111,7 @@ export const RoomAndTenant = ({
                         backgroundColor: '#FFDBCB',
                     }}>
                     <Icon 
-                        name='account'
+                        name='account-multiple'
                         size={24}
                         color='white'
                     />
