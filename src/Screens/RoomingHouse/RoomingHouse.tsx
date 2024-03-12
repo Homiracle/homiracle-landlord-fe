@@ -84,7 +84,6 @@ export const RoomingHouseList = () => {
         }}>
           <FlatList
             data={houseList}
-            horizontal={false}
             renderItem={({item}) => (<HouseItem 
               house_id={item.house_id}
               house_name={item.house_name}
