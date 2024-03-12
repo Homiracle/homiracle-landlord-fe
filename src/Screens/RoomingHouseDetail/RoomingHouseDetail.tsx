@@ -118,26 +118,26 @@ export const RoomingHouseDetail = () => {
                 num_of_tenant={data.num_of_tenant}/>
         </Header>
 
-        <TabView default='tang'>
+        <TabView default='tầng'>
           <TabButton
             isClicked={true}
-            name='tang'
+            name='tầng'
             number={12}
             content={src}
           />
           <TabButton
             isClicked={false}
-            name='thiet bi'
+            name='thiết bị'
             number={12}
           />
           <TabButton
             isClicked={false}
-            name='dich vu'
+            name='dịch vụ'
             number={12}
           />
           <TabButton
             isClicked={false}
-            name='khach thue'
+            name='khách thuê'
             number={12}
           />
         </TabView>
@@ -145,6 +145,7 @@ export const RoomingHouseDetail = () => {
           <FlatList
           contentContainerStyle={{justifyContent: 'center', alignSelf: 'center'}}
           horizontal={false}
+          showsVerticalScrollIndicator={false}
           numColumns={2}
           data={data.floor}
           renderItem={({item}) => (<FloorItem

@@ -25,10 +25,9 @@ export const TabView: React.FC<TabViewProps> = ({
                 contentContainerStyle={{
                     gap: 8,
                 }}
+                showsHorizontalScrollIndicator={false}
                 horizontal={true}
             >{children}</ScrollView>
         </View>
-
-        
     )
 }
