@@ -33,8 +33,8 @@ const ApplicationNavigator = () => {
         ) : (
           <RootStack.Screen name='TabNavigator' component={TabNavigator} />
         )} */}
-        {/* <RootStack.Screen name='OnboardingStack' component={OnboardingStack} />
-        <RootStack.Screen name='AuthStack' component={AuthStack} /> */}
+        {/* <RootStack.Screen name='OnboardingStack' component={OnboardingStack} /> */}
+        <RootStack.Screen name='AuthStack' component={AuthStack} />
         <RootStack.Screen name='TabNavigator' component={TabNavigator} />
       </RootStack.Navigator>
     </NavigationContainer>
