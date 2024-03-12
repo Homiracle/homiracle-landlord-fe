@@ -12,7 +12,7 @@ import { Button, Surface, Portal } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
-import { RoomingHouse } from '../../Services';
+import { RoomingHouse, useCreateRoomingHouseMutation } from '../../Services';
 
 export const CreateRoomingHouse = () => {
   const theme = useAppTheme();
@@ -32,6 +32,9 @@ export const CreateRoomingHouse = () => {
     closing_money_date: 0,
     start_receiving_money_date: 0,
     end_receiving_money_date: 0,
+    landlord: {
+      user_id: '',
+    },
     address: {
       province: '',
       district: '',
@@ -129,8 +132,17 @@ export const CreateRoomingHouse = () => {
     });
   };
 
-  const handleSubmit = () => {
+  const [createRoomingHouse, { data, isLoading, isError }] =
+    useCreateRoomingHouseMutation();
+
+  const handleSubmit = async () => {
     console.log(roomingHouseData);
+    try {
+      const result = await createRoomingHouse(roomingHouseData as Partial<RoomingHouse>);
+      console.log(result); // Xử lý dữ liệu trả về từ API
+    } catch (error) {
+      console.error('Error creating rooming house:', error);
+    }
   };
 
   return (
@@ -145,12 +157,18 @@ export const CreateRoomingHouse = () => {
             if (datetimePicker.closingHour) {
               showDatetimePicker({ ...datetimePicker, closingHour: false });
               if (selectedDate) {
-                handleInputChange('closing_hour', moment(selectedDate).format('HH:mm'));
+                handleInputChange(
+                  'closing_hour',
+                  moment(selectedDate).format('HH:mm'),
+                );
               }
             } else if (datetimePicker.openingHour) {
               showDatetimePicker({ ...datetimePicker, openingHour: false });
               if (selectedDate) {
-                handleInputChange('opening_hour', moment(selectedDate).format('HH:mm'));
+                handleInputChange(
+                  'opening_hour',
+                  moment(selectedDate).format('HH:mm'),
+                );
               }
             }
           }}
@@ -203,19 +221,19 @@ export const CreateRoomingHouse = () => {
                 />
               </View>
               <View>
-                  <Text style={styles.subTitle}>Tỉnh/Thành phố</Text>
-                  <Picker
-                    ref={pickerRef}
-                    selectedValue={roomingHouseData.address.province}
-                    onValueChange={itemValue =>
-                      handleInputChange('address', itemValue, 'province')
-                    }
-                    mode='dialog'
-                  >
-                    <Picker.Item label='Hà Nội' value={1} />
-                    <Picker.Item label='TP. Hồ Chí Minh' value={2} />
-                  </Picker>
-                </View>
+                <Text style={styles.subTitle}>Tỉnh/Thành phố</Text>
+                <Picker
+                  ref={pickerRef}
+                  selectedValue={roomingHouseData.address.province}
+                  onValueChange={itemValue =>
+                    handleInputChange('address', itemValue, 'province')
+                  }
+                  mode='dialog'
+                >
+                  <Picker.Item label='Hà Nội' value={1} />
+                  <Picker.Item label='TP. Hồ Chí Minh' value={2} />
+                </Picker>
+              </View>
               <View style={{ flexDirection: 'row', gap: wp(2) }}>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.subTitle}>Quận/Huyện</Text>

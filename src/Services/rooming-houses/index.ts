@@ -8,6 +8,9 @@ export type RoomingHouse = {
   closing_money_date: number;
   start_receiving_money_date: number;
   end_receiving_money_date: number;
+  landlord: {
+    user_id: string;
+  }
   address: {
     province: string;
     district: string;
@@ -23,3 +26,22 @@ export type RoomingHouse = {
   };
   [key: string]: any;
 };
+
+const roomingHouseApi = API.injectEndpoints({
+  endpoints: build => ({
+    createRoomingHouse: build.mutation<RoomingHouse, Partial<RoomingHouse>>({
+      query: data => ({
+        url: 'rooming-houses',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+    getRoomingHouses: build.query<RoomingHouse[], void>({
+      query: id => `rooming-houses/${id}`,
+    }),
+  }),
+  overrideExisting: true,
+});
+
+export const { useCreateRoomingHouseMutation, useGetRoomingHousesQuery } =
+  roomingHouseApi;
