@@ -138,7 +138,9 @@ export const CreateRoomingHouse = () => {
   const handleSubmit = async () => {
     console.log(roomingHouseData);
     try {
-      const result = await createRoomingHouse(roomingHouseData as Partial<RoomingHouse>);
+      const result = await createRoomingHouse(
+        roomingHouseData as Partial<RoomingHouse>,
+      );
       console.log(result); // Xử lý dữ liệu trả về từ API
     } catch (error) {
       console.error('Error creating rooming house:', error);
@@ -180,7 +182,10 @@ export const CreateRoomingHouse = () => {
           title='Thoát'
           content='Bạn có muốn thoát không?'
           onDismiss={() => showBackDialog(false)}
-          onConfirm={() => navigation.goBack()}
+          onConfirm={() => {
+            showBackDialog(false);
+            navigation.goBack();
+          }}
         />
       </Portal>
       <Portal>
@@ -189,7 +194,10 @@ export const CreateRoomingHouse = () => {
           title='Hủy tạo nhà trọ'
           content='Bạn có muốn hủy tạo nhà trọ không?'
           onDismiss={() => showCancelDialog(false)}
-          onConfirm={() => navigation.goBack()}
+          onConfirm={() => {
+            showCancelDialog(false);
+            navigation.goBack();
+          }}
         />
       </Portal>
       <Header
