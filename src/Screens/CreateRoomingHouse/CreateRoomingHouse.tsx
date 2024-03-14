@@ -7,7 +7,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { StyleSheet, TextInput } from 'react-native';
+import { Pressable, StyleSheet, TextInput } from 'react-native';
 import { Button, Surface, Portal } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -154,7 +154,8 @@ export const CreateRoomingHouse = () => {
           value={new Date()}
           mode='time'
           is24Hour={true}
-          display='default'
+          display='spinner'
+          // onTouchCancel={}
           onChange={(event, selectedDate) => {
             if (datetimePicker.closingHour) {
               showDatetimePicker({ ...datetimePicker, closingHour: false });
@@ -363,39 +364,47 @@ export const CreateRoomingHouse = () => {
               <View style={{ flexDirection: 'row', gap: wp(2) }}>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.subTitle}>Giờ mở cửa</Text>
-                  <TextInput
-                    placeholder='05:00'
-                    style={styles.textInput}
-                    onChangeText={text =>
-                      handleInputChange('opening_hour', text)
-                    }
-                    onFocus={() =>
+                  <Pressable
+                    onPress={() =>
                       showDatetimePicker({
                         ...datetimePicker,
                         openingHour: true,
                       })
                     }
-                    showSoftInputOnFocus
-                    value={roomingHouseData.opening_hour}
-                  />
+                  >
+                    <TextInput
+                      placeholder='05:00'
+                      style={styles.textInput}
+                      onChangeText={text =>
+                        handleInputChange('opening_hour', text)
+                      }
+                      showSoftInputOnFocus
+                      value={roomingHouseData.opening_hour}
+                      editable={false}
+                    />
+                  </Pressable>
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.subTitle}>Giờ đóng cửa</Text>
-                  <TextInput
-                    placeholder='23:00'
-                    style={styles.textInput}
-                    onChangeText={text =>
-                      handleInputChange('closing_hour', text)
-                    }
-                    showSoftInputOnFocus
-                    value={roomingHouseData.closing_hour}
-                    onFocus={() =>
+                  <Pressable
+                    onPress={() =>
                       showDatetimePicker({
                         ...datetimePicker,
                         closingHour: true,
                       })
                     }
-                  />
+                  >
+                    <TextInput
+                      placeholder='23:00'
+                      style={styles.textInput}
+                      onChangeText={text =>
+                        handleInputChange('closing_hour', text)
+                      }
+                      showSoftInputOnFocus
+                      value={roomingHouseData.closing_hour}
+                      editable={false}
+                    />
+                  </Pressable>
                 </View>
               </View>
               <View style={{ flexDirection: 'row', gap: wp(2) }}>
