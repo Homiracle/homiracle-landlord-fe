@@ -6,6 +6,8 @@ import { useNavigation } from '@react-navigation/native';
 import { RootScreens } from '../../Constants/RootScreen';
 import { Button, TextInput } from 'react-native-paper';
 import { useSigninMutation } from '../../Services';
+import { useAppDispatch } from '../../Store/hook';
+import { saveToken, setUser } from '../../Store/reducers';
 
 export const SignIn = () => {
   const navigation = useNavigation();
@@ -16,11 +18,15 @@ export const SignIn = () => {
     setShowPassword(!showPassword);
   };
   const [signin, { data, isSuccess, isLoading, isError }] = useSigninMutation();
+
+  const dispatch = useAppDispatch();
   const handleLogin = async () => {
     try {
       await signin({ email, password });
       if (isSuccess) {
-        console.log('data', data);
+        const { accessToken, refreshToken, user } = data as any;
+        dispatch(saveToken({ accessToken, refreshToken }));
+        dispatch(setUser(user));
         navigation.navigate('TabNavigator' as never);
       }
     } catch (error) {
@@ -73,8 +79,8 @@ export const SignIn = () => {
       <Button
         style={styles.button}
         onPress={handleLogin}
-        loading={isLoading}
-        disabled={isLoading}
+        // loading={isLoading}
+        // disabled={isLoading}
         mode='outlined'
       >
         Đăng nhập
