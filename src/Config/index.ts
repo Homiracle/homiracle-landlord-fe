@@ -1,3 +1,3 @@
 export const Config = {
-  API_URL: 'http://192.168.17.41:3000/',
+  API_URL: process.env.API_URL || 'http://10.0.148.125:3000/',
 };
