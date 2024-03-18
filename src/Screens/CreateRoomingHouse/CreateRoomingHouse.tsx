@@ -99,7 +99,7 @@ export const CreateRoomingHouse = () => {
       borderBottomColor: theme.colors.primary,
       borderBottomWidth: 1,
       paddingVertical: hp(0.5),
-      opacity: 1
+      color: 'black',
     },
     buttonContainer: {
       flexDirection: 'row',
