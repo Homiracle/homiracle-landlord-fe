@@ -27,9 +27,13 @@ export type RoomingHouse = {
   [key: string]: any;
 };
 
+export type RoomingHouseResponse = Partial<RoomingHouse> & {
+  rooming_house_id: string;
+};
+
 const roomingHouseApi = API.injectEndpoints({
   endpoints: build => ({
-    createRoomingHouse: build.mutation<RoomingHouse, Partial<RoomingHouse>>({
+    createRoomingHouse: build.mutation<RoomingHouseResponse, Partial<RoomingHouse>>({
       query: data => ({
         url: 'rooming-houses',
         method: 'POST',

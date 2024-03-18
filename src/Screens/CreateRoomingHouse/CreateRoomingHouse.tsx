@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Text, View } from 'native-base';
 import { Header, CustomDialog } from '../../Components';
 import { useAppTheme } from '../../Theme';
@@ -12,7 +12,25 @@ import { Button, Surface, Portal } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
-import { RoomingHouse, useCreateRoomingHouseMutation } from '../../Services';
+import {
+  RoomingHouse as RoomingHouseProps,
+  useCreateRoomingHouseMutation,
+} from '../../Services';
+import { useAppSelector } from '../../Store/hook';
+import { selectUserId } from '../../Store/reducers';
+
+const province = [
+  { id: 1, name: 'Hà Nội' },
+  { id: 2, name: 'TP. Hồ Chí Minh' },
+];
+const district = [
+  { id: 1, name: 'Quận Ba Đình' },
+  { id: 2, name: 'Quận 10' },
+];
+const commune = [
+  { id: 1, name: 'Phường A' },
+  { id: 2, name: 'Phường B' },
+];
 
 export const CreateRoomingHouse = () => {
   const theme = useAppTheme();
@@ -24,31 +42,32 @@ export const CreateRoomingHouse = () => {
     closingHour: false,
   });
   const pickerRef = React.useRef(null);
-  const [roomingHouseData, setRoomingHouseData] = React.useState<RoomingHouse>({
-    name: '',
-    opening_hour: '',
-    closing_hour: '',
-    number_of_period_days: 0,
-    closing_money_date: 0,
-    start_receiving_money_date: 0,
-    end_receiving_money_date: 0,
-    landlord: {
-      user_id: '',
-    },
-    address: {
-      province: '',
-      district: '',
-      commune: '',
-      street: '',
-    },
-    reference_cost: {
-      deposit: 0,
-      water_cost: 0,
-      power_cost: 0,
-      cost_per_person: 0,
-      cost_per_room: 0,
-    },
-  });
+  const [roomingHouseData, setRoomingHouseData] =
+    React.useState<RoomingHouseProps>({
+      name: '',
+      opening_hour: '',
+      closing_hour: '',
+      number_of_period_days: 0,
+      closing_money_date: 0,
+      start_receiving_money_date: 0,
+      end_receiving_money_date: 0,
+      landlord: {
+        user_id: useAppSelector(selectUserId) as unknown as string | '',
+      },
+      address: {
+        province: '',
+        district: '',
+        commune: '',
+        street: '',
+      },
+      reference_cost: {
+        deposit: 0,
+        water_cost: 0,
+        power_cost: 0,
+        cost_per_person: 0,
+        cost_per_room: 0,
+      },
+    });
 
   const styles = StyleSheet.create({
     container: {
@@ -109,12 +128,14 @@ export const CreateRoomingHouse = () => {
     console.log('back');
   };
 
+  // console.log(useAppSelector(state => state.user));
+
   const handleInputChange = (
     fieldName: string,
     text: string | number,
     nestedField?: string,
   ) => {
-    console.log(fieldName, text);
+    // console.log(fieldName, text);
     setRoomingHouseData(prevData => {
       if (nestedField) {
         return {
@@ -132,18 +153,16 @@ export const CreateRoomingHouse = () => {
     });
   };
 
-  const [createRoomingHouse, { data, isLoading, isError }] =
+  const [createRoomingHouse, { data, error, isSuccess, isLoading, isError }] =
     useCreateRoomingHouseMutation();
 
   const handleSubmit = async () => {
     console.log(roomingHouseData);
-    try {
-      const result = await createRoomingHouse(
-        roomingHouseData as Partial<RoomingHouse>,
-      );
-      console.log(result); // Xử lý dữ liệu trả về từ API
-    } catch (error) {
-      console.error('Error creating rooming house:', error);
+    await createRoomingHouse(roomingHouseData as Partial<RoomingHouseProps>);
+    if (isSuccess) {
+      console.log(error);
+    } else if (isError) {
+      console.log('error', error);
     }
   };
 
@@ -233,14 +252,30 @@ export const CreateRoomingHouse = () => {
                 <Text style={styles.subTitle}>Tỉnh/Thành phố</Text>
                 <Picker
                   ref={pickerRef}
-                  selectedValue={roomingHouseData.address.province}
+                  selectedValue={
+                    province.find(
+                      province =>
+                        province.name === roomingHouseData.address.province,
+                    )?.id || province[0].id
+                  }
                   onValueChange={itemValue =>
-                    handleInputChange('address', itemValue, 'province')
+                    handleInputChange(
+                      'address',
+                      province[itemValue - 1].name,
+                      'province',
+                    )
                   }
                   mode='dialog'
                 >
-                  <Picker.Item label='Hà Nội' value={1} />
-                  <Picker.Item label='TP. Hồ Chí Minh' value={2} />
+                  {province.map(item => {
+                    return (
+                      <Picker.Item
+                        key={item.id}
+                        label={item.name}
+                        value={item.id}
+                      />
+                    );
+                  })}
                 </Picker>
               </View>
               <View style={{ flexDirection: 'row', gap: wp(2) }}>
@@ -248,28 +283,60 @@ export const CreateRoomingHouse = () => {
                   <Text style={styles.subTitle}>Quận/Huyện</Text>
                   <Picker
                     ref={pickerRef}
-                    selectedValue={roomingHouseData.address.district}
-                    onValueChange={itemValue =>
-                      handleInputChange('address', itemValue, 'district')
+                    selectedValue={
+                      district.find(
+                        district =>
+                          district.name === roomingHouseData.address.district,
+                      )?.id || district[0].id
+                    }
+                    onValueChange={(itemValue: number) =>
+                      handleInputChange(
+                        'address',
+                        district[itemValue - 1].name,
+                        'district',
+                      )
                     }
                     mode='dialog'
                   >
-                    <Picker.Item label='Quận Ba Đình' value={1} />
-                    <Picker.Item label='Quận 10' value={2} />
+                    {district.map(item => {
+                      return (
+                        <Picker.Item
+                          key={item.id}
+                          label={item.name}
+                          value={item.id}
+                        />
+                      );
+                    })}
                   </Picker>
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.subTitle}>Phường/Xã</Text>
                   <Picker
                     ref={pickerRef}
-                    selectedValue={roomingHouseData.address.commune}
+                    selectedValue={
+                      commune.find(
+                        commune =>
+                          commune.name === roomingHouseData.address.commune,
+                      )?.id || commune[0].id
+                    }
                     onValueChange={itemValue =>
-                      handleInputChange('address', itemValue, 'commune')
+                      handleInputChange(
+                        'address',
+                        commune[itemValue - 1].name,
+                        'commune',
+                      )
                     }
                     mode='dialog'
                   >
-                    <Picker.Item label='Phường A' value={1} />
-                    <Picker.Item label='Phường B' value={2} />
+                    {commune.map(item => {
+                      return (
+                        <Picker.Item
+                          key={item.id}
+                          label={item.name}
+                          value={item.id}
+                        />
+                      );
+                    })}
                   </Picker>
                 </View>
               </View>
