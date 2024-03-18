@@ -1,24 +1,25 @@
 import React from 'react';
 import { FlatList, List, Text, View } from 'native-base';
 import { Button, Searchbar } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation } from '@react-navigation/native';
 import { RootScreens } from '../../Constants/RootScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { FloorItem, Header, RoomAndTenant, TabView } from '../../Components';
+import { FloorItem, Header, RoomAndTenant, RootStackHouseParamList, TabView } from '../../Components';
 import { SceneMap } from 'react-native-tab-view'
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { TabButton, TabButtonProps } from '../../Components/TabView/TabButton';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-export const RoomingHouseDetail = () => {
+type Props = {
+  house_id: string,
+}
+
+export const RoomingHouseDetail: React.FC<Props> = ({house_id}) => {
+  console.log(house_id);
+
   const [searchQuery, setSearchQuery] = React.useState('');
 
-  const navigation = useNavigation();
-
-  const [index, setIndex] = React.useState(0);
-  const [routes] = React.useState([
-    { key: 'first', title: 'First' },
-    { key: 'second', title: 'Second' },
-  ]);
+  const HomiracleNavigation = useNavigation();
 
   let data: {
     house_id: string, 
@@ -110,7 +111,7 @@ export const RoomingHouseDetail = () => {
           console.log('notification');
          }}
         onBack={() => {
-           navigation.navigate(RootScreens.ROOMING_HOUSE_LIST as never);
+          HomiracleNavigation.navigate(RootScreens.ROOMING_HOUSE_LIST as never);
         }}
         >
             <RoomAndTenant 

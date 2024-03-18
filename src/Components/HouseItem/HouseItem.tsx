@@ -16,7 +16,7 @@ export interface HouseItemProps {
     num_of_tenant: number,
 }
 
-export type RootStackParamList = {
+export type RootStackHouseParamList = {
     RoomingHouseDetail: { house_id: string } | undefined;
   };
 
@@ -28,7 +28,7 @@ export const HouseItem = ({
     num_of_tenant,
 }:HouseItemProps) => {
     const homiralceTheme = useAppTheme();
-    const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+    const navigation = useNavigation<StackNavigationProp<RootStackHouseParamList>>();
     return (
         <TouchableOpacity
             style={{
@@ -59,7 +59,7 @@ export const HouseItem = ({
                 source={{
                     uri: 'https://file4.batdongsan.com.vn/resize/1275x717/2024/03/07/20240307114527-38f0_wm.jpg'
                 }}
-                alt='this is a image of rooming-house'>
+                alt='this is an image of rooming-house'>
 
             </Image>
             <Text
