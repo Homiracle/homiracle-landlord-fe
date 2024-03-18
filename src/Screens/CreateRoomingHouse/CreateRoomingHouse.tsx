@@ -7,9 +7,9 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { Pressable, StyleSheet, TextInput } from 'react-native';
+import { Pressable, StyleSheet, TextInput, TextStyle } from 'react-native';
 import { Button, Surface, Portal } from 'react-native-paper';
-import { Picker } from '@react-native-picker/picker';
+import { Dropdown } from 'react-native-searchable-dropdown-kj';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 import {
@@ -41,7 +41,6 @@ export const CreateRoomingHouse = () => {
     openingHour: false,
     closingHour: false,
   });
-  const pickerRef = React.useRef(null);
   const [roomingHouseData, setRoomingHouseData] =
     React.useState<RoomingHouseProps>({
       name: '',
@@ -114,6 +113,16 @@ export const CreateRoomingHouse = () => {
       height: hp(6),
       justifyContent: 'center',
     },
+    dropdown: {
+      borderBottomColor: theme.colors.primary,
+      borderBottomWidth: 1,
+    },
+    placeholderStyle: [
+      theme.fonts.bodyMedium,
+      {
+        opacity: 0.5,
+      },
+    ] as TextStyle,
   });
 
   // const pickerOpen = () => {
@@ -250,94 +259,52 @@ export const CreateRoomingHouse = () => {
               </View>
               <View>
                 <Text style={styles.subTitle}>Tỉnh/Thành phố</Text>
-                <Picker
-                  ref={pickerRef}
-                  selectedValue={
-                    province.find(
-                      province =>
-                        province.name === roomingHouseData.address.province,
-                    )?.id || province[0].id
+                <Dropdown
+                  style={styles.dropdown}
+                  placeholderStyle={styles.placeholderStyle}
+                  data={province}
+                  labelField='name'
+                  valueField='id'
+                  onChange={item =>
+                    handleInputChange('address', item.name, 'province')
                   }
-                  onValueChange={itemValue =>
-                    handleInputChange(
-                      'address',
-                      province[itemValue - 1].name,
-                      'province',
-                    )
-                  }
-                  mode='dialog'
-                >
-                  {province.map(item => {
-                    return (
-                      <Picker.Item
-                        key={item.id}
-                        label={item.name}
-                        value={item.id}
-                      />
-                    );
-                  })}
-                </Picker>
+                  placeholder='Chọn tỉnh/thành phố'
+                  search
+                  searchPlaceholder='Tìm tỉnh/thành phố'
+                />
               </View>
               <View style={{ flexDirection: 'row', gap: wp(2) }}>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.subTitle}>Quận/Huyện</Text>
-                  <Picker
-                    ref={pickerRef}
-                    selectedValue={
-                      district.find(
-                        district =>
-                          district.name === roomingHouseData.address.district,
-                      )?.id || district[0].id
+                  <Dropdown
+                    style={styles.dropdown}
+                    placeholderStyle={styles.placeholderStyle}
+                    data={district}
+                    labelField='name'
+                    valueField='id'
+                    onChange={item =>
+                      handleInputChange('address', item.name, 'district')
                     }
-                    onValueChange={(itemValue: number) =>
-                      handleInputChange(
-                        'address',
-                        district[itemValue - 1].name,
-                        'district',
-                      )
-                    }
-                    mode='dialog'
-                  >
-                    {district.map(item => {
-                      return (
-                        <Picker.Item
-                          key={item.id}
-                          label={item.name}
-                          value={item.id}
-                        />
-                      );
-                    })}
-                  </Picker>
+                    placeholder='Chọn quận/huyện'
+                    search
+                    searchPlaceholder='Tìm quận/huyện'
+                  />
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.subTitle}>Phường/Xã</Text>
-                  <Picker
-                    ref={pickerRef}
-                    selectedValue={
-                      commune.find(
-                        commune =>
-                          commune.name === roomingHouseData.address.commune,
-                      )?.id || commune[0].id
+                  <Dropdown
+                    style={styles.dropdown}
+                    placeholderStyle={styles.placeholderStyle}
+                    data={commune}
+                    labelField='name'
+                    valueField='id'
+                    onChange={item =>
+                      handleInputChange('address', item.name, 'commune')
                     }
-                    onValueChange={itemValue =>
-                      handleInputChange(
-                        'address',
-                        commune[itemValue - 1].name,
-                        'commune',
-                      )
-                    }
-                    mode='dialog'
-                  >
-                    {commune.map(item => {
-                      return (
-                        <Picker.Item
-                          key={item.id}
-                          label={item.name}
-                          value={item.id}
-                        />
-                      );
-                    })}
-                  </Picker>
+                    placeholder='Chọn phường/xã'
+                    search
+                    searchPlaceholder='Tìm phường/xã'
+                  />
                 </View>
               </View>
               <View>
