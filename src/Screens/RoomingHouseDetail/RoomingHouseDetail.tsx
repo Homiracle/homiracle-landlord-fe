@@ -99,7 +99,7 @@ export const RoomingHouseDetail: React.FC<Props> = ({house_id}) => {
   return (
     <View>
         <Header
-        title={'Nhà trọ' + (data && data.house_name)}
+        title={'Nhà trọ' + data?.house_name}
         height={20}
         mode='center-aligned'
         onNotification={() => {
@@ -110,7 +110,7 @@ export const RoomingHouseDetail: React.FC<Props> = ({house_id}) => {
         }}
         >
           {data && <RoomAndTenant 
-            num_of_room={data && data.num_of_room}
+            num_of_room={data.num_of_room}
             num_of_tenant={data.num_of_tenant}/>}
         </Header>
 
@@ -118,22 +118,22 @@ export const RoomingHouseDetail: React.FC<Props> = ({house_id}) => {
           <TabButton
             isClicked={true}
             name='tầng'
-            number={12}
+            number={data?.num_of_floor}
           />
           <TabButton
             isClicked={false}
             name='thiết bị'
-            number={12}
+            number={data?.num_of_device}
           />
-          <TabButton
+          {/* <TabButton
             isClicked={false}
             name='dịch vụ'
             number={12}
-          />
+          /> */}
           <TabButton
             isClicked={false}
             name='khách thuê'
-            number={12}
+            number={data?.num_of_tenant}
           />
         </TabView>
 
@@ -148,17 +148,17 @@ export const RoomingHouseDetail: React.FC<Props> = ({house_id}) => {
           value={searchQuery}
         ></Searchbar>
 
-        {data && <FlatList
+        <FlatList
           contentContainerStyle={{justifyContent: 'center', alignSelf: 'center'}}
           horizontal={false}
           showsVerticalScrollIndicator={false}
           numColumns={2}
-          data={data.floor}
+          data={data?.floor}
           renderItem={({item}) => (<FloorItem
             floor_id={item.floor_id}
             floor_name={item.floor_name}
             num_of_room={item.num_of_room}/>)}
-        />}
+        />
 
         {!data && <Text>Is loading</Text>}
     </View>
