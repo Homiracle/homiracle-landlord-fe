@@ -1,3 +1,4 @@
+import { onFocus } from "@reduxjs/toolkit/dist/query/core/setupListeners";
 import { useAppTheme } from "../../Theme";
 import React from "react";
 import { Button, StyleSheet, Text, TouchableOpacity } from "react-native";
@@ -7,13 +8,14 @@ export interface TabButtonProps {
     isClicked: boolean;
     name: string;
     number?: number;
-    content?: React.ReactNode;
+    onFocus?: (render: any) => void,
 }
 
 export const TabButton: React.FC<TabButtonProps> = ({
     isClicked = false,
     name,
     number,
+    onFocus,
 }) => {
     const homiralceTheme = useAppTheme();
 
@@ -48,7 +50,8 @@ export const TabButton: React.FC<TabButtonProps> = ({
             style={[
                 styles.button,
                 isClicked? styles.backGroundActive: styles.backGroundInActive,
-            ]}>
+            ]}
+            onPress={onFocus}>
             <Text
                 style={[
                     homiralceTheme.fonts.labelLarge,

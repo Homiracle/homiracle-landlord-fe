@@ -6,7 +6,7 @@ import { Searchbar } from "react-native-paper";
 import { View } from "react-native";
 
 export interface DeviceListProps {
-    house_id: string,
+    house_id?: string,
     floor_id?: string,
     room_id?: string,
 }

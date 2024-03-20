@@ -4,7 +4,6 @@ import { TabButton, TabButtonProps } from "./TabButton";
 import { StyleSheet, View } from "react-native";
 
 export interface TabViewProps {
-    default: string,
     children: React.ReactNode;
 }
 

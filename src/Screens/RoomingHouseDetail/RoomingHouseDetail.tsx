@@ -4,7 +4,7 @@ import { Button, Searchbar } from 'react-native-paper';
 import { RouteProp, useNavigation } from '@react-navigation/native';
 import { RootScreens } from '../../Constants/RootScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { FloorItem, FloorList, Header, RoomAndTenant, TabView, TenantList } from '../../Components';
+import { DeviceList, FloorItem, FloorList, Header, RoomAndTenant, TabView, TenantList } from '../../Components';
 import { SceneMap } from 'react-native-tab-view'
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { TabButton, TabButtonProps } from '../../Components/TabView/TabButton';
@@ -16,7 +16,6 @@ type Props = {
 }
 
 export const RoomingHouseDetail: React.FC<Props> = ({house_id}) => {
-  console.log(house_id);
 
   const HomiracleNavigation = useNavigation();
   const [focus, setFocus] = useState(<FloorList house_id={house_id}/>);
@@ -39,6 +38,22 @@ export const RoomingHouseDetail: React.FC<Props> = ({house_id}) => {
     }, [],
   );
 
+  const listTab = [
+    {
+      status: 'floor'
+    },
+    {
+      status: 'device'
+    },
+    {
+      status: 'room'
+    }
+  ]
+  const [status, setStatus] = useState('floor');
+  const setStatusFilter = (status: string) => {
+    setStatus(status)
+  }
+
   return (
     <View>
         <Header
@@ -54,32 +69,32 @@ export const RoomingHouseDetail: React.FC<Props> = ({house_id}) => {
         >
           {data && <RoomAndTenant 
             num_of_room={data.num_of_room}
-            num_of_tenant={data.num_of_tenant}/>}
+            num_of_tenant={data.num_of_tenant}
+          />}
         </Header>
 
-        <TabView default='tầng'>
+        <TabView>
           <TabButton
-            isClicked={true}
+            isClicked={status === 'floor'}
             name='tầng'
             number={data?.num_of_floor}
+            onFocus={() => {setStatusFilter('floor'); setFocus(<FloorList house_id={house_id}/>)}}
           />
           <TabButton
-            isClicked={false}
+            isClicked={status === 'device'}
             name='thiết bị'
             number={data?.num_of_device}
+            onFocus={() => {setStatusFilter('device'); setFocus(<DeviceList house_id={house_id}/>)}}
           />
           <TabButton
-            isClicked={false}
+            isClicked={status === 'tenant'}
             name='khách thuê'
             number={data?.num_of_tenant}
+            onFocus={() => {setStatusFilter('tenant'); setFocus(<TenantList house_id={house_id}/>)}}
           />
         </TabView>
-        
         {focus}
     </View>
   );
 };
-function aysnc(): React.EffectCallback {
-  throw new Error('Function not implemented.');
-}
 
