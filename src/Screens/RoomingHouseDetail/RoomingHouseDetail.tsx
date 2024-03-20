@@ -4,7 +4,7 @@ import { Button, Searchbar } from 'react-native-paper';
 import { RouteProp, useNavigation } from '@react-navigation/native';
 import { RootScreens } from '../../Constants/RootScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { FloorItem, Header, RoomAndTenant, RootStackHouseParamList, TabView } from '../../Components';
+import { FloorItem, FloorList, Header, RoomAndTenant, TabView, TenantList } from '../../Components';
 import { SceneMap } from 'react-native-tab-view'
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { TabButton, TabButtonProps } from '../../Components/TabView/TabButton';
@@ -18,12 +18,13 @@ type Props = {
 export const RoomingHouseDetail: React.FC<Props> = ({house_id}) => {
   console.log(house_id);
 
-  const [searchQuery, setSearchQuery] = React.useState('');
-
   const HomiracleNavigation = useNavigation();
+  const [focus, setFocus] = useState(<FloorList house_id={house_id}/>);
+  const updateRenderFocus = (newRender: React.JSX.Element) => {
+    setFocus(newRender)
+  }
 
   const [getRoomingHouseDetails, { data, isLoading, isError }] = useLazyGetRoomingHouseDetailsQuery();
-
   useEffect(
     () => {
       const getHouseDetails = async () => {
@@ -37,64 +38,6 @@ export const RoomingHouseDetail: React.FC<Props> = ({house_id}) => {
       getHouseDetails();
     }, [],
   );
-
-
-//   data = {
-//     house_id: '1',
-//     house_name: 'Nhà trọ abc xyz',
-//     num_of_room: 1,
-//     num_of_tenant: 1,
-//     floor: [{
-//         floor_id: 1,
-//         floor_name: '2',
-//         num_of_room: 1,
-//         },
-//         {
-//             floor_id: 2,
-//             floor_name: '2',
-//             num_of_room: 1,
-//         },
-//         {
-//             floor_id: 3,
-//             floor_name: '2',
-//             num_of_room: 1,
-//         },
-//         {
-//           floor_id: 3,
-//           floor_name: '2',
-//           num_of_room: 1,
-//       },
-//       {
-//         floor_id: 3,
-//         floor_name: '2',
-//         num_of_room: 1,
-//     },
-//     {
-//       floor_id: 3,
-//       floor_name: '2',
-//       num_of_room: 1,
-//   },{
-//     floor_id: 3,
-//     floor_name: '2',
-//     num_of_room: 1,
-// },
-// {
-//   floor_id: 3,
-//   floor_name: '2',
-//   num_of_room: 1,
-// },
-// {
-//   floor_id: 3,
-//   floor_name: '2',
-//   num_of_room: 1,
-// },
-// {
-//   floor_id: 3,
-//   floor_name: '2',
-//   num_of_room: 1,
-// },
-//     ]
-//   };
 
   return (
     <View>
@@ -125,42 +68,14 @@ export const RoomingHouseDetail: React.FC<Props> = ({house_id}) => {
             name='thiết bị'
             number={data?.num_of_device}
           />
-          {/* <TabButton
-            isClicked={false}
-            name='dịch vụ'
-            number={12}
-          /> */}
           <TabButton
             isClicked={false}
             name='khách thuê'
             number={data?.num_of_tenant}
           />
         </TabView>
-
-        <Searchbar
-          style={{
-            marginTop: hp('2%'),
-            width: wp('90%'),
-            left: wp('5%'),
-          }}
-          placeholder="Tìm phòng"
-          onChangeText={setSearchQuery}
-          value={searchQuery}
-        ></Searchbar>
-
-        <FlatList
-          contentContainerStyle={{justifyContent: 'center', alignSelf: 'center'}}
-          horizontal={false}
-          showsVerticalScrollIndicator={false}
-          numColumns={2}
-          data={data?.floor}
-          renderItem={({item}) => (<FloorItem
-            floor_id={item.floor_id}
-            floor_name={item.floor_name}
-            num_of_room={item.num_of_room}/>)}
-        />
-
-        {!data && <Text>Is loading</Text>}
+        
+        {focus}
     </View>
   );
 };

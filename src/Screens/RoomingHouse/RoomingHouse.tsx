@@ -9,7 +9,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { useLazyGetRoomingHousesQuery } from '@/Services';
+import { useLazyGetRoomingHousesQuery } from '../../Services';
 
 export const RoomingHouseList = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
@@ -31,57 +31,57 @@ export const RoomingHouseList = () => {
     }, [],
   );
 
-  // const houseList: HouseItemProps[] = [
-  //   {
-  //     house_id: '3',
-  //     house_name: 'nha tro xuan hong',
-  //     address: '127 ly thuong kiet abc xyz abc xyz abc xyz abc xyz',
-  //     num_of_room: 10,
-  //     num_of_tenant: 20,
-  //   },
-  //   {
-  //     house_id: '2',
-  //     house_name: 'nha tro xuan hong',
-  //     address: '127 ly thuong kiet abc xyz',
-  //     num_of_room: 10,
-  //     num_of_tenant: 20,
-  //   },
-  //   {
-  //     house_id: '1',
-  //     house_name: 'nha tro xuan hong',
-  //     address: '127 ly thuong kiet abc xyz',
-  //     num_of_room: 10,
-  //     num_of_tenant: 20,
-  //   },
-  //   {
-  //     house_id: '4',
-  //     house_name: 'Nha tro xuan hong',
-  //     address: '127 ly thuong kiet abc xyz',
-  //     num_of_room: 10,
-  //     num_of_tenant: 20,
-  //   },
-  //   {
-  //     house_id: '5',
-  //     house_name: 'nha tro xuan hong',
-  //     address: '127 ly thuong kiet abc xyz',
-  //     num_of_room: 10,
-  //     num_of_tenant: 20,
-  //   },
-  //   {
-  //     house_id: '6',
-  //     house_name: 'nha tro xuan hong',
-  //     address: '127 ly thuong kiet abc xyz',
-  //     num_of_room: 10,
-  //     num_of_tenant: 20,
-  //   },
-  //   {
-  //     house_id: '7',
-  //     house_name: 'nha tro xuan hong',
-  //     address: '127 ly thuong kiet abc xyz',
-  //     num_of_room: 10,
-  //     num_of_tenant: 20,
-  //   },
-  // ];
+  const houseList: HouseItemProps[] = [
+    {
+      house_id: '3',
+      house_name: 'nha tro xuan hong',
+      address: '127 ly thuong kiet abc xyz abc xyz abc xyz abc xyz',
+      num_of_room: 10,
+      num_of_tenant: 20,
+    },
+    {
+      house_id: '2',
+      house_name: 'nha tro xuan hong',
+      address: '127 ly thuong kiet abc xyz',
+      num_of_room: 10,
+      num_of_tenant: 20,
+    },
+    {
+      house_id: '1',
+      house_name: 'nha tro xuan hong',
+      address: '127 ly thuong kiet abc xyz',
+      num_of_room: 10,
+      num_of_tenant: 20,
+    },
+    {
+      house_id: '4',
+      house_name: 'Nha tro xuan hong',
+      address: '127 ly thuong kiet abc xyz',
+      num_of_room: 10,
+      num_of_tenant: 20,
+    },
+    {
+      house_id: '5',
+      house_name: 'nha tro xuan hong',
+      address: '127 ly thuong kiet abc xyz',
+      num_of_room: 10,
+      num_of_tenant: 20,
+    },
+    {
+      house_id: '6',
+      house_name: 'nha tro xuan hong',
+      address: '127 ly thuong kiet abc xyz',
+      num_of_room: 10,
+      num_of_tenant: 20,
+    },
+    {
+      house_id: '7',
+      house_name: 'nha tro xuan hong',
+      address: '127 ly thuong kiet abc xyz',
+      num_of_room: 10,
+      num_of_tenant: 20,
+    },
+  ];
 
   return (
     <View>
@@ -113,7 +113,7 @@ export const RoomingHouseList = () => {
       </Button>
 
         <FlatList
-          data={data}
+          data={houseList}
           contentContainerStyle={{justifyContent: 'center', alignSelf: 'center'}}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
