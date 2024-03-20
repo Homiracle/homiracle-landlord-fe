@@ -1,10 +1,10 @@
 import { API } from '../base';
-import { House, HouseDetails, RoomingHouse } from './interface';
+import { House, HouseDetails, RoomingHouse, RoomingHouseResponse } from './interface';
 
 
 const roomingHouseApi = API.injectEndpoints({
   endpoints: build => ({
-    createRoomingHouse: build.mutation<RoomingHouse, Partial<RoomingHouse>>({
+    createRoomingHouse: build.mutation<RoomingHouseResponse, Partial<RoomingHouse>>({
       query: data => ({
         url: 'rooming-houses',
         method: 'POST',

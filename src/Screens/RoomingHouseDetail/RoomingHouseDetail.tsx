@@ -62,7 +62,7 @@ export const RoomingHouseDetail: React.FC<Props> = ({house_id}) => {
         mode='center-aligned'
         onNotification={() => {
           console.log('notification');
-         }}
+        }}
         onBack={() => {
           HomiracleNavigation.navigate(RootScreens.ROOMING_HOUSE_LIST as never);
         }}
