@@ -16,13 +16,13 @@ type Props = {
 }
 
 export const RoomingHouseDetail: React.FC<Props> = ({house_id}) => {
+  console.log(house_id);
 
   const HomiracleNavigation = useNavigation();
   const [focus, setFocus] = useState(<FloorList house_id={house_id}/>);
   const updateRenderFocus = (newRender: React.JSX.Element) => {
     setFocus(newRender)
   }
-
   const [getRoomingHouseDetails, { data, isLoading, isError }] = useLazyGetRoomingHouseDetailsQuery();
   useEffect(
     () => {
