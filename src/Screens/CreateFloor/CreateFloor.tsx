@@ -9,15 +9,13 @@ import {
 } from 'react-native-responsive-screen';
 import { StyleSheet, TextInput, TextStyle } from 'react-native';
 import { Button, Surface, Portal } from 'react-native-paper';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import moment from 'moment';
 import {
-  RoomingHouse as RoomingHouseProps,
-  useCreateRoomingHouseMutation,
+  Floor as FloorProps,
+  useCreateFloorMutation
 } from '../../Services';
 import { useAppSelector } from '../../Store/hook';
-import { selectUserId } from '../../Store/reducers';
-import { roomingHouseFormValidationSchema as schema } from '../../Utils';
+import { getHouseId } from '../../Store/reducers';
+import { floorFormValidationSchema as schema } from '../../Utils';
 import { useFormik } from 'formik';
 
 export const CreateFloor = () => {
@@ -91,23 +89,11 @@ export const CreateFloor = () => {
   const navigation = useNavigation();
   const [backDialog, showBackDialog] = React.useState(false);
   const [cancelDialog, showCancelDialog] = React.useState(false);
-  const [roomingHouseData, setRoomingHouseData] =
-    React.useState<RoomingHouseProps>({
+  const [floorData, setfloorData] =
+    React.useState<FloorProps>({
       name: '',
-      opening_hour: '',
-      closing_hour: '',
-      number_of_period_days: 0,
-      closing_money_date: 0,
-      start_receiving_money_date: 0,
-      end_receiving_money_date: 0,
-      landlord: {
-        user_id: useAppSelector(selectUserId) as unknown as string | '',
-      },
-      address: {
-        province: '',
-        district: '',
-        commune: '',
-        street: '',
+      rooming_house: {
+        rooming_house_id: useAppSelector(getHouseId),
       },
       reference_cost: {
         deposit: 0,
@@ -119,11 +105,11 @@ export const CreateFloor = () => {
       },
     });
 
-  const [createRoomingHouse, { data, error, isSuccess, isLoading, isError }] =
-    useCreateRoomingHouseMutation();
+  const [createFloor, { data, error, isSuccess, isLoading, isError }] =
+    useCreateFloorMutation();
 
   const formik = useFormik({
-    initialValues: roomingHouseData,
+    initialValues: floorData,
     validationSchema: schema,
     onSubmit: values => {
       console.log(values);
@@ -147,7 +133,7 @@ export const CreateFloor = () => {
   ) => {
     // console.log(fieldName, text);
     if (nestedField) {
-      setRoomingHouseData(prevData => ({
+      setfloorData(prevData => ({
         ...prevData,
         [fieldName]: {
           ...prevData[fieldName],
@@ -156,7 +142,7 @@ export const CreateFloor = () => {
       }));
       formik.handleChange(`${fieldName}.${nestedField}`)(String(text));
     } else {
-      setRoomingHouseData(prevData => ({
+      setfloorData(prevData => ({
         ...prevData,
         [fieldName]: text,
       }));
@@ -165,8 +151,8 @@ export const CreateFloor = () => {
   };
 
   const handleSubmit = async () => {
-    console.log(roomingHouseData);
-    await createRoomingHouse(roomingHouseData as Partial<RoomingHouseProps>);
+    console.log(floorData);
+    await createFloor(floorData as Partial<FloorProps>);
     if (isSuccess) {
       console.log(error);
     } else if (isError) {
@@ -201,7 +187,7 @@ export const CreateFloor = () => {
   };
 
   // console.log(formik.touched);
-  // console.log(formik.errors);
+  console.log(formik.errors);
 
   // console.log(formik.isValid);
 
@@ -222,8 +208,8 @@ export const CreateFloor = () => {
       <Portal>
         <CustomDialog
           visible={cancelDialog}
-          title='Hủy tạo nhà trọ'
-          content='Bạn có muốn hủy tạo nhà trọ không?'
+          title='Hủy tạo tầng'
+          content='Bạn có muốn hủy tạo tầng không?'
           onDismiss={() => showCancelDialog(false)}
           onConfirm={() => {
             showCancelDialog(false);
@@ -232,7 +218,7 @@ export const CreateFloor = () => {
         />
       </Portal>
       <Header
-        title='Tạo nhà trọ'
+        title='Tạo tầng'
         height={hp(8)}
         mode='center-aligned'
         onBack={onBack}
@@ -352,7 +338,7 @@ export const CreateFloor = () => {
             onPress={handleSubmit}
             disabled={!formik.isValid}
           >
-            Tạo nhà trọ
+            Tạo tầng
           </Button>
         </View>
       </Header>

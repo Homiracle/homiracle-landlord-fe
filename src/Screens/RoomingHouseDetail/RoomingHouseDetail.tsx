@@ -67,7 +67,7 @@ export const RoomingHouseDetail = () => {
         floor_id: '3',
         floor_name: '2',
         num_of_room: 1,
-      }
+      },
     ],
   };
   const src = (
@@ -82,7 +82,6 @@ export const RoomingHouseDetail = () => {
       value={searchQuery}
     ></Searchbar>
   );
-
   return (
     <View>
       <Header
@@ -102,7 +101,13 @@ export const RoomingHouseDetail = () => {
           num_of_tenant={data.num_of_tenant}
         />
       </Header>
-
+      <Button
+        onPress={() => {
+          navigation.navigate(RootScreens.CREATE_FLOOR as never);
+        }}
+      >
+        Tạo tầng
+      </Button>
       <TabView default='tầng'>
         <TabButton isClicked={true} name='tầng' number={12} content={src} />
         <TabButton isClicked={false} name='thiết bị' number={12} />
