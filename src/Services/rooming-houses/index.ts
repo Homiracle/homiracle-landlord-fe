@@ -18,18 +18,23 @@ export type RoomingHouse = {
     street: string;
   };
   reference_cost: {
-    deposit: number;
-    water_cost: number;
-    power_cost: number;
-    cost_per_person: number;
-    cost_per_room: number;
+    deposit?: number;
+    room_cost?: number;
+    water_cost?: number;
+    power_cost?: number;
+    cost_per_person?: number;
+    cost_per_room?: number;
   };
   [key: string]: any;
 };
 
+export type RoomingHouseResponse = Partial<RoomingHouse> & {
+  rooming_house_id: string;
+};
+
 const roomingHouseApi = API.injectEndpoints({
   endpoints: build => ({
-    createRoomingHouse: build.mutation<RoomingHouse, Partial<RoomingHouse>>({
+    createRoomingHouse: build.mutation<RoomingHouseResponse, Partial<RoomingHouse>>({
       query: data => ({
         url: 'rooming-houses',
         method: 'POST',
