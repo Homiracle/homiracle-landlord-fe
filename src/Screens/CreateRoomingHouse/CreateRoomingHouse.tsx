@@ -18,6 +18,8 @@ import {
 } from '../../Services';
 import { useAppSelector } from '../../Store/hook';
 import { selectUserId } from '../../Store/reducers';
+import { roomingHouseFormValidationSchema as schema } from '../../Utils';
+import { useFormik } from 'formik';
 
 const province = [
   { id: 1, name: 'Hà Nội' },
@@ -33,41 +35,8 @@ const commune = [
 ];
 
 export const CreateRoomingHouse = () => {
+  // styles
   const theme = useAppTheme();
-  const navigation = useNavigation();
-  const [backDialog, showBackDialog] = React.useState(false);
-  const [cancelDialog, showCancelDialog] = React.useState(false);
-  const [datetimePicker, showDatetimePicker] = React.useState({
-    openingHour: false,
-    closingHour: false,
-  });
-  const [roomingHouseData, setRoomingHouseData] =
-    React.useState<RoomingHouseProps>({
-      name: '',
-      opening_hour: '',
-      closing_hour: '',
-      number_of_period_days: 0,
-      closing_money_date: 0,
-      start_receiving_money_date: 0,
-      end_receiving_money_date: 0,
-      landlord: {
-        user_id: useAppSelector(selectUserId) as unknown as string | '',
-      },
-      address: {
-        province: '',
-        district: '',
-        commune: '',
-        street: '',
-      },
-      reference_cost: {
-        deposit: 0,
-        water_cost: 0,
-        power_cost: 0,
-        cost_per_person: 0,
-        cost_per_room: 0,
-      },
-    });
-
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -124,14 +93,63 @@ export const CreateRoomingHouse = () => {
         opacity: 0.5,
       },
     ] as TextStyle,
+    goodText: {
+      color: 'green',
+    },
+    badText: {
+      color: 'red',
+    },
   });
 
-  // const pickerOpen = () => {
-  //   (pickerRef.current as any)?.focus();
-  // };
-  // const pickerClose = () => {
-  //   (pickerRef.current as any)?.blur();
-  // };
+  // other hooks
+  const navigation = useNavigation();
+  const [backDialog, showBackDialog] = React.useState(false);
+  const [cancelDialog, showCancelDialog] = React.useState(false);
+  const [datetimePicker, showDatetimePicker] = React.useState({
+    openingHour: false,
+    closingHour: false,
+  });
+  const [roomingHouseData, setRoomingHouseData] =
+    React.useState<RoomingHouseProps>({
+      name: '',
+      opening_hour: '',
+      closing_hour: '',
+      number_of_period_days: 0,
+      closing_money_date: 0,
+      start_receiving_money_date: 0,
+      end_receiving_money_date: 0,
+      landlord: {
+        user_id: useAppSelector(selectUserId) as unknown as string | '',
+      },
+      address: {
+        province: '',
+        district: '',
+        commune: '',
+        street: '',
+      },
+      reference_cost: {
+        deposit: 0,
+        room_cost: 0,
+        water_cost: 0,
+        power_cost: 0,
+        // cost_per_person: 0,
+        // cost_per_room: 0,
+      },
+    });
+
+  const [createRoomingHouse, { data, error, isSuccess, isLoading, isError }] =
+    useCreateRoomingHouseMutation();
+
+  const formik = useFormik({
+    initialValues: roomingHouseData,
+    validationSchema: schema,
+    onSubmit: values => {
+      console.log(values);
+    },
+    validateOnChange: true,
+    validateOnBlur: true,
+    validateOnMount: true,
+  });
 
   const onBack = () => {
     showBackDialog(true);
@@ -146,25 +164,23 @@ export const CreateRoomingHouse = () => {
     nestedField?: string,
   ) => {
     // console.log(fieldName, text);
-    setRoomingHouseData(prevData => {
-      if (nestedField) {
-        return {
-          ...prevData,
-          [fieldName]: {
-            ...prevData[fieldName],
-            [nestedField]: text,
-          },
-        };
-      }
-      return {
+    if (nestedField) {
+      setRoomingHouseData(prevData => ({
+        ...prevData,
+        [fieldName]: {
+          ...prevData[fieldName],
+          [nestedField]: text,
+        },
+      }));
+      formik.handleChange(`${fieldName}.${nestedField}`)(String(text));
+    } else {
+      setRoomingHouseData(prevData => ({
         ...prevData,
         [fieldName]: text,
-      };
-    });
+      }));
+      formik.handleChange(fieldName)(String(text));
+    }
   };
-
-  const [createRoomingHouse, { data, error, isSuccess, isLoading, isError }] =
-    useCreateRoomingHouseMutation();
 
   const handleSubmit = async () => {
     console.log(roomingHouseData);
@@ -175,6 +191,37 @@ export const CreateRoomingHouse = () => {
       console.log('error', error);
     }
   };
+
+  const isTouched = (field: string, nestedField?: string) => {
+    if (nestedField) {
+      return (
+        formik.touched[field as keyof typeof formik.touched]?.[
+          nestedField as keyof (typeof formik.touched)[typeof field]
+        ] &&
+        formik.errors[field as keyof typeof formik.errors]?.[
+          nestedField as keyof (typeof formik.errors)[typeof field]
+        ]
+      );
+    } else {
+      return formik.touched[field] && formik.errors[field];
+    }
+  };
+
+  const onBlur = (field: string, nestedField?: string) => {
+    if (nestedField) {
+      return formik.setFieldTouched(field, {
+        ...(formik.touched[field] as any),
+        [nestedField]: true,
+      });
+    } else {
+      return formik.setFieldTouched(field, true);
+    }
+  };
+
+  // console.log(formik.touched);
+  // console.log(formik.errors);
+
+  // console.log(formik.isValid);
 
   return (
     <View style={styles.container}>
@@ -256,7 +303,11 @@ export const CreateRoomingHouse = () => {
                   placeholder='Nhập tên tòa nhà'
                   style={styles.textInput}
                   onChangeText={text => handleInputChange('name', text)}
+                  onBlur={() => onBlur('name')}
                 />
+                {isTouched('name') ? (
+                  <Text style={styles.badText}>{formik.errors.name}</Text>
+                ) : null}
               </View>
               <View>
                 <Text style={styles.subTitle}>Tỉnh/Thành phố</Text>
@@ -272,7 +323,13 @@ export const CreateRoomingHouse = () => {
                   placeholder='Chọn tỉnh/thành phố'
                   search
                   searchPlaceholder='Tìm tỉnh/thành phố'
+                  onBlur={() => onBlur('address', 'province')}
                 />
+                {isTouched('address', 'province') ? (
+                  <Text style={styles.badText}>
+                    {formik.errors.address?.province}
+                  </Text>
+                ) : null}
               </View>
               <View style={{ flexDirection: 'row', gap: wp(2) }}>
                 <View style={{ flex: 1 }}>
@@ -289,7 +346,13 @@ export const CreateRoomingHouse = () => {
                     placeholder='Chọn quận/huyện'
                     search
                     searchPlaceholder='Tìm quận/huyện'
+                    onBlur={() => onBlur('address', 'district')}
                   />
+                  {isTouched('address', 'district') ? (
+                    <Text style={styles.badText}>
+                      {formik.errors.address?.district}
+                    </Text>
+                  ) : null}
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.subTitle}>Phường/Xã</Text>
@@ -305,7 +368,13 @@ export const CreateRoomingHouse = () => {
                     placeholder='Chọn phường/xã'
                     search
                     searchPlaceholder='Tìm phường/xã'
+                    onBlur={() => onBlur('address', 'commune')}
                   />
+                  {isTouched('address', 'commune') ? (
+                    <Text style={styles.badText}>
+                      {formik.errors.address?.commune}
+                    </Text>
+                  ) : null}
                 </View>
               </View>
               <View>
@@ -316,7 +385,13 @@ export const CreateRoomingHouse = () => {
                   onChangeText={text =>
                     handleInputChange('address', text, 'street')
                   }
+                  onBlur={() => onBlur('address', 'street')}
                 />
+                {isTouched('address', 'street') ? (
+                  <Text style={styles.badText}>
+                    {formik.errors.address?.street}
+                  </Text>
+                ) : null}
               </View>
             </View>
           </Surface>
@@ -341,6 +416,7 @@ export const CreateRoomingHouse = () => {
                     handleInputChange('reference_cost', text, 'deposit')
                   }
                   keyboardType='numeric'
+                  onBlur={() => onBlur('reference_cost', 'deposit')}
                 />
               </View>
               <View>
@@ -349,9 +425,10 @@ export const CreateRoomingHouse = () => {
                   placeholder='Nhập giá phòng tham khảo'
                   style={styles.textInput}
                   onChangeText={text =>
-                    handleInputChange('reference_cost', text, 'cost_per_room')
+                    handleInputChange('reference_cost', text, 'room_cost')
                   }
                   keyboardType='numeric'
+                  onBlur={() => onBlur('reference_cost', 'room_cost')}
                 />
               </View>
               <View>
@@ -363,6 +440,7 @@ export const CreateRoomingHouse = () => {
                     handleInputChange('reference_cost', text, 'power_cost')
                   }
                   keyboardType='numeric'
+                  onBlur={() => onBlur('reference_cost', 'power_cost')}
                 />
               </View>
               <View>
@@ -374,6 +452,7 @@ export const CreateRoomingHouse = () => {
                     handleInputChange('reference_cost', text, 'water_cost')
                   }
                   keyboardType='numeric'
+                  onBlur={() => onBlur('reference_cost', 'water_cost')}
                 />
               </View>
               {/* <View>
@@ -416,8 +495,14 @@ export const CreateRoomingHouse = () => {
                       showSoftInputOnFocus
                       value={roomingHouseData.opening_hour}
                       editable={false}
+                      onBlur={() => onBlur('opening_hour')}
                     />
                   </Pressable>
+                  {isTouched('opening_hour') ? (
+                    <Text style={styles.badText}>
+                      {formik.errors.opening_hour}
+                    </Text>
+                  ) : null}
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.subTitle}>Giờ đóng cửa</Text>
@@ -438,8 +523,14 @@ export const CreateRoomingHouse = () => {
                       showSoftInputOnFocus
                       value={roomingHouseData.closing_hour}
                       editable={false}
+                      onBlur={() => onBlur('closing_hour')}
                     />
                   </Pressable>
+                  {isTouched('closing_hour') ? (
+                    <Text style={styles.badText}>
+                      {formik.errors.closing_hour}
+                    </Text>
+                  ) : null}
                 </View>
               </View>
               <View style={{ flexDirection: 'row', gap: wp(2) }}>
@@ -452,7 +543,13 @@ export const CreateRoomingHouse = () => {
                       handleInputChange('closing_money_date', text)
                     }
                     keyboardType='numeric'
+                    onBlur={() => onBlur('closing_money_date')}
                   />
+                  {isTouched('closing_money_date') ? (
+                    <Text style={styles.badText}>
+                      {formik.errors.closing_money_date}
+                    </Text>
+                  ) : null}
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.subTitle}>Số ngày báo trước</Text>
@@ -463,7 +560,13 @@ export const CreateRoomingHouse = () => {
                       handleInputChange('number_of_period_days', text)
                     }
                     keyboardType='numeric'
+                    onBlur={() => onBlur('number_of_period_days')}
                   />
+                  {isTouched('number_of_period_days') ? (
+                    <Text style={styles.badText}>
+                      {formik.errors.number_of_period_days}
+                    </Text>
+                  ) : null}
                 </View>
               </View>
               <View style={{ flexDirection: 'row', gap: wp(2) }}>
@@ -476,7 +579,13 @@ export const CreateRoomingHouse = () => {
                       handleInputChange('start_receiving_money_date', text)
                     }
                     keyboardType='numeric'
+                    onBlur={() => onBlur('start_receiving_money_date')}
                   />
+                  {isTouched('start_receiving_money_date') ? (
+                    <Text style={styles.badText}>
+                      {formik.errors.start_receiving_money_date}
+                    </Text>
+                  ) : null}
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.subTitle}>Ngày hết hạn nộp tiền</Text>
@@ -487,7 +596,13 @@ export const CreateRoomingHouse = () => {
                       handleInputChange('end_receiving_money_date', text)
                     }
                     keyboardType='numeric'
+                    onBlur={() => onBlur('end_receiving_money_date')}
                   />
+                  {isTouched('end_receiving_money_date') ? (
+                    <Text style={styles.badText}>
+                      {formik.errors.end_receiving_money_date}
+                    </Text>
+                  ) : null}
                 </View>
               </View>
             </View>
@@ -530,6 +645,7 @@ export const CreateRoomingHouse = () => {
             textColor={theme.colors.onPrimary}
             style={styles.button}
             onPress={handleSubmit}
+            disabled={!formik.isValid}
           >
             Tạo nhà trọ
           </Button>
