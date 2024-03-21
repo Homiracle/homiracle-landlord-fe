@@ -13,6 +13,7 @@ export type RootStackParamList = {
   [RootScreens.PROFILE]: undefined;
   [RootScreens.CREATE_ROOMING_HOUSE]: undefined;
   [RootScreens.CREATE_FLOOR]: undefined;
+  [RootScreens.CREATE_ROOM]: undefined;
   AuthStack: undefined;
   HomeStack: undefined;
   RoomingHouseStack: undefined;

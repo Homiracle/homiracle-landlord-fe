@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import {HomeContainer} from '../../Screens';
+import { CreateRoomContainer, HomeContainer } from '../../Screens';
 import { RootScreens } from '../../Constants/RootScreen';
 import { RootStackParamList } from '../../Constants/RootStackParam';
 
@@ -12,6 +12,10 @@ export const HomeStack = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name={RootScreens.HOME} component={HomeContainer} />
+      <Stack.Screen
+        name={RootScreens.CREATE_ROOM}
+        component={CreateRoomContainer}
+      />
       {/* Add more screens here if needed */}
     </Stack.Navigator>
   );
