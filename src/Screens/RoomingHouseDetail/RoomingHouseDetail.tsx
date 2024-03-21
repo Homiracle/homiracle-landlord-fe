@@ -67,28 +67,31 @@ export const RoomingHouseDetail: React.FC<Props> = ({house_id}) => {
           HomiracleNavigation.navigate(RootScreens.ROOMING_HOUSE_LIST as never);
         }}
         >
-          {data && <RoomAndTenant 
-            num_of_room={data.num_of_room}
-            num_of_tenant={data.num_of_tenant}
-          />}
+          <RoomAndTenant 
+            num_of_room={data?.num_of_room}
+            num_of_tenant={data?.num_of_tenant}
+          />
         </Header>
 
         <TabView>
           <TabButton
             isClicked={status === 'floor'}
             name='tầng'
+            displayNumber={true}
             number={data?.num_of_floor}
             onFocus={() => {setStatusFilter('floor'); setFocus(<FloorList house_id={house_id}/>)}}
           />
           <TabButton
             isClicked={status === 'device'}
             name='thiết bị'
+            displayNumber={true}
             number={data?.num_of_device}
             onFocus={() => {setStatusFilter('device'); setFocus(<DeviceList house_id={house_id}/>)}}
           />
           <TabButton
             isClicked={status === 'tenant'}
             name='khách thuê'
+            displayNumber={true}
             number={data?.num_of_tenant}
             onFocus={() => {setStatusFilter('tenant'); setFocus(<TenantList house_id={house_id}/>)}}
           />

@@ -24,3 +24,7 @@ export type RoomingHouse = {
     };
     [key: string]: any;
   };
+
+  export type RoomingHouseResponse = Partial<RoomingHouse> & {
+    rooming_house_id: string;
+  };

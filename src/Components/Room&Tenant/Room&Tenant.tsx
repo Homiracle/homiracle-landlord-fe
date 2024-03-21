@@ -5,8 +5,8 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 export interface RoomAndTenantProps {
-    num_of_room: number,
-    num_of_tenant: number,
+    num_of_room?: number,
+    num_of_tenant?: number,
 }
 
 export const RoomAndTenant = ({
@@ -44,7 +44,7 @@ export const RoomAndTenant = ({
                 style={[
                     homiralceTheme.fonts.titleMedium
                 ]}
-                >{num_of_tenant}</Text>
+                >{num_of_tenant? num_of_tenant: 0}</Text>
 
                 <Text
                 style={[
@@ -91,7 +91,7 @@ export const RoomAndTenant = ({
                 style={[
                     homiralceTheme.fonts.titleMedium
                 ]}
-                >{num_of_room}</Text>
+                >{num_of_room? num_of_room: 0}</Text>
 
                 <Text
                 style={[
