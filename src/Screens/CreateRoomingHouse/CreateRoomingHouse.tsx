@@ -12,10 +12,8 @@ import { Button, Surface, Portal } from 'react-native-paper';
 import { Dropdown } from 'react-native-searchable-dropdown-kj';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
-import {
-  RoomingHouse as RoomingHouseProps,
-  useCreateRoomingHouseMutation,
-} from '../../Services';
+import { useCreateRoomingHouseMutation } from '../../Services';
+import { RoomingHouse as RoomingHouseProps } from '../../Services/rooming-houses/interface';
 import { useAppSelector } from '../../Store/hook';
 import { selectUserId } from '../../Store/reducers';
 import { roomingHouseFormValidationSchema as schema } from '../../Utils';
