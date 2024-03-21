@@ -4,7 +4,8 @@ import { Button, Searchbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { RootScreens } from '../../Constants/RootScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { FloorItemProps, FloorItem, Header,TabView } from '../../Components';
+import { Header,TabView, RoomAndTenant } from '../../Components';
+import { RoomItem, RoomItemProps} from '../../Components/Room';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -12,49 +13,41 @@ import {
 import { TabButton, TabButtonProps } from '../../Components/TabView/TabButton';
 export const FloorDetail = ()   => {
   const navigation = useNavigation();
-  let data: {
-    floor_id: string, 
-    floor_name: string,
-    num_of_room: number,    
-    room: {
-        room_id: number,
-        room_name: string,
-        num_of_guest: number,
-        num_of_devices: number
-    }[],
-  };
-  data = {
-    floor_id: '1',
-    floor_name: 'Tầng 1',
-    num_of_room: 3,
-    room: [{
-      room_id: 1,
-      room_name:'Phong 101',
-      num_of_guest:3,
-      num_of_devices:3
-    },{  
-      room_id: 2,
-      room_name:'Phong 102',
-      num_of_guest:3,
-      num_of_devices:3},
-      {  
-        room_id: 3,
-        room_name:'Phong 103',
-        num_of_guest:3,
-        num_of_devices:3}
-    ]
-
-  };
+  let data: RoomItemProps [] = [
+    {room_id: '1',
+     room_name: 'Room 101',
+     num_of_device: 3,
+     num_of_tenant: 2,
+     cost: 1200000,
+    },
+    {room_id: '2',
+     room_name: 'Room 101',
+     num_of_device: 3,
+     num_of_tenant: 2,
+     cost: 1200000,
+    },
+    {room_id: '3',
+     room_name: 'Room 101',
+     num_of_device: 3,
+     num_of_tenant: 2,
+     cost: 1200000,
+    },
+];
   return(
     <View>
       <Header 
-      title = {data.floor_name}
+      title = {'Tầng'}
       height={20}
       mode = 'center-aligned'
       onBack={() => {
         navigation.navigate(RootScreens.ROOMING_HOUSED_DETAIL as never);
-     }}
-      />
+     }}>
+      <RoomAndTenant
+        num_of_room={data.length}
+        num_of_tenant = {12}/>
+      
+
+      </Header>
       <TabView default='Phong'>
           <TabButton
             isClicked={true}
@@ -78,16 +71,19 @@ export const FloorDetail = ()   => {
           />
         </TabView>
 
-        {/* <FlatList
+        <FlatList
           contentContainerStyle={{justifyContent: 'center', alignSelf: 'center'}}
           horizontal={false}
-          numColumns={2}
-          data={data.room}
-          renderItem={({item}) => (<FloorItem
-            floor_id={item.room_id}
-            floor_name={item.room_name}
-            num_of_room={item.num_of_guest}/>)}
-          /> */}
+          data={data}
+          renderItem={({item}) => (
+          <RoomItem
+            room_id={item.room_id}
+            room_name={item.room_name}
+            num_of_device={item.num_of_device}
+            cost={item.cost}
+            num_of_tenant={item.num_of_tenant}
+            ></RoomItem>)}
+          />
           
     </View>
   )

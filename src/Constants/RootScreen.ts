@@ -12,5 +12,6 @@ export enum RootScreens {
   FINANCE = 'Finance',
   PROFILE = 'Profile',
   CREATE_ROOMING_HOUSE = 'CreateRoomingHouse',
-  FLOORDETAIL = 'FloorDetail'
+  FLOORDETAIL = 'FloorDetail',
+  ROOMDETAIL = 'RoomDetail',
 }
