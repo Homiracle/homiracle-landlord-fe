@@ -5,3 +5,5 @@ export * from './Floor';
 export * from './Room&Tenant'
 export * from './Dialog';
 export * from './TabView';
+export * from './DeviceItem';
+export * from './TenantItem';

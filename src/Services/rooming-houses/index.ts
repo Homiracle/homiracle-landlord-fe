@@ -1,36 +1,6 @@
 import { API } from '../base';
+import { House, HouseDetails, RoomingHouse, RoomingHouseResponse } from './interface';
 
-export type RoomingHouse = {
-  name: string;
-  opening_hour: string;
-  closing_hour: string;
-  number_of_period_days: number;
-  closing_money_date: number;
-  start_receiving_money_date: number;
-  end_receiving_money_date: number;
-  landlord: {
-    user_id: string;
-  }
-  address: {
-    province: string;
-    district: string;
-    commune: string;
-    street: string;
-  };
-  reference_cost: {
-    deposit?: number;
-    room_cost?: number;
-    water_cost?: number;
-    power_cost?: number;
-    cost_per_person?: number;
-    cost_per_room?: number;
-  };
-  [key: string]: any;
-};
-
-export type RoomingHouseResponse = Partial<RoomingHouse> & {
-  rooming_house_id: string;
-};
 
 const roomingHouseApi = API.injectEndpoints({
   endpoints: build => ({
@@ -41,12 +11,24 @@ const roomingHouseApi = API.injectEndpoints({
         body: data,
       }),
     }),
-    getRoomingHouses: build.query<RoomingHouse[], void>({
-      query: id => `rooming-houses/${id}`,
+    getRoomingHouses: build.query<House[], void>({
+      query: () => `rooming-houses`,
     }),
+    getRoomingHouseDetails: build.query<HouseDetails, string>({
+      query: id => 'rooming-houses/${id}',
+      transformResponse: (respone: any) => {
+        return {
+          house_id: respone.house_id, 
+          house_name: respone.house_name,
+          num_of_room: respone.num_of_room,
+          num_of_tenant: respone.num_of_tenant,
+          floor: { ...respone.floor },
+        } as HouseDetails;
+      }
+    })
   }),
   overrideExisting: true,
 });
 
-export const { useCreateRoomingHouseMutation, useGetRoomingHousesQuery } =
+export const { useCreateRoomingHouseMutation, useLazyGetRoomingHousesQuery, useLazyGetRoomingHouseDetailsQuery } =
   roomingHouseApi;
