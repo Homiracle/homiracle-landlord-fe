@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Login from '../../static/image/login';
 import Logo from '../../static/image/logo';
@@ -20,19 +20,18 @@ export const SignIn = () => {
   const [signin, { data, isSuccess, isLoading, isError }] = useSigninMutation();
 
   const dispatch = useAppDispatch();
-  const handleLogin = async () => {
-    try {
-      await signin({ email, password });
-      if (isSuccess) {
-        const { accessToken, refreshToken, user } = data as any;
-        dispatch(saveToken({ accessToken, refreshToken }));
-        dispatch(setUser(user));
-        navigation.navigate('TabNavigator' as never);
-      }
-    } catch (error) {
-      console.log('error', error);
-    }
+  const handleLogin = () => {
+    signin({ email, password });
   };
+  useEffect(() => {
+    if (isSuccess) {
+      const { accessToken, refreshToken, user } = data as any;
+      dispatch(saveToken({ accessToken, refreshToken }));
+      dispatch(setUser(user));
+      navigation.navigate('TabNavigator' as never);
+    }
+  }, [isSuccess]);
+
   const handleSignUp = () => {
     navigation.navigate(RootScreens.SIGNIN as never);
   };
