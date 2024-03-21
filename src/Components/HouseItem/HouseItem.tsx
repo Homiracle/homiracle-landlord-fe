@@ -7,6 +7,8 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootScreens } from '../../Constants/RootScreen';
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { useAppDispatch } from '../../Store/hook';
+import { storeId } from '../../Store/reducers';
 
 export interface HouseItemProps {
     house_id: string,
@@ -28,6 +30,7 @@ export const HouseItem = ({
     num_of_tenant,
 }:HouseItemProps) => {
     const homiralceTheme = useAppTheme();
+    const dispatch = useAppDispatch();
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
     return (
         <TouchableOpacity
@@ -44,7 +47,9 @@ export const HouseItem = ({
                 marginHorizontal: 16,
             }}
             onPress={() => {
-                navigation.navigate(RootScreens.ROOMING_HOUSED_DETAIL, {house_id});
+              // console.log(house_id);
+              dispatch(storeId({ field: 'house_id', id: house_id }));
+              navigation.navigate(RootScreens.ROOMING_HOUSED_DETAIL, { house_id });
             }}
         >
             <Image

@@ -4,6 +4,7 @@ import {
   RoomingHouseContainer,
   CreateRoomingHouseContainer,
   RoomingHouseDetailContainer,
+  CreateFloorContainer,
 } from '../../Screens';
 import { RootScreens } from '../../Constants/RootScreen';
 import { RootStackParamList } from '../../Constants/RootStackParam';
@@ -26,6 +27,10 @@ export const RoomingHouseStack = () => {
       <Stack.Screen
         name={RootScreens.CREATE_ROOMING_HOUSE}
         component={CreateRoomingHouseContainer}
+      />
+      <Stack.Screen
+        name={RootScreens.CREATE_FLOOR}
+        component={CreateFloorContainer}
       />
       {/* Add more screens here if needed */}
     </Stack.Navigator>

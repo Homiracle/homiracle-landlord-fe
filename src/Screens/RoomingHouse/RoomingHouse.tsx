@@ -16,7 +16,7 @@ export const RoomingHouseList = () => {
   const navigation = useNavigation();
   const houseList: HouseItemProps[] = [
     {
-      house_id: '3',
+      house_id: '1',
       house_name: 'nha tro xuan hong',
       address: '127 ly thuong kiet abc xyz abc xyz abc xyz abc xyz',
       num_of_room: 10,
@@ -30,7 +30,7 @@ export const RoomingHouseList = () => {
       num_of_tenant: 20,
     },
     {
-      house_id: '1',
+      house_id: '3',
       house_name: 'nha tro xuan hong',
       address: '127 ly thuong kiet abc xyz',
       num_of_room: 10,
@@ -39,27 +39,6 @@ export const RoomingHouseList = () => {
     {
       house_id: '4',
       house_name: 'Nha tro xuan hong',
-      address: '127 ly thuong kiet abc xyz',
-      num_of_room: 10,
-      num_of_tenant: 20,
-    },
-    {
-      house_id: '5',
-      house_name: 'nha tro xuan hong',
-      address: '127 ly thuong kiet abc xyz',
-      num_of_room: 10,
-      num_of_tenant: 20,
-    },
-    {
-      house_id: '6',
-      house_name: 'nha tro xuan hong',
-      address: '127 ly thuong kiet abc xyz',
-      num_of_room: 10,
-      num_of_tenant: 20,
-    },
-    {
-      house_id: '7',
-      house_name: 'nha tro xuan hong',
       address: '127 ly thuong kiet abc xyz',
       num_of_room: 10,
       num_of_tenant: 20,
