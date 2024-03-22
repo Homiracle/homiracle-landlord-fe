@@ -36,8 +36,13 @@ const RoomApi = API.injectEndpoints({
     getRooms: build.query<Room[], void>({
       query: id => `rooms/${id}`,
     }),
+    getRoom: build.query<Room, String>(
+      {
+        query: id=>`rooms/${id}`,
+      }
+    ),
   }),
   overrideExisting: true,
 });
 
-export const { useCreateRoomMutation, useGetRoomsQuery } = RoomApi;
+export const { useCreateRoomMutation, useGetRoomsQuery, useGetRoomQuery } = RoomApi;

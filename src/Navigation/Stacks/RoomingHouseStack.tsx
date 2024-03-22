@@ -31,6 +31,22 @@ export const RoomingHouseStack = () => {
         name={RootScreens.CREATE_ROOMING_HOUSE}
         component={CreateRoomingHouseContainer}
       />
+      <Stack.Screen
+        name={RootScreens.CREATE_FLOOR}
+        component={CreateFloorContainer}
+      />
+      <Stack.Screen
+        name={RootScreens.CREATE_ROOM}
+        component={CreateRoomContainer}
+      />
+      <Stack.Screen
+        name={RootScreens.FLOORDETAIL}
+        component={FloorDetailContainer}
+      />
+      <Stack.Screen
+        name={RootScreens.ROOMDETAIL}
+        component={RoomDetailContainer}
+      />
       {/* Add more screens here if needed */}
     </Stack.Navigator>
   );

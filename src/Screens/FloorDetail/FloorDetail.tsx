@@ -11,7 +11,10 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import { TabButton, TabButtonProps } from '../../Components/TabView/TabButton';
-export const FloorDetail = ()   => {
+type Props = {
+  floor_id?: string,
+}
+export const FloorDetail : React.FC<Props> = ({floor_id})  => {
   const navigation = useNavigation();
   let data: RoomItemProps [] = [
     {room_id: '1',
@@ -36,7 +39,7 @@ export const FloorDetail = ()   => {
   return(
     <View>
       <Header 
-      title = {'Tầng'}
+      title = {'Tầng ' + floor_id}
       height={20}
       mode = 'center-aligned'
       onBack={() => {
@@ -48,26 +51,30 @@ export const FloorDetail = ()   => {
       
 
       </Header>
-      <TabView default='Phong'>
+      <TabView >
           <TabButton
             isClicked={true}
             name='Phong'
             number={12}
+            displayNumber = {true}
           />
           <TabButton
             isClicked={false}
             name='thiet bi'
             number={12}
+            displayNumber = {true}
           />
           <TabButton
             isClicked={false}
             name='dich vu'
             number={12}
+            displayNumber = {true}
           />
           <TabButton
             isClicked={false}
             name='khach thue'
             number={12}
+            displayNumber = {true}
           />
         </TabView>
 

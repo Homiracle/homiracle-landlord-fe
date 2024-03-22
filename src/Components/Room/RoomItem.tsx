@@ -16,7 +16,7 @@ export interface RoomItemProps {
     num_of_tenant: number,
 }
 
-export type RootStackParamList = {
+export type RootStackRoomParamList = {
     RoomDetail: { room_id: string } | undefined;
   };
 
@@ -29,7 +29,7 @@ export const RoomItem = ({
 }:RoomItemProps) => {
 
     const homiralceTheme = useAppTheme();
-    const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+    const navigation = useNavigation<StackNavigationProp<RootStackRoomParamList>>();
     return (
         <TouchableOpacity
             style={{

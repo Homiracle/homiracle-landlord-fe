@@ -12,7 +12,7 @@ export interface FloorItemProps {
     floor_name: string,
     num_of_room: number,
 }
-export type RootStackParamList = {
+export type RootStackFloorParamList = {
     FloorDetail: { floor_id: string } | undefined;
   };
 
@@ -23,6 +23,7 @@ export const FloorItem = ({
 }: FloorItemProps) => {
     const homiralceTheme = useAppTheme();
     const dispatch = useAppDispatch();
+    const navigation = useNavigation<StackNavigationProp<RootStackFloorParamList>>();
     return (
         <TouchableOpacity
          style={{
@@ -35,6 +36,7 @@ export const FloorItem = ({
          }}
          onPress={() => {
           dispatch(storeId({ field: 'floor_id', id: floor_id }));
+          navigation.navigate(RootScreens.FLOORDETAIL, {floor_id});
          }}
          >
             <Image
