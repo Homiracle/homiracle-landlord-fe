@@ -2,9 +2,13 @@ import { Header, CustomStatusBar } from '../../Components';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import theme, { useAppTheme } from '../../Theme';
+import { Button } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
+import { RootScreens } from '../../Constants/RootScreen';
 
 export const Home = () => {
   const theme = useAppTheme();
+  const navigation = useNavigation();
 
   return (
     <View style={{ flex: 1 }}>
@@ -29,6 +33,7 @@ export const Home = () => {
           <Text>Home</Text>
         </View>
       </Header>
+      <Button onPress={() => navigation.navigate(RootScreens.CREATE_ROOM as never)}>create room</Button>
     </View>
   );
 };

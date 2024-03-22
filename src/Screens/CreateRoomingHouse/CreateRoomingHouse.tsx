@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Text, View } from 'native-base';
 import { Header, CustomDialog } from '../../Components';
 import { useAppTheme } from '../../Theme';
@@ -7,15 +7,34 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { StyleSheet, TextInput } from 'react-native';
+import { Pressable, StyleSheet, TextInput, TextStyle } from 'react-native';
 import { Button, Surface, Portal } from 'react-native-paper';
+import { Dropdown } from 'react-native-searchable-dropdown-kj';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import moment from 'moment';
+import { useCreateRoomingHouseMutation } from '../../Services';
+import { RoomingHouse as RoomingHouseProps } from '../../Services/rooming-houses/interface';
+import { useAppSelector } from '../../Store/hook';
+import { selectUserId } from '../../Store/reducers';
+import { roomingHouseFormValidationSchema as schema } from '../../Utils';
+import { useFormik } from 'formik';
+
+const province = [
+  { id: 1, name: 'Hà Nội' },
+  { id: 2, name: 'TP. Hồ Chí Minh' },
+];
+const district = [
+  { id: 1, name: 'Quận Ba Đình' },
+  { id: 2, name: 'Quận 10' },
+];
+const commune = [
+  { id: 1, name: 'Phường A' },
+  { id: 2, name: 'Phường B' },
+];
 
 export const CreateRoomingHouse = () => {
+  // styles
   const theme = useAppTheme();
-  const navigation = useNavigation();
-  const [backDialog, showBackDialog] = React.useState(false);
-  const [cancelDialog, showCancelDialog] = React.useState(false);
-
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -47,6 +66,7 @@ export const CreateRoomingHouse = () => {
       borderBottomColor: theme.colors.primary,
       borderBottomWidth: 1,
       paddingVertical: hp(0.5),
+      color: 'black',
     },
     buttonContainer: {
       flexDirection: 'row',
@@ -61,6 +81,72 @@ export const CreateRoomingHouse = () => {
       height: hp(6),
       justifyContent: 'center',
     },
+    dropdown: {
+      borderBottomColor: theme.colors.primary,
+      borderBottomWidth: 1,
+    },
+    placeholderStyle: [
+      theme.fonts.bodyMedium,
+      {
+        opacity: 0.5,
+      },
+    ] as TextStyle,
+    goodText: {
+      color: 'green',
+    },
+    badText: {
+      color: 'red',
+    },
+  });
+
+  // other hooks
+  const navigation = useNavigation();
+  const [backDialog, showBackDialog] = React.useState(false);
+  const [cancelDialog, showCancelDialog] = React.useState(false);
+  const [datetimePicker, showDatetimePicker] = React.useState({
+    openingHour: false,
+    closingHour: false,
+  });
+  const [roomingHouseData, setRoomingHouseData] =
+    React.useState<RoomingHouseProps>({
+      name: '',
+      opening_hour: '',
+      closing_hour: '',
+      number_of_period_days: 0,
+      closing_money_date: 0,
+      start_receiving_money_date: 0,
+      end_receiving_money_date: 0,
+      landlord: {
+        user_id: useAppSelector(selectUserId) as unknown as string | '',
+      },
+      address: {
+        province: '',
+        district: '',
+        commune: '',
+        street: '',
+      },
+      reference_cost: {
+        deposit: 0,
+        room_cost: 0,
+        water_cost: 0,
+        power_cost: 0,
+        // cost_per_person: 0,
+        // cost_per_room: 0,
+      },
+    });
+
+  const [createRoomingHouse, { data, error, isSuccess, isLoading, isError }] =
+    useCreateRoomingHouseMutation();
+
+  const formik = useFormik({
+    initialValues: roomingHouseData,
+    validationSchema: schema,
+    onSubmit: values => {
+      console.log(values);
+    },
+    validateOnChange: true,
+    validateOnBlur: true,
+    validateOnMount: true,
   });
 
   const onBack = () => {
@@ -68,15 +154,113 @@ export const CreateRoomingHouse = () => {
     console.log('back');
   };
 
+  // console.log(useAppSelector(state => state.user));
+
+  const handleInputChange = (
+    fieldName: string,
+    text: string | number,
+    nestedField?: string,
+  ) => {
+    // console.log(fieldName, text);
+    if (nestedField) {
+      setRoomingHouseData(prevData => ({
+        ...prevData,
+        [fieldName]: {
+          ...prevData[fieldName],
+          [nestedField]: text,
+        },
+      }));
+      formik.handleChange(`${fieldName}.${nestedField}`)(String(text));
+    } else {
+      setRoomingHouseData(prevData => ({
+        ...prevData,
+        [fieldName]: text,
+      }));
+      formik.handleChange(fieldName)(String(text));
+    }
+  };
+
+  const handleSubmit = async () => {
+    console.log(roomingHouseData);
+    await createRoomingHouse(roomingHouseData as Partial<RoomingHouseProps>);
+    if (isSuccess) {
+      console.log(error);
+    } else if (isError) {
+      console.log('error', error);
+    }
+  };
+
+  const isTouched = (field: string, nestedField?: string) => {
+    if (nestedField) {
+      return (
+        formik.touched[field as keyof typeof formik.touched]?.[
+          nestedField as keyof (typeof formik.touched)[typeof field]
+        ] &&
+        formik.errors[field as keyof typeof formik.errors]?.[
+          nestedField as keyof (typeof formik.errors)[typeof field]
+        ]
+      );
+    } else {
+      return formik.touched[field] && formik.errors[field];
+    }
+  };
+
+  const onBlur = (field: string, nestedField?: string) => {
+    if (nestedField) {
+      return formik.setFieldTouched(field, {
+        ...(formik.touched[field] as any),
+        [nestedField]: true,
+      });
+    } else {
+      return formik.setFieldTouched(field, true);
+    }
+  };
+
+  // console.log(formik.touched);
+  // console.log(formik.errors);
+
+  // console.log(formik.isValid);
+
   return (
     <View style={styles.container}>
+      {(datetimePicker.closingHour || datetimePicker.openingHour) && (
+        <DateTimePicker
+          value={new Date()}
+          mode='time'
+          is24Hour={true}
+          display='spinner'
+          // onTouchCancel={}
+          onChange={(event, selectedDate) => {
+            if (datetimePicker.closingHour) {
+              showDatetimePicker({ ...datetimePicker, closingHour: false });
+              if (selectedDate) {
+                handleInputChange(
+                  'closing_hour',
+                  moment(selectedDate).format('HH:mm'),
+                );
+              }
+            } else if (datetimePicker.openingHour) {
+              showDatetimePicker({ ...datetimePicker, openingHour: false });
+              if (selectedDate) {
+                handleInputChange(
+                  'opening_hour',
+                  moment(selectedDate).format('HH:mm'),
+                );
+              }
+            }
+          }}
+        />
+      )}
       <Portal>
         <CustomDialog
           visible={backDialog}
           title='Thoát'
           content='Bạn có muốn thoát không?'
           onDismiss={() => showBackDialog(false)}
-          onConfirm={() => navigation.goBack()}
+          onConfirm={() => {
+            showBackDialog(false);
+            navigation.goBack();
+          }}
         />
       </Portal>
       <Portal>
@@ -85,7 +269,10 @@ export const CreateRoomingHouse = () => {
           title='Hủy tạo nhà trọ'
           content='Bạn có muốn hủy tạo nhà trọ không?'
           onDismiss={() => showCancelDialog(false)}
-          onConfirm={() => navigation.goBack()}
+          onConfirm={() => {
+            showCancelDialog(false);
+            navigation.goBack();
+          }}
         />
       </Portal>
       <Header
@@ -93,6 +280,7 @@ export const CreateRoomingHouse = () => {
         height={hp(8)}
         mode='center-aligned'
         onBack={onBack}
+        scroll='vertical'
       >
         <View style={styles.content}>
           <Surface style={styles.surface}>
@@ -112,22 +300,79 @@ export const CreateRoomingHouse = () => {
                 <TextInput
                   placeholder='Nhập tên tòa nhà'
                   style={styles.textInput}
+                  onChangeText={text => handleInputChange('name', text)}
+                  onBlur={() => onBlur('name')}
                 />
+                {isTouched('name') ? (
+                  <Text style={styles.badText}>{formik.errors.name}</Text>
+                ) : null}
+              </View>
+              <View>
+                <Text style={styles.subTitle}>Tỉnh/Thành phố</Text>
+                <Dropdown
+                  style={styles.dropdown}
+                  placeholderStyle={styles.placeholderStyle}
+                  data={province}
+                  labelField='name'
+                  valueField='id'
+                  onChange={item =>
+                    handleInputChange('address', item.name, 'province')
+                  }
+                  placeholder='Chọn tỉnh/thành phố'
+                  search
+                  searchPlaceholder='Tìm tỉnh/thành phố'
+                  onBlur={() => onBlur('address', 'province')}
+                />
+                {isTouched('address', 'province') ? (
+                  <Text style={styles.badText}>
+                    {formik.errors.address?.province}
+                  </Text>
+                ) : null}
               </View>
               <View style={{ flexDirection: 'row', gap: wp(2) }}>
                 <View style={{ flex: 1 }}>
-                  <Text style={styles.subTitle}>Tỉnh/Thành phố</Text>
-                  <TextInput
-                    placeholder='Tỉnh/Thành phố'
-                    style={styles.textInput}
+                  <Text style={styles.subTitle}>Quận/Huyện</Text>
+                  <Dropdown
+                    style={styles.dropdown}
+                    placeholderStyle={styles.placeholderStyle}
+                    data={district}
+                    labelField='name'
+                    valueField='id'
+                    onChange={item =>
+                      handleInputChange('address', item.name, 'district')
+                    }
+                    placeholder='Chọn quận/huyện'
+                    search
+                    searchPlaceholder='Tìm quận/huyện'
+                    onBlur={() => onBlur('address', 'district')}
                   />
+                  {isTouched('address', 'district') ? (
+                    <Text style={styles.badText}>
+                      {formik.errors.address?.district}
+                    </Text>
+                  ) : null}
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text style={styles.subTitle}>Quận/Huyện</Text>
-                  <TextInput
-                    placeholder='Quận/Huyện'
-                    style={styles.textInput}
+                  <Text style={styles.subTitle}>Phường/Xã</Text>
+                  <Dropdown
+                    style={styles.dropdown}
+                    placeholderStyle={styles.placeholderStyle}
+                    data={commune}
+                    labelField='name'
+                    valueField='id'
+                    onChange={item =>
+                      handleInputChange('address', item.name, 'commune')
+                    }
+                    placeholder='Chọn phường/xã'
+                    search
+                    searchPlaceholder='Tìm phường/xã'
+                    onBlur={() => onBlur('address', 'commune')}
                   />
+                  {isTouched('address', 'commune') ? (
+                    <Text style={styles.badText}>
+                      {formik.errors.address?.commune}
+                    </Text>
+                  ) : null}
                 </View>
               </View>
               <View>
@@ -135,7 +380,16 @@ export const CreateRoomingHouse = () => {
                 <TextInput
                   placeholder='Nhập địa chỉ'
                   style={styles.textInput}
+                  onChangeText={text =>
+                    handleInputChange('address', text, 'street')
+                  }
+                  onBlur={() => onBlur('address', 'street')}
                 />
+                {isTouched('address', 'street') ? (
+                  <Text style={styles.badText}>
+                    {formik.errors.address?.street}
+                  </Text>
+                ) : null}
               </View>
             </View>
           </Surface>
@@ -156,6 +410,11 @@ export const CreateRoomingHouse = () => {
                 <TextInput
                   placeholder='Nhập tiền cọc tham khảo'
                   style={styles.textInput}
+                  onChangeText={text =>
+                    handleInputChange('reference_cost', text, 'deposit')
+                  }
+                  keyboardType='numeric'
+                  onBlur={() => onBlur('reference_cost', 'deposit')}
                 />
               </View>
               <View>
@@ -163,6 +422,11 @@ export const CreateRoomingHouse = () => {
                 <TextInput
                   placeholder='Nhập giá phòng tham khảo'
                   style={styles.textInput}
+                  onChangeText={text =>
+                    handleInputChange('reference_cost', text, 'room_cost')
+                  }
+                  keyboardType='numeric'
+                  onBlur={() => onBlur('reference_cost', 'room_cost')}
                 />
               </View>
               <View>
@@ -170,6 +434,11 @@ export const CreateRoomingHouse = () => {
                 <TextInput
                   placeholder='Nhập giá điện tham khảo'
                   style={styles.textInput}
+                  onChangeText={text =>
+                    handleInputChange('reference_cost', text, 'power_cost')
+                  }
+                  keyboardType='numeric'
+                  onBlur={() => onBlur('reference_cost', 'power_cost')}
                 />
               </View>
               <View>
@@ -177,14 +446,19 @@ export const CreateRoomingHouse = () => {
                 <TextInput
                   placeholder='Nhập giá nước tham khảo'
                   style={styles.textInput}
+                  onChangeText={text =>
+                    handleInputChange('reference_cost', text, 'water_cost')
+                  }
+                  keyboardType='numeric'
+                  onBlur={() => onBlur('reference_cost', 'water_cost')}
                 />
               </View>
-              <View>
+              {/* <View>
                 <Text style={styles.subTitle}>Phí dịch vụ chung cho phòng</Text>
               </View>
               <View>
                 <Text style={styles.subTitle}>Phí dịch vụ theo đầu người</Text>
-              </View>
+              </View> */}
             </View>
           </Surface>
           <Surface style={styles.surface}>
@@ -202,36 +476,136 @@ export const CreateRoomingHouse = () => {
               <View style={{ flexDirection: 'row', gap: wp(2) }}>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.subTitle}>Giờ mở cửa</Text>
-                  <TextInput placeholder='05:00' style={styles.textInput} />
+                  <Pressable
+                    onPress={() =>
+                      showDatetimePicker({
+                        ...datetimePicker,
+                        openingHour: true,
+                      })
+                    }
+                  >
+                    <TextInput
+                      placeholder='05:00'
+                      style={styles.textInput}
+                      onChangeText={text =>
+                        handleInputChange('opening_hour', text)
+                      }
+                      showSoftInputOnFocus
+                      value={roomingHouseData.opening_hour}
+                      editable={false}
+                      onBlur={() => onBlur('opening_hour')}
+                    />
+                  </Pressable>
+                  {isTouched('opening_hour') ? (
+                    <Text style={styles.badText}>
+                      {formik.errors.opening_hour}
+                    </Text>
+                  ) : null}
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.subTitle}>Giờ đóng cửa</Text>
-                  <TextInput placeholder='23:00' style={styles.textInput} />
+                  <Pressable
+                    onPress={() =>
+                      showDatetimePicker({
+                        ...datetimePicker,
+                        closingHour: true,
+                      })
+                    }
+                  >
+                    <TextInput
+                      placeholder='23:00'
+                      style={styles.textInput}
+                      onChangeText={text =>
+                        handleInputChange('closing_hour', text)
+                      }
+                      showSoftInputOnFocus
+                      value={roomingHouseData.closing_hour}
+                      editable={false}
+                      onBlur={() => onBlur('closing_hour')}
+                    />
+                  </Pressable>
+                  {isTouched('closing_hour') ? (
+                    <Text style={styles.badText}>
+                      {formik.errors.closing_hour}
+                    </Text>
+                  ) : null}
                 </View>
               </View>
               <View style={{ flexDirection: 'row', gap: wp(2) }}>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.subTitle}>Ngày chốt tiền</Text>
-                  <TextInput placeholder='31' style={styles.textInput} />
+                  <TextInput
+                    placeholder='31'
+                    style={styles.textInput}
+                    onChangeText={text =>
+                      handleInputChange('closing_money_date', text)
+                    }
+                    keyboardType='numeric'
+                    onBlur={() => onBlur('closing_money_date')}
+                  />
+                  {isTouched('closing_money_date') ? (
+                    <Text style={styles.badText}>
+                      {formik.errors.closing_money_date}
+                    </Text>
+                  ) : null}
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.subTitle}>Số ngày báo trước</Text>
-                  <TextInput placeholder='5' style={styles.textInput} />
+                  <TextInput
+                    placeholder='5'
+                    style={styles.textInput}
+                    onChangeText={text =>
+                      handleInputChange('number_of_period_days', text)
+                    }
+                    keyboardType='numeric'
+                    onBlur={() => onBlur('number_of_period_days')}
+                  />
+                  {isTouched('number_of_period_days') ? (
+                    <Text style={styles.badText}>
+                      {formik.errors.number_of_period_days}
+                    </Text>
+                  ) : null}
                 </View>
               </View>
               <View style={{ flexDirection: 'row', gap: wp(2) }}>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.subTitle}>Ngày bắt đầu nộp tiền</Text>
-                  <TextInput placeholder='1' style={styles.textInput} />
+                  <TextInput
+                    placeholder='1'
+                    style={styles.textInput}
+                    onChangeText={text =>
+                      handleInputChange('start_receiving_money_date', text)
+                    }
+                    keyboardType='numeric'
+                    onBlur={() => onBlur('start_receiving_money_date')}
+                  />
+                  {isTouched('start_receiving_money_date') ? (
+                    <Text style={styles.badText}>
+                      {formik.errors.start_receiving_money_date}
+                    </Text>
+                  ) : null}
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.subTitle}>Ngày hết hạn nộp tiền</Text>
-                  <TextInput placeholder='10' style={styles.textInput} />
+                  <TextInput
+                    placeholder='10'
+                    style={styles.textInput}
+                    onChangeText={text =>
+                      handleInputChange('end_receiving_money_date', text)
+                    }
+                    keyboardType='numeric'
+                    onBlur={() => onBlur('end_receiving_money_date')}
+                  />
+                  {isTouched('end_receiving_money_date') ? (
+                    <Text style={styles.badText}>
+                      {formik.errors.end_receiving_money_date}
+                    </Text>
+                  ) : null}
                 </View>
               </View>
             </View>
           </Surface>
-          <Surface style={styles.surface}>
+          {/* <Surface style={styles.surface}>
             <Text style={[theme.fonts.titleMedium, styles.title]}>
               Quy định chung của nhà trọ
             </Text>
@@ -251,14 +625,16 @@ export const CreateRoomingHouse = () => {
                 />
               </View>
             </View>
-          </Surface>
+          </Surface> */}
         </View>
         <View style={styles.buttonContainer}>
           <Button
             buttonColor={theme.colors.error}
             textColor={theme.colors.onPrimary}
             style={styles.button}
-            onPress={() => {showCancelDialog(true)}}
+            onPress={() => {
+              showCancelDialog(true);
+            }}
           >
             Hủy
           </Button>
@@ -266,7 +642,8 @@ export const CreateRoomingHouse = () => {
             buttonColor={theme.colors.primary}
             textColor={theme.colors.onPrimary}
             style={styles.button}
-            onPress={() => {}}
+            onPress={handleSubmit}
+            disabled={!formik.isValid}
           >
             Tạo nhà trọ
           </Button>

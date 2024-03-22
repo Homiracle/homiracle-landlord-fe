@@ -1,161 +1,103 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlatList, List, Text, View } from 'native-base';
 import { Button, Searchbar } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation } from '@react-navigation/native';
 import { RootScreens } from '../../Constants/RootScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { FloorItem, Header, RoomAndTenant, TabView } from '../../Components';
+import { DeviceList, FloorItem, FloorList, Header, RoomAndTenant, TabView, TenantList } from '../../Components';
 import { SceneMap } from 'react-native-tab-view'
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { TabButton, TabButtonProps } from '../../Components/TabView/TabButton';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { useLazyGetRoomingHouseDetailsQuery, useLazyGetRoomingHousesQuery } from '../../Services';
 
-export const RoomingHouseDetail = () => {
-  const [searchQuery, setSearchQuery] = React.useState('');
+type Props = {
+  house_id?: string,
+}
 
-  const navigation = useNavigation();
+export const RoomingHouseDetail: React.FC<Props> = ({house_id}) => {
+  console.log(house_id);
 
-  const [index, setIndex] = React.useState(0);
-  const [routes] = React.useState([
-    { key: 'first', title: 'First' },
-    { key: 'second', title: 'Second' },
-  ]);
+  const HomiracleNavigation = useNavigation();
+  const [focus, setFocus] = useState(<FloorList house_id={house_id}/>);
+  const updateRenderFocus = (newRender: React.JSX.Element) => {
+    setFocus(newRender)
+  }
+  const [getRoomingHouseDetails, { data, isLoading, isError }] = useLazyGetRoomingHouseDetailsQuery();
+  useEffect(
+    () => {
+      const getHouseDetails = async () => {
+        try {
+          const result = house_id && getRoomingHouseDetails(house_id);
+          console.log(result); // Xử lý dữ liệu trả về từ API
+        } catch (error) {
+          console.error('Some error in get house details', error);
+        }
+      };
+      getHouseDetails();
+    }, [],
+  );
 
-  let data: {
-    house_id: string, 
-    house_name: string,
-    num_of_room: number,
-    num_of_tenant: number,
-    floor: {
-        floor_id: string,
-        floor_name: string,
-        num_of_room: number,
-    }[],
-  };
-  data = {
-    house_id: '1',
-    house_name: 'Nhà trọ abc xyz',
-    num_of_room: 1,
-    num_of_tenant: 1,
-    floor: [{
-        floor_id: '1',
-        floor_name: '2',
-        num_of_room: 1,
-        },
-        {
-            floor_id: '2',
-            floor_name: '2',
-            num_of_room: 1,
-        },
-        {
-            floor_id: '3',
-            floor_name: '2',
-            num_of_room: 1,
-        },
-        {
-          floor_id: '4',
-          floor_name: '2',
-          num_of_room: 1,
-      },
-      {
-        floor_id: '5',
-        floor_name: '2',
-        num_of_room: 1,
+  const listTab = [
+    {
+      status: 'floor'
     },
     {
-      floor_id: '6',
-      floor_name: '2',
-      num_of_room: 1,
-  },{
-    floor_id: '7',
-    floor_name: '2',
-    num_of_room: 1,
-},
-{
-  floor_id: '8',
-  floor_name: '2',
-  num_of_room: 1,
-},
-{
-  floor_id: '9',
-  floor_name: '2',
-  num_of_room: 1,
-},
-{
-  floor_id: '10',
-  floor_name: '2',
-  num_of_room: 1,
-},
-    ]
-  };
-  const src = (
-    <Searchbar
-          style={{
-            marginTop: hp('2%'),
-            width: wp('90%'),
-            left: wp('5%'),
-          }}
-          placeholder="Tìm phòng"
-          onChangeText={setSearchQuery}
-          value={searchQuery}
-    ></Searchbar>
-  )
+      status: 'device'
+    },
+    {
+      status: 'room'
+    }
+  ]
+  const [status, setStatus] = useState('floor');
+  const setStatusFilter = (status: string) => {
+    setStatus(status)
+  }
 
   return (
     <View>
         <Header
-        title={data.house_name}
+        title={'Nhà trọ' + data?.house_name}
         height={20}
         mode='center-aligned'
         onNotification={() => {
           console.log('notification');
-         }}
+        }}
         onBack={() => {
-           navigation.navigate(RootScreens.ROOMING_HOUSE_LIST as never);
+          HomiracleNavigation.navigate(RootScreens.ROOMING_HOUSE_LIST as never);
         }}
         >
-            <RoomAndTenant 
-                num_of_room={data.num_of_room}
-                num_of_tenant={data.num_of_tenant}/>
+          <RoomAndTenant 
+            num_of_room={data?.num_of_room}
+            num_of_tenant={data?.num_of_tenant}
+          />
         </Header>
 
-        <TabView default='tang'>
+        <TabView>
           <TabButton
-            isClicked={true}
-            name='tang'
-            number={12}
-            content={src}
+            isClicked={status === 'floor'}
+            name='tầng'
+            displayNumber={true}
+            number={data?.num_of_floor}
+            onFocus={() => {setStatusFilter('floor'); setFocus(<FloorList house_id={house_id}/>)}}
           />
           <TabButton
-            isClicked={false}
-            name='thiet bi'
-            number={12}
+            isClicked={status === 'device'}
+            name='thiết bị'
+            displayNumber={true}
+            number={data?.num_of_device}
+            onFocus={() => {setStatusFilter('device'); setFocus(<DeviceList house_id={house_id}/>)}}
           />
           <TabButton
-            isClicked={false}
-            name='dich vu'
-            number={12}
-          />
-          <TabButton
-            isClicked={false}
-            name='khach thue'
-            number={12}
+            isClicked={status === 'tenant'}
+            name='khách thuê'
+            displayNumber={true}
+            number={data?.num_of_tenant}
+            onFocus={() => {setStatusFilter('tenant'); setFocus(<TenantList house_id={house_id}/>)}}
           />
         </TabView>
-
-          <FlatList
-          contentContainerStyle={{justifyContent: 'center', alignSelf: 'center'}}
-          horizontal={false}
-          numColumns={2}
-          data={data.floor}
-          renderItem={({item}) => (<FloorItem
-            floor_id={item.floor_id}
-            floor_name={item.floor_name}
-            num_of_room={item.num_of_room}/>)}
-          keyExtractor={item => item.floor_id}  
-          />
-
-
-          
+        {focus}
     </View>
   );
 };
+

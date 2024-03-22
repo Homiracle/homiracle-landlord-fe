@@ -7,6 +7,8 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootScreens } from '../../Constants/RootScreen';
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { useAppDispatch } from '../../Store/hook';
+import { storeId } from '../../Store/reducers';
 
 export interface HouseItemProps {
     house_id: string,
@@ -16,7 +18,7 @@ export interface HouseItemProps {
     num_of_tenant: number,
 }
 
-export type RootStackParamList = {
+export type RootStackHouseParamList = {
     RoomingHouseDetail: { house_id: string } | undefined;
   };
 
@@ -28,7 +30,8 @@ export const HouseItem = ({
     num_of_tenant,
 }:HouseItemProps) => {
     const homiralceTheme = useAppTheme();
-    const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+    const dispatch = useAppDispatch();
+    const navigation = useNavigation<StackNavigationProp<RootStackHouseParamList>>();
     return (
         <TouchableOpacity
             style={{
@@ -44,7 +47,9 @@ export const HouseItem = ({
                 marginHorizontal: 16,
             }}
             onPress={() => {
-                navigation.navigate(RootScreens.ROOMING_HOUSED_DETAIL, {house_id});
+              // console.log(house_id);
+              dispatch(storeId({ field: 'house_id', id: house_id }));
+              navigation.navigate(RootScreens.ROOMING_HOUSED_DETAIL, { house_id });
             }}
         >
             <Image
@@ -59,7 +64,7 @@ export const HouseItem = ({
                 source={{
                     uri: 'https://file4.batdongsan.com.vn/resize/1275x717/2024/03/07/20240307114527-38f0_wm.jpg'
                 }}
-                alt='this is a image of rooming-house'>
+                alt='this is an image of rooming-house'>
 
             </Image>
             <Text
@@ -114,7 +119,7 @@ export const HouseItem = ({
                     bottom: 9,
                     position: 'absolute',
                 }}
-                name='account'size={24} color={homiralceTheme.colors.primary}
+                name='account-multiple'size={24} color={homiralceTheme.colors.primary}
             />
             <Text
                 style={[

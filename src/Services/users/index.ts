@@ -1,33 +1,21 @@
 import { API } from '../base';
 
-export interface Geo {
-  lat: string;
-  lng: string;
-}
-
 export interface Address {
-  city: string;
-  geo: Geo;
+  province: string;
+  district: string;
+  commune: string;
   street: string;
-  suite: string;
-  zipcode: string;
-}
-
-export interface Company {
-  bs: string;
-  catchPhrase: string;
-  name: string;
 }
 
 export interface User {
-  address: Address;
-  company: Company;
   email: string;
-  id: number;
-  name: string;
+  user_name: string;
+  user_id: string;
   phone: string;
-  username: string;
-  website: string;
+  CID: string;
+  date_of_birth: string;
+  isMale: boolean;
+  role: 'landlord' | 'tenant';
 }
 
 const userApi = API.injectEndpoints({

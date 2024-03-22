@@ -12,18 +12,27 @@ import {
   PURGE,
   REGISTER,
 } from 'redux-persist';
-import { homeReducers, themeReducers } from './reducers';
+import {
+  homeReducers,
+  themeReducers,
+  authReducers,
+  userReducers,
+  roomingHouseReducers,
+} from './reducers';
 
 const reducers = combineReducers({
   api: API.reducer,
   theme: themeReducers,
   home: homeReducers,
+  user: userReducers,
+  auth: authReducers,
+  roomingHouse: roomingHouseReducers,
 });
 
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['theme'],
+  whitelist: ['theme', 'auth'],
 };
 
 const persistedReducer = persistReducer(persistConfig, reducers);
@@ -49,5 +58,10 @@ const store = configureStore({
 const persistor = persistStore(store);
 
 setupListeners(store.dispatch);
+
+// Infer the `RootState` and `AppDispatch` types from the store itself
+export type RootState = ReturnType<typeof store.getState>;
+// Inferred type: {api: ApiState, theme: ThemeState, home: HomeState, user: UserState, auth: AuthState}
+export type AppDispatch = typeof store.dispatch;
 
 export { store, persistor };

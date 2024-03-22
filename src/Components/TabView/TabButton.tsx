@@ -1,26 +1,31 @@
+import { onFocus } from "@reduxjs/toolkit/dist/query/core/setupListeners";
 import { useAppTheme } from "../../Theme";
 import React from "react";
 import { Button, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { Badge } from "react-native-paper";
+import { widthPercentageToDP } from "react-native-responsive-screen";
 
 export interface TabButtonProps {
     isClicked: boolean;
     name: string;
+    displayNumber: boolean;
     number?: number;
-    content?: React.ReactNode;
+    onFocus?: (render: any) => void,
 }
 
 export const TabButton: React.FC<TabButtonProps> = ({
     isClicked = false,
     name,
+    displayNumber,
     number,
+    onFocus,
 }) => {
     const homiralceTheme = useAppTheme();
 
     const styles = StyleSheet.create({
         button: {
             flexDirection: 'row',
-            justifyContent: 'center',
+            justifyContent: 'space-between',
             alignItems: 'center',
             gap: 8,
             borderRadius: 100,
@@ -48,7 +53,8 @@ export const TabButton: React.FC<TabButtonProps> = ({
             style={[
                 styles.button,
                 isClicked? styles.backGroundActive: styles.backGroundInActive,
-            ]}>
+            ]}
+            onPress={onFocus}>
             <Text
                 style={[
                     homiralceTheme.fonts.labelLarge,
@@ -57,17 +63,19 @@ export const TabButton: React.FC<TabButtonProps> = ({
                 ]}>
                 {name}
             </Text>
-            {number && (<Text
+            {displayNumber && (<Text
                 style={[
                     {
                         borderRadius: 10,
                         padding: 2,
+                        minWidth: 20,
+                        textAlign: 'center',
                     },
                     homiralceTheme.fonts.labelSmall,
                     isClicked? styles.textInActive: styles.textActive,
                     isClicked? styles.backGroundInActive: styles.backGroundActive,
                 ]}>
-                    {number}
+                    {number? number: 0}
             </Text>)}
         </TouchableOpacity>
     )

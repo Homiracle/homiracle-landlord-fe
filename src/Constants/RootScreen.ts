@@ -14,4 +14,6 @@ export enum RootScreens {
   CREATE_ROOMING_HOUSE = 'CreateRoomingHouse',
   FLOORDETAIL = 'FloorDetail',
   ROOMDETAIL = 'RoomDetail',
+  CREATE_FLOOR = 'CreateFloor',
+  CREATE_ROOM = 'CreateRoom'
 }

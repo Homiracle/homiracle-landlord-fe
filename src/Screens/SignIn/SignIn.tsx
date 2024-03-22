@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Login from '../../static/image/login';
 import Logo from '../../static/image/logo';
 import { useNavigation } from '@react-navigation/native';
 import { RootScreens } from '../../Constants/RootScreen';
-import { TextInput } from 'react-native-paper';
+import { Button, TextInput } from 'react-native-paper';
+import { useSigninMutation } from '../../Services';
+import { useAppDispatch } from '../../Store/hook';
+import { saveToken, setUser } from '../../Store/reducers';
 
 export const SignIn = () => {
   const navigation = useNavigation();
@@ -14,12 +17,25 @@ export const SignIn = () => {
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+  const [signin, { data, isSuccess, isLoading, isError }] = useSigninMutation();
+
+  const dispatch = useAppDispatch();
   const handleLogin = () => {
-    navigation.navigate('TabNavigator' as never);
+    signin({ email, password });
   };
+  useEffect(() => {
+    if (isSuccess) {
+      const { accessToken, refreshToken, user } = data as any;
+      dispatch(saveToken({ accessToken, refreshToken }));
+      dispatch(setUser(user));
+      navigation.navigate('TabNavigator' as never);
+    }
+  }, [isSuccess]);
+
   const handleSignUp = () => {
     navigation.navigate(RootScreens.SIGNIN as never);
   };
+
   return (
     <View style={styles.container}>
       <Login />
@@ -59,11 +75,15 @@ export const SignIn = () => {
           />
         }
       />
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={{ color: '#006c49', fontSize: 14, fontWeight: 'bold' }}>
-          Đăng nhập
-        </Text>
-      </TouchableOpacity>
+      <Button
+        style={styles.button}
+        onPress={handleLogin}
+        // loading={isLoading}
+        // disabled={isLoading}
+        mode='outlined'
+      >
+        Đăng nhập
+      </Button>
       <TouchableOpacity style={styles.registerLink} onPress={handleSignUp}>
         <Text style={{ color: '#434343' }}>Bạn chưa có tài khoản? </Text>
         <Text style={{ color: '#006c49' }}>Đăng ký ngay</Text>
@@ -103,13 +123,13 @@ const styles = StyleSheet.create({
     height: 20,
   },
   button: {
-    backgroundColor: '#fff',
-    padding: 16,
-    borderRadius: 12,
-    width: 250,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#006C49',
+    // backgroundColor: '#fff',
+    // padding: 4,
+    // borderRadius: 12,
+    // width: 250,
+    // alignItems: 'center',
+    // borderWidth: 1,
+    // borderColor: '#006C49',
     marginTop: 40,
   },
   registerLink: {

@@ -4,7 +4,6 @@ import { TabButton, TabButtonProps } from "./TabButton";
 import { StyleSheet, View } from "react-native";
 
 export interface TabViewProps {
-    default: string,
     children: React.ReactNode;
 }
 
@@ -25,10 +24,9 @@ export const TabView: React.FC<TabViewProps> = ({
                 contentContainerStyle={{
                     gap: 8,
                 }}
+                showsHorizontalScrollIndicator={false}
                 horizontal={true}
             >{children}</ScrollView>
         </View>
-
-        
     )
 }

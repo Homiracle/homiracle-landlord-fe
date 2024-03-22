@@ -1,3 +1,5 @@
+import { storeId } from "../../Store/reducers";
+import { useAppDispatch } from "../../Store/hook";
 import { useAppTheme } from "../../Theme";
 import React from "react";
 import { Image, Text, TouchableOpacity } from "react-native";
@@ -20,7 +22,7 @@ export const FloorItem = ({
     num_of_room,
 }: FloorItemProps) => {
     const homiralceTheme = useAppTheme();
-    const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+    const dispatch = useAppDispatch();
     return (
         <TouchableOpacity
          style={{
@@ -32,8 +34,9 @@ export const FloorItem = ({
             marginVertical: 10,
          }}
          onPress={() => {
-            navigation.navigate(RootScreens.FLOORDETAIL, {floor_id});
-        }}>
+          dispatch(storeId({ field: 'floor_id', id: floor_id }));
+         }}
+         >
             <Image
                 style={{
                     width: 137,

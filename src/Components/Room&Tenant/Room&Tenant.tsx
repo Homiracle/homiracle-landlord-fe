@@ -5,8 +5,8 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 export interface RoomAndTenantProps {
-    num_of_room: number,
-    num_of_tenant: number,
+    num_of_room?: number,
+    num_of_tenant?: number,
 }
 
 export const RoomAndTenant = ({
@@ -18,16 +18,15 @@ export const RoomAndTenant = ({
         <View
             style={{
                 display: 'flex',
-                width: 400,
-                height: 68,
+                width: wp('100%'),
                 flexDirection: 'row',
                 justifyContent: 'center',
-                alignItems: 'flex-start',
-                gap: 14,
+                gap: wp('2%'),
+                alignSelf: 'center',
         }}>
             <View 
             style={{
-                width: 160,
+                width: wp('40%'),
                 height: 68,
                 borderRadius: 10,
                 backgroundColor: 'white',
@@ -45,7 +44,7 @@ export const RoomAndTenant = ({
                 style={[
                     homiralceTheme.fonts.titleMedium
                 ]}
-                >{num_of_tenant}</Text>
+                >{num_of_tenant? num_of_tenant: 0}</Text>
 
                 <Text
                 style={[
@@ -75,7 +74,7 @@ export const RoomAndTenant = ({
         
             <View
             style={{
-                width: 160,
+                width: wp('40%'),
                 height: 68,
                 borderRadius: 10,
                 backgroundColor: 'white',
@@ -92,7 +91,7 @@ export const RoomAndTenant = ({
                 style={[
                     homiralceTheme.fonts.titleMedium
                 ]}
-                >{num_of_room}</Text>
+                >{num_of_room? num_of_room: 0}</Text>
 
                 <Text
                 style={[
@@ -112,7 +111,7 @@ export const RoomAndTenant = ({
                         backgroundColor: '#FFDBCB',
                     }}>
                     <Icon 
-                        name='account'
+                        name='account-multiple'
                         size={24}
                         color='white'
                     />
