@@ -12,8 +12,8 @@ import {
 import { Room as RoomingProps } from '../../Services';
 import { useAppSelector } from '../../Store/hook';
 import { getHouseId } from '../../Store/reducers';
-import { useGetRoomQuery } from '../../Services';
-// import { useFormik } from 'formik';
+import { useLazyGetRoomQuery } from '../../Services';
+import { useFormik } from 'formik';
 
 interface RoomProps {
     room_id: string;
@@ -51,40 +51,23 @@ export const RoomDetailComponent:React.FC<RoomProps> = ({room_id}) =>{
           color: 'black',
         },
       });
-      const [roomingHouseData, setRoomingHouseData] =
-      React.useState<RoomingProps>({
-        name: 'Phong',
-        number_of_bathroom: 0,
-        number_of_bedroom: 0,
-        acreage: 0,
-        max_number_of_tenant: 0,
-        floor: {
-          floor_id: useAppSelector(getHouseId),
-        },
-        reference_cost: {
-          deposit: 0,
-          room_cost: 0,
-          water_cost: 0,
-          power_cost: 0,
-          // cost_per_person: 0,
-          // cost_per_room: 0,
-        },
-      });
-  //     const { data: room, error, isLoading } = useGetRoomQuery(room_id);
-  // useEffect(
-  //   () => {
-  //     const getRoomDetails = async () => {
-  //       try {
-  //         const result = room_id && getRoomDetails();
-  //         console.log(result); // Xử lý dữ liệu trả về từ API
-  //       } catch (error) {
-  //         console.error('Some error in get house details', error);
-  //       }
-  //     };
-  //     getRoomDetails();
-  //   }, [],
-  // );
-
+      const [roomingData, setRoomingData] = React.useState<RoomingProps|undefined>();
+      const [getRoomDetail,{ data, error, isLoading }] = useLazyGetRoomQuery();
+  useEffect(
+    () => {
+      const getRoomDetails = async () => {
+        try {
+          const result = getRoomDetail(room_id);
+          setRoomingData((await result).data);
+          console.log('Room detail ',result); // Xử lý dữ liệu trả về từ API
+        } catch (error) {
+          console.error('Some error in get room details', error);
+        }
+      };
+      getRoomDetails();
+    }, [room_id],
+  );
+  
       // const formik = useFormik({
       //   initialValues: roomingHouseData,
       //   onSubmit: values => {
@@ -146,7 +129,7 @@ export const RoomDetailComponent:React.FC<RoomProps> = ({room_id}) =>{
         <View style={styles.content}>
         <Surface style={styles.surface}>
           <Text style={[theme.fonts.titleMedium, styles.title]}>
-            Thông tin phòng
+            {'Thông tin phòng ' + data?.name}
           </Text>
           <View
             style={{
@@ -159,9 +142,8 @@ export const RoomDetailComponent:React.FC<RoomProps> = ({room_id}) =>{
             <View>
               <Text style={styles.subTitle}>Tên phòng</Text>
               <TextInput
-                placeholder='Nhập tên tòa nhà'
                 style={styles.textInput}
-                defaultValue={roomingHouseData.name}
+                defaultValue={data?.name}
                 editable = {false}
               />
             </View>
@@ -172,7 +154,7 @@ export const RoomDetailComponent:React.FC<RoomProps> = ({room_id}) =>{
                 placeholder=''
                 style={styles.textInput}
                 editable= {false}
-                defaultValue={String(roomingHouseData.number_of_bedroom)}
+                defaultValue={String(data?.number_of_bedroom)}
                 />
               </View>
               <View style={{ flex: 1 }}>
@@ -181,7 +163,7 @@ export const RoomDetailComponent:React.FC<RoomProps> = ({room_id}) =>{
                 placeholder=''
                 style={styles.textInput}
                 editable= {false}
-                defaultValue={String(roomingHouseData.number_of_bathroom)}
+                defaultValue={String(data?.number_of_bathroom)}
                 />
               </View>
             </View>
@@ -192,16 +174,15 @@ export const RoomDetailComponent:React.FC<RoomProps> = ({room_id}) =>{
                 placeholder=''
                 style={styles.textInput}
                 editable= {false}
-                defaultValue={String(roomingHouseData.acreage)}
+                defaultValue={String(data?.acreage)}
                 />
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={styles.subTitle}>Số người ở tối đa</Text>
                 <TextInput
-                placeholder=''
                 style={styles.textInput}
                 editable= {false}
-                defaultValue={String(roomingHouseData.max_number_of_tenant)}
+                defaultValue={String(data?.max_number_of_tenant)}
                 />
               </View>
             </View>
