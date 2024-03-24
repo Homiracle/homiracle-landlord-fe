@@ -70,20 +70,20 @@ export const RoomDetailComponent:React.FC<RoomProps> = ({room_id}) =>{
           // cost_per_room: 0,
         },
       });
-      const { data: room, error, isLoading } = useGetRoomQuery(room_id);
-  useEffect(
-    () => {
-      const getRoomDetails = async () => {
-        try {
-          const result = room_id && getRoomDetails();
-          console.log(result); // Xử lý dữ liệu trả về từ API
-        } catch (error) {
-          console.error('Some error in get house details', error);
-        }
-      };
-      getRoomDetails();
-    }, [],
-  );
+  //     const { data: room, error, isLoading } = useGetRoomQuery(room_id);
+  // useEffect(
+  //   () => {
+  //     const getRoomDetails = async () => {
+  //       try {
+  //         const result = room_id && getRoomDetails();
+  //         console.log(result); // Xử lý dữ liệu trả về từ API
+  //       } catch (error) {
+  //         console.error('Some error in get house details', error);
+  //       }
+  //     };
+  //     getRoomDetails();
+  //   }, [],
+  // );
 
       // const formik = useFormik({
       //   initialValues: roomingHouseData,
