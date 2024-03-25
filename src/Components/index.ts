@@ -7,3 +7,4 @@ export * from './Dialog';
 export * from './TabView';
 export * from './DeviceItem';
 export * from './TenantItem';
+export * from './Room';
