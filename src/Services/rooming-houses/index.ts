@@ -1,10 +1,17 @@
 import { API } from '../base';
-import { House, HouseDetails, RoomingHouse, RoomingHouseResponse } from './interface';
-
+import {
+  House,
+  HouseDetails,
+  RoomingHouse,
+  RoomingHouseResponse,
+} from './interface';
 
 const roomingHouseApi = API.injectEndpoints({
   endpoints: build => ({
-    createRoomingHouse: build.mutation<RoomingHouseResponse, Partial<RoomingHouse>>({
+    createRoomingHouse: build.mutation<
+      RoomingHouseResponse,
+      Partial<RoomingHouse>
+    >({
       query: data => ({
         url: 'rooming-houses',
         method: 'POST',
@@ -15,20 +22,14 @@ const roomingHouseApi = API.injectEndpoints({
       query: () => `rooming-houses`,
     }),
     getRoomingHouseDetails: build.query<HouseDetails, string>({
-      query: id => 'rooming-houses/${id}',
-      transformResponse: (respone: any) => {
-        return {
-          house_id: respone.house_id, 
-          house_name: respone.house_name,
-          num_of_room: respone.num_of_room,
-          num_of_tenant: respone.num_of_tenant,
-          floor: { ...respone.floor },
-        } as HouseDetails;
-      }
-    })
+      query: id => `rooming-houses/${id}`
+    }),
   }),
   overrideExisting: true,
 });
 
-export const { useCreateRoomingHouseMutation, useLazyGetRoomingHousesQuery, useLazyGetRoomingHouseDetailsQuery } =
-  roomingHouseApi;
+export const {
+  useCreateRoomingHouseMutation,
+  useGetRoomingHousesQuery,
+  useGetRoomingHouseDetailsQuery,
+} = roomingHouseApi;

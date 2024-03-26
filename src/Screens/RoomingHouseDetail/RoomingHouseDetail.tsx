@@ -1,63 +1,79 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, List, Text, View } from 'native-base';
-import { Button, Searchbar } from 'react-native-paper';
-import { RouteProp, useNavigation } from '@react-navigation/native';
+import { View } from 'native-base';
+import { useNavigation } from '@react-navigation/native';
 import { RootScreens } from '../../Constants/RootScreen';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { DeviceList, FloorItem, FloorList, Header, RoomAndTenant, TabView, TenantList } from '../../Components';
-import { SceneMap } from 'react-native-tab-view'
-import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
-import { TabButton, TabButtonProps } from '../../Components/TabView/TabButton';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { useLazyGetRoomingHouseDetailsQuery, useLazyGetRoomingHousesQuery } from '../../Services';
+import {
+  DeviceList,
+  FloorList,
+  Header,
+  RoomAndTenant,
+  SearchBar,
+  TabView,
+  TenantList,
+} from '../../Components';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import { TabButton } from '../../Components/TabView/TabButton';
+import {
+  useGetFloorsQuery,
+  useGetRoomingHouseDetailsQuery,
+} from '../../Services';
+import { useAppSelector } from '../../Store/hook';
+import { getHouseId } from '../../Store/reducers';
 
-type Props = {
-  house_id?: string,
-}
-
-export const RoomingHouseDetail: React.FC<Props> = ({house_id}) => {
-  console.log(house_id);
-
+export const RoomingHouseDetail = () => {
+  const house_id = useAppSelector(getHouseId);
   const HomiracleNavigation = useNavigation();
-  const [focus, setFocus] = useState(<FloorList house_id={house_id}/>);
-  const updateRenderFocus = (newRender: React.JSX.Element) => {
-    setFocus(newRender)
-  }
-  const [getRoomingHouseDetails, { data, isLoading, isError }] = useLazyGetRoomingHouseDetailsQuery();
-  useEffect(
-    () => {
-      const getHouseDetails = async () => {
-        try {
-          const result = house_id && getRoomingHouseDetails(house_id);
-          console.log(result); // Xử lý dữ liệu trả về từ API
-        } catch (error) {
-          console.error('Some error in get house details', error);
-        }
-      };
-      getHouseDetails();
-    }, [],
-  );
+  // Gọi useQuery cho rooming house
+  const {
+    data: roomingHouseData,
+    isSuccess: isRoomingHouseSuccess,
+    isError: isRoomingHouseError,
+  } = useGetRoomingHouseDetailsQuery(house_id);
 
-  const listTab = [
-    {
-      status: 'floor'
-    },
-    {
-      status: 'device'
-    },
-    {
-      status: 'room'
+  // Gọi useQuery cho floors
+  const {
+    data: floorsData,
+    isSuccess: isFloorsSuccess,
+    isError: isFloorsError,
+  } = useGetFloorsQuery(house_id);
+
+  // Xử lý thành công và lỗi cho rooming house
+  useEffect(() => {
+    if (isRoomingHouseSuccess) {
+      console.log('Rooming House Data:', roomingHouseData);
+    } else if (isRoomingHouseError) {
+      console.log('Error fetching rooming house data');
     }
-  ]
+  }, [isRoomingHouseSuccess, isRoomingHouseError, roomingHouseData]);
+
+  // Xử lý thành công và lỗi cho floors
+  useEffect(() => {
+    if (isFloorsSuccess) {
+      console.log('Floors Data:', floorsData);
+      setFocus(<FloorList data={floorsData} />);
+    } else if (isFloorsError) {
+      console.log('Error fetching floors data');
+    }
+  }, [isFloorsSuccess, isFloorsError, floorsData]);
+
+  const [focus, setFocus] = useState(<FloorList data={[]} />);
+  const [search, setSearch] = useState('');
+  const [placeholder, setPlaceholder] = useState('Tìm kiếm tầng' as string);
   const [status, setStatus] = useState('floor');
   const setStatusFilter = (status: string) => {
-    setStatus(status)
-  }
+    if (status === 'floor') setPlaceholder('Tìm kiếm tầng');
+    else if (status === 'device') setPlaceholder('Tìm kiếm thiết bị');
+    else if (status === 'tenant') setPlaceholder('Tìm kiếm khách thuê');
+    setStatus(status);
+  };
 
   return (
     <View>
-        <Header
-        title={'Nhà trọ' + data?.house_name}
+      <Header
+        title={'Nhà trọ ' + (roomingHouseData?.house_name || '')}
         height={20}
         mode='center-aligned'
         onNotification={() => {
@@ -66,38 +82,47 @@ export const RoomingHouseDetail: React.FC<Props> = ({house_id}) => {
         onBack={() => {
           HomiracleNavigation.navigate(RootScreens.ROOMING_HOUSE_LIST as never);
         }}
-        >
-          <RoomAndTenant 
-            num_of_room={data?.num_of_room}
-            num_of_tenant={data?.num_of_tenant}
-          />
-        </Header>
+      >
+        <RoomAndTenant
+          num_of_room={roomingHouseData?.number_of_empty_rooms}
+          num_of_tenant={roomingHouseData?.number_of_tenants}
+        />
+      </Header>
 
-        <TabView>
-          <TabButton
-            isClicked={status === 'floor'}
-            name='tầng'
-            displayNumber={true}
-            number={data?.num_of_floor}
-            onFocus={() => {setStatusFilter('floor'); setFocus(<FloorList house_id={house_id}/>)}}
-          />
-          <TabButton
-            isClicked={status === 'device'}
-            name='thiết bị'
-            displayNumber={true}
-            number={data?.num_of_device}
-            onFocus={() => {setStatusFilter('device'); setFocus(<DeviceList house_id={house_id}/>)}}
-          />
-          <TabButton
-            isClicked={status === 'tenant'}
-            name='khách thuê'
-            displayNumber={true}
-            number={data?.num_of_tenant}
-            onFocus={() => {setStatusFilter('tenant'); setFocus(<TenantList house_id={house_id}/>)}}
-          />
-        </TabView>
-        {focus}
+      <TabView>
+        <TabButton
+          isClicked={status === 'floor'}
+          name='Tầng'
+          displayNumber={true}
+          number={roomingHouseData?.number_of_floors}
+          onFocus={() => {
+            setStatusFilter('floor');
+            setFocus(<FloorList data={floorsData} />);
+          }}
+        />
+        <TabButton
+          isClicked={status === 'device'}
+          name='Thiết bị'
+          displayNumber={true}
+          number={roomingHouseData?.number_of_devices}
+          onFocus={() => {
+            setStatusFilter('device');
+            setFocus(<DeviceList house_id={house_id} />);
+          }}
+        />
+        <TabButton
+          isClicked={status === 'tenant'}
+          name='Khách thuê'
+          displayNumber={true}
+          number={roomingHouseData?.number_of_tenants}
+          onFocus={() => {
+            setStatusFilter('tenant');
+            setFocus(<TenantList house_id={house_id} />);
+          }}
+        />
+      </TabView>
+      <SearchBar placeholder={placeholder} value={search} />
+      {focus}
     </View>
   );
 };
-

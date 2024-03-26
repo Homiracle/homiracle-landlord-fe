@@ -1,4 +1,5 @@
 import { API } from '../base';
+import { ListRoom, RoomDetail } from './type';
 
 export type Room = {
   name: string;
@@ -33,16 +34,16 @@ const RoomApi = API.injectEndpoints({
         body: data,
       }),
     }),
-    getRooms: build.query<Room[], void>({
-      query: () => `rooms`,
+    getRooms: build.query<ListRoom, { house_id: string; floor_id: string }>({
+      query: ({ house_id, floor_id }) =>
+        `rooms?roomingHouseId=${house_id}&floorId=${floor_id}`,
     }),
-    getRoom: build.query<Room, String>(
-      {
-        query: id=>`rooms/${id}`,
-      }
-    ),
+    getRoom: build.query<RoomDetail, String>({
+      query: id => `rooms/${id}`,
+    }),
   }),
   overrideExisting: true,
 });
 
-export const { useCreateRoomMutation, useGetRoomsQuery, useLazyGetRoomQuery } = RoomApi;
+export const { useCreateRoomMutation, useGetRoomsQuery, useGetRoomQuery } =
+  RoomApi;

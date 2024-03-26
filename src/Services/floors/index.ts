@@ -1,5 +1,5 @@
 import { API } from '../base';
-
+import { FloorDetail, ListFloor } from './type';
 export type Floor = {
   name: string;
   rooming_house: {
@@ -22,22 +22,22 @@ export type FloorResponse = Partial<Floor> & {
 
 const FloorApi = API.injectEndpoints({
   endpoints: build => ({
-    createFloor: build.mutation<
-      FloorResponse,
-      Partial<Floor>
-    >({
+    createFloor: build.mutation<FloorResponse, Partial<Floor>>({
       query: data => ({
         url: 'floors',
         method: 'POST',
         body: data,
       }),
     }),
-    getFloors: build.query<Floor[], void>({
-      query: id => `rooming-houses/${id}`,
+    getFloors: build.query<ListFloor, string>({
+      query: id => `floors?roomingHouseId=${id}`,
+    }),
+    getFloorDetail: build.query<FloorDetail, string>({
+      query: id => `floors/${id}`,
     }),
   }),
   overrideExisting: true,
 });
 
-export const { useCreateFloorMutation, useGetFloorsQuery } =
+export const { useCreateFloorMutation, useGetFloorsQuery, useGetFloorDetailQuery } =
   FloorApi;

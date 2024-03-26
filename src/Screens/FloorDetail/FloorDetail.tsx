@@ -1,97 +1,87 @@
-import React from 'react';
-import { FlatList, List, Text, View } from 'native-base';
-import { Button, Searchbar } from 'react-native-paper';
+import React, { useEffect } from 'react';
+import { FlatList, View } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
 import { RootScreens } from '../../Constants/RootScreen';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Header,TabView, RoomAndTenant } from '../../Components';
-import { RoomItem, RoomItemProps} from '../../Components/Room';
+import { Header, TabView, RoomAndTenant } from '../../Components';
+import { RoomItem, RoomItemProps } from '../../Components/Room';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { TabButton, TabButtonProps } from '../../Components/TabView/TabButton';
-type Props = {
-  floor_id?: string,
-}
-export const FloorDetail : React.FC<Props> = ({floor_id})  => {
+import { TabButton } from '../../Components/TabView/TabButton';
+import { useAppSelector } from '../../Store/hook';
+import { getFloorId, getHouseId } from '../../Store/reducers';
+import { useGetFloorDetailQuery, useGetRoomsQuery } from '../../Services';
+
+export const FloorDetail = () => {
   const navigation = useNavigation();
-  let data: RoomItemProps [] = [
-    {room_id: '1',
-     room_name: 'Room 101',
-     num_of_device: 3,
-     num_of_tenant: 2,
-     cost: 1200000,
-    },
-    {room_id: '2',
-     room_name: 'Room 101',
-     num_of_device: 3,
-     num_of_tenant: 2,
-     cost: 1200000,
-    },
-    {room_id: '3',
-     room_name: 'Room 101',
-     num_of_device: 3,
-     num_of_tenant: 2,
-     cost: 1200000,
-    },
-];
-  return(
+  const house_id = useAppSelector(getHouseId) as string;
+  const floor_id = useAppSelector(getFloorId) as string;
+  const {
+    data: floorData,
+    isSuccess: isFloorSuccess,
+    isError: isFloorError,
+  } = useGetFloorDetailQuery(floor_id);
+
+  const {
+    data: roomData,
+    isSuccess: isRoomSuccess,
+    isError: isRoomError,
+  } = useGetRoomsQuery({ house_id, floor_id });
+
+  return (
     <View>
-      <Header 
-      title = {'Tầng ' + floor_id}
-      height={20}
-      mode = 'center-aligned'
-      onBack={() => {
-        navigation.navigate(RootScreens.ROOMING_HOUSED_DETAIL as never);
-     }}>
-      <RoomAndTenant
-        num_of_room={data.length}
-        num_of_tenant = {12}/>
-      
-
+      <Header
+        title={'Tầng ' + floorData?.floor_name}
+        height={20}
+        mode='center-aligned'
+        onBack={() => {
+          navigation.navigate(RootScreens.ROOMING_HOUSED_DETAIL as never);
+        }}
+      >
+        <RoomAndTenant
+          num_of_room={floorData?.number_of_empty_rooms}
+          num_of_tenant={floorData?.number_of_tenants}
+        />
       </Header>
-      <TabView >
-          <TabButton
-            isClicked={true}
-            name='Phong'
-            number={12}
-            displayNumber = {true}
-          />
-          <TabButton
-            isClicked={false}
-            name='thiet bi'
-            number={12}
-            displayNumber = {true}
-          />
-          <TabButton
-            isClicked={false}
-            name='dich vu'
-            number={12}
-            displayNumber = {true}
-          />
-          <TabButton
-            isClicked={false}
-            name='khach thue'
-            number={12}
-            displayNumber = {true}
-          />
-        </TabView>
+      <TabView>
+        <TabButton
+          isClicked={true}
+          name='Phòng'
+          number={floorData?.number_of_rooms}
+          displayNumber={true}
+        />
+        <TabButton
+          isClicked={false}
+          name='Thiết bị'
+          number={floorData?.number_of_devices}
+          displayNumber={true}
+        />
+        <TabButton
+          isClicked={false}
+          name='Khách thuê'
+          number={floorData?.number_of_tenants}
+          displayNumber={true}
+        />
+      </TabView>
 
-        <FlatList
-          contentContainerStyle={{justifyContent: 'center', alignSelf: 'center'}}
-          horizontal={false}
-          data={data}
-          renderItem={({item}) => (
+      <FlatList
+        contentContainerStyle={{
+          justifyContent: 'center',
+          alignSelf: 'center',
+        }}
+        horizontal={false}
+        data={roomData}
+        renderItem={({ item }) => (
           <RoomItem
-            room_id={item.room_id}
-            room_name={item.room_name}
-            num_of_device={item.num_of_device}
-            cost={item.cost}
-            num_of_tenant={item.num_of_tenant}
-            ></RoomItem>)}
-          />
-          
+            room_id={item?.room_id}
+            room_name={item?.room_name}
+            num_of_device={item?.number_of_devices}
+            cost={item?.room_cost}
+            num_of_tenant={item?.number_of_tenants}
+          ></RoomItem>
+        )}
+      />
     </View>
-  )
+  );
 };
