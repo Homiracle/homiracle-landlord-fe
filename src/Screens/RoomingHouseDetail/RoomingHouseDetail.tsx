@@ -92,7 +92,7 @@ export const RoomingHouseDetail = () => {
       <TabView>
         <TabButton
           isClicked={status === 'floor'}
-          name='tầng'
+          name='Tầng'
           displayNumber={true}
           number={roomingHouseData?.number_of_floors}
           onFocus={() => {
@@ -102,7 +102,7 @@ export const RoomingHouseDetail = () => {
         />
         <TabButton
           isClicked={status === 'device'}
-          name='thiết bị'
+          name='Thiết bị'
           displayNumber={true}
           number={roomingHouseData?.number_of_devices}
           onFocus={() => {
@@ -112,7 +112,7 @@ export const RoomingHouseDetail = () => {
         />
         <TabButton
           isClicked={status === 'tenant'}
-          name='khách thuê'
+          name='Khách thuê'
           displayNumber={true}
           number={roomingHouseData?.number_of_tenants}
           onFocus={() => {
@@ -121,7 +121,7 @@ export const RoomingHouseDetail = () => {
           }}
         />
       </TabView>
-      <SearchBar placeholder={placeholder} value={search}/>
+      <SearchBar placeholder={placeholder} value={search} />
       {focus}
     </View>
   );
