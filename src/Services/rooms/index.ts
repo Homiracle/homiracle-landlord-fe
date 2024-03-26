@@ -1,5 +1,5 @@
 import { API } from '../base';
-import { ListRoom } from './type';
+import { ListRoom, RoomDetail } from './type';
 
 export type Room = {
   name: string;
@@ -38,7 +38,7 @@ const RoomApi = API.injectEndpoints({
       query: ({ house_id, floor_id }) =>
         `rooms?roomingHouseId=${house_id}&floorId=${floor_id}`,
     }),
-    getRoom: build.query<Room, String>({
+    getRoom: build.query<RoomDetail, String>({
       query: id => `rooms/${id}`,
     }),
   }),
