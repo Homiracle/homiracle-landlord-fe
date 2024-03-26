@@ -16,11 +16,12 @@ export type RoomingHouse = {
       street: string;
     };
     reference_cost: {
-      deposit: number;
-      water_cost: number;
-      power_cost: number;
-      cost_per_person: number;
-      cost_per_room: number;
+      deposit?: number;
+      room_cost?: number;
+      water_cost?: number;
+      power_cost?: number;
+      cost_per_person?: number;
+      cost_per_room?: number;
     };
     [key: string]: any;
   };

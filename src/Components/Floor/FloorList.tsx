@@ -9,6 +9,23 @@ export const FloorList = ({data}: any) => {
     // console.log("🚀 ~ FloorList ~ data:", data)
     const [searchQuery, setSearchQuery] = React.useState('');
 
+    const floor = [{
+        floor_id: '1',
+        floor_name: '2',
+        num_of_room: 1,
+        },
+        {
+            floor_id: '2',
+            floor_name: '2',
+            num_of_room: 1,
+        },
+        {
+            floor_id: '3',
+            floor_name: '2',
+            num_of_room: 1,
+        },
+    ]
+
     return (
         <View>
             <Searchbar
