@@ -1,3 +1,3 @@
 export * from './house-details.interface'
-export * from './house.interface'
-export * from './create-roominghouse.interface'
+export * from './house.type'
+export * from './create-rooming-house.type'

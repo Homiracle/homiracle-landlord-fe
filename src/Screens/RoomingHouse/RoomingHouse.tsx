@@ -9,27 +9,21 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { useLazyGetRoomingHousesQuery } from '../../Services';
+import { useGetRoomingHousesQuery } from '../../Services';
 
 export const RoomingHouseList = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
 
   const navigation = useNavigation();
-  const [getRoomingHouses, {data}] = useLazyGetRoomingHousesQuery();
+  const { data, isLoading, isSuccess, isError } = useGetRoomingHousesQuery();
 
-  useEffect(
-    () => {
-      const getHouseDetails = async () => {
-        try {
-          const result = getRoomingHouses();
-          console.log(result); // Xử lý dữ liệu trả về từ API
-        } catch (error) {
-          console.error('Some error in get house details', error);
-        }
-      };
-      getHouseDetails();
-    }, [],
-  );
+  useEffect(() => {
+    if (isSuccess) {
+      console.log('data', data);
+    } else if (isError) {
+      console.log('error', isError);
+    }
+  }, [isSuccess, isError]);
 
   const houseList: HouseItemProps[] = [
     {
@@ -91,21 +85,33 @@ export const RoomingHouseList = () => {
         create rooming house
       </Button>
 
-        <FlatList
-          data={houseList}
-          contentContainerStyle={{justifyContent: 'center', alignSelf: 'center'}}
-          showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => (
-            <HouseItem
-              house_id={item.house_id}
-              house_name={item.house_name}
-              address={item.address}
-              num_of_room={item.num_of_room}
-              num_of_tenant={item.num_of_tenant}
-            ></HouseItem>
-          )}
-          keyExtractor={item => item.house_id}
-        />
+      <FlatList
+        data={data}
+        contentContainerStyle={{
+          justifyContent: 'center',
+          alignSelf: 'center',
+          paddingBottom: hp(24),
+        }}
+        showsVerticalScrollIndicator={false}
+        renderItem={({ item }) => (
+          <HouseItem
+            house_id={item.house_id}
+            house_name={item.house_name}
+            address={
+              item.street +
+              ', ' +
+              item.commune +
+              ', ' +
+              item.district +
+              ', ' +
+              item.province
+            }
+            num_of_room={item.number_of_rooms}
+            num_of_tenant={item.number_of_tenants}
+          ></HouseItem>
+        )}
+        keyExtractor={item => item.house_id}
+      />
     </View>
   );
 };
