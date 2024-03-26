@@ -32,7 +32,7 @@ export const FloorDetail = () => {
   return (
     <View>
       <Header
-        title={'Tầng ' + floor_id}
+        title={'Tầng ' + floorData?.floor_name}
         height={20}
         mode='center-aligned'
         onBack={() => {
