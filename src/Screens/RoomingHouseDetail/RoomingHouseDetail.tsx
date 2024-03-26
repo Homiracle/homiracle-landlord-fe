@@ -7,6 +7,7 @@ import {
   FloorList,
   Header,
   RoomAndTenant,
+  SearchBar,
   TabView,
   TenantList,
 } from '../../Components';
@@ -52,14 +53,20 @@ export const RoomingHouseDetail = () => {
   useEffect(() => {
     if (isFloorsSuccess) {
       console.log('Floors Data:', floorsData);
+      setFocus(<FloorList data={floorsData} />);
     } else if (isFloorsError) {
       console.log('Error fetching floors data');
     }
   }, [isFloorsSuccess, isFloorsError, floorsData]);
 
-  const [focus, setFocus] = useState(<FloorList data={floorsData} />);
+  const [focus, setFocus] = useState(<FloorList data={[]} />);
+  const [search, setSearch] = useState('');
+  const [placeholder, setPlaceholder] = useState('Tìm kiếm tầng' as string);
   const [status, setStatus] = useState('floor');
   const setStatusFilter = (status: string) => {
+    if (status === 'floor') setPlaceholder('Tìm kiếm tầng');
+    else if (status === 'device') setPlaceholder('Tìm kiếm thiết bị');
+    else if (status === 'tenant') setPlaceholder('Tìm kiếm khách thuê');
     setStatus(status);
   };
 
@@ -114,8 +121,8 @@ export const RoomingHouseDetail = () => {
           }}
         />
       </TabView>
-      {isFloorsSuccess && focus}
-      {console.log(focus)}
+      <SearchBar placeholder={placeholder} value={search}/>
+      {focus}
     </View>
   );
 };
