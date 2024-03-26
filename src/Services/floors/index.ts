@@ -32,8 +32,8 @@ const FloorApi = API.injectEndpoints({
         body: data,
       }),
     }),
-    getFloors: build.query<Floor[], void>({
-      query: id => `rooming-houses/${id}`,
+    getFloors: build.query<Floor[], string>({
+      query: id => `floors?roomingHouseId=${id}`,
     }),
   }),
   overrideExisting: true,
