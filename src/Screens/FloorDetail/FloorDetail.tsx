@@ -10,24 +10,24 @@ import {
 } from 'react-native-responsive-screen';
 import { TabButton } from '../../Components/TabView/TabButton';
 import { useAppSelector } from '../../Store/hook';
-import { getFloorId } from '../../Store/reducers';
-import { useGetFloorDetailQuery } from '../../Services';
+import { getFloorId, getHouseId } from '../../Store/reducers';
+import { useGetFloorDetailQuery, useGetRoomsQuery } from '../../Services';
 
 export const FloorDetail = () => {
   const navigation = useNavigation();
+  const house_id = useAppSelector(getHouseId) as string;
   const floor_id = useAppSelector(getFloorId) as string;
   const {
     data: floorData,
     isSuccess: isFloorSuccess,
     isError: isFloorError,
   } = useGetFloorDetailQuery(floor_id);
-  useEffect(() => {
-    if (isFloorSuccess) {
-      console.log('Floor Data:', floorData);
-    } else if (isFloorError) {
-      console.log('Error fetching floor data');
-    }
-  }, [isFloorSuccess, isFloorError, floorData]);
+
+  const {
+    data: roomData,
+    isSuccess: isRoomSuccess,
+    isError: isRoomError,
+  } = useGetRoomsQuery({ house_id, floor_id });
 
   return (
     <View>
@@ -65,23 +65,23 @@ export const FloorDetail = () => {
         />
       </TabView>
 
-      {/* <FlatList
+      <FlatList
         contentContainerStyle={{
           justifyContent: 'center',
           alignSelf: 'center',
         }}
         horizontal={false}
-        data={data}
+        data={roomData}
         renderItem={({ item }) => (
           <RoomItem
-            room_id={item.room_id}
-            room_name={item.room_name}
-            num_of_device={item.num_of_device}
-            cost={item.cost}
-            num_of_tenant={item.num_of_tenant}
+            room_id={item?.room_id}
+            room_name={item?.room_name}
+            num_of_device={item?.number_of_devices}
+            cost={item?.room_cost}
+            num_of_tenant={item?.number_of_tenants}
           ></RoomItem>
         )}
-      /> */}
+      />
     </View>
   );
 };
