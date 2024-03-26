@@ -22,15 +22,7 @@ const roomingHouseApi = API.injectEndpoints({
       query: () => `rooming-houses`,
     }),
     getRoomingHouseDetails: build.query<HouseDetails, string>({
-      query: id => 'rooming-houses/${id}',
-      transformResponse: (response: any) => {
-        return {
-          house_id: response.house_id,
-          house_name: response.house_name,
-          num_of_room: response.num_of_room,
-          num_of_tenant: response.num_of_tenant,
-        } as HouseDetails;
-      },
+      query: id => `rooming-houses/${id}`
     }),
   }),
   overrideExisting: true,
@@ -39,5 +31,5 @@ const roomingHouseApi = API.injectEndpoints({
 export const {
   useCreateRoomingHouseMutation,
   useGetRoomingHousesQuery,
-  useLazyGetRoomingHouseDetailsQuery,
+  useGetRoomingHouseDetailsQuery,
 } = roomingHouseApi;
