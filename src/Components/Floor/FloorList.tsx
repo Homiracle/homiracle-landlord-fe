@@ -2,8 +2,14 @@ import { FlatList } from 'native-base';
 import React from 'react';
 import { View } from 'react-native';
 import { FloorItem } from './FloorItem';
+import { FlatListProps } from 'react-native';
 
-export const FloorList = ({ data }: any) => {
+export interface FloorListProps {
+  data: any;
+  onScroll?: () => void;
+}
+
+export const FloorList = ({ data, onScroll }: FloorListProps) => {
   return (
     <View>
       <FlatList
@@ -22,6 +28,7 @@ export const FloorList = ({ data }: any) => {
             num_of_room={item.number_of_rooms}
           />
         )}
+        onScroll={onScroll}
       />
     </View>
   );
