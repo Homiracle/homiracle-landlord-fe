@@ -15,7 +15,7 @@ const roomingHouseApi = API.injectEndpoints({
       query: () => `rooming-houses`,
     }),
     getRoomingHouseDetails: build.query<HouseDetails, string>({
-      query: id => 'rooming-houses/${id}',
+      query: id => `rooming-houses/${id}`,
       transformResponse: (respone: any) => {
         return {
           house_id: respone.house_id, 

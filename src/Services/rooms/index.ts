@@ -45,4 +45,4 @@ const RoomApi = API.injectEndpoints({
   overrideExisting: true,
 });
 
-export const { useCreateRoomMutation, useGetRoomsQuery, useLazyGetRoomQuery } = RoomApi;
+export const { useCreateRoomMutation, useLazyGetRoomsQuery, useLazyGetRoomQuery } = RoomApi;

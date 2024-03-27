@@ -12,9 +12,11 @@ import {
 } from 'react-native-responsive-screen';
 import { RoomingHouse as RoomingHouseProps } from '../../Services/rooming-houses/interface';
 import { RoomDetailComponent } from '../../Components/Room/RoomDetailComponent';
-import { Room as RoomProps, useCreateRoomMutation } from '../../Services';
+//import { Room as RoomProps, useCreateRoomMutation } from '../../Services';
 
-
+type RoomProps = {
+  room_id: string,
+}
 export const RoomDetail:React.FC<RoomProps> = ({room_id}) =>{
     const navigation = useNavigation();
     //hooks
