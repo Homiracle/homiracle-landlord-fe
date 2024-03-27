@@ -216,10 +216,7 @@ export const CreateRoomingHouse = () => {
     }
   };
 
-  // console.log(formik.touched);
-  // console.log(formik.errors);
 
-  // console.log(formik.isValid);
 
   return (
     <View style={styles.container}>
