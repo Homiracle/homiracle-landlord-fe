@@ -7,6 +7,8 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootScreens } from '../../Constants/RootScreen';
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { useAppDispatch } from '../../Store/hook';
+import { storeId } from '../../Store/reducers';
 
 export interface RoomItemProps {
     room_id: string,
@@ -16,10 +18,6 @@ export interface RoomItemProps {
     num_of_tenant: number,
 }
 
-export type RootStackRoomParamList = {
-    RoomDetail: { room_id: string } | undefined;
-  };
-
 export const RoomItem = ({
     room_id,
     room_name,
@@ -27,9 +25,9 @@ export const RoomItem = ({
     cost,
     num_of_tenant,
 }:RoomItemProps) => {
-
+    const dispatch = useAppDispatch();
     const homiralceTheme = useAppTheme();
-    const navigation = useNavigation<StackNavigationProp<RootStackRoomParamList>>();
+    const navigation = useNavigation();
     return (
         <TouchableOpacity
             style={{
@@ -45,7 +43,8 @@ export const RoomItem = ({
                 marginHorizontal: 16,
             }}
             onPress={() => {
-                navigation.navigate(RootScreens.ROOMDETAIL, {room_id});
+                dispatch(storeId({ field: 'room_id', id: room_id }));
+                navigation.navigate(RootScreens.ROOMDETAIL as never);
             }}
         >
             <Image

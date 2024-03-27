@@ -14,5 +14,5 @@ type Props = {
   navigation: RoomDetailsNavigationProp;
 }
 export const RoomDetailContainer = ({route, navigation}: Props) => {
-  return <RoomDetail room_id ={route.params?.room_id}/>;
+  return <RoomDetail />;
 };
