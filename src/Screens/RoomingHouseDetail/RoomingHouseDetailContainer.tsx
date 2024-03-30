@@ -14,5 +14,5 @@ type Props = {
 }
 
 export const RoomingHouseDetailContainer = ({route, navigation}: Props) => {
-  return <RoomingHouseDetail house_id={route.params?.house_id} />;
+  return <RoomingHouseDetail />;
 };
