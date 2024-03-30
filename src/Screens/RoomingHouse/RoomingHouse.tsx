@@ -10,17 +10,14 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import { useGetRoomingHousesQuery } from '../../Services';
-import {
-  NativeScrollEvent,
-  StyleSheet,
-} from 'react-native';
+import { NativeScrollEvent, StyleSheet } from 'react-native';
 import { useAppTheme } from '../../Theme';
 
 export const RoomingHouseList = () => {
   const theme = useAppTheme();
   const styles = StyleSheet.create({
     fabStyle: {
-      bottom: hp(20),
+      bottom: hp(2),
       right: wp(4),
       position: 'absolute',
       backgroundColor: theme.colors.primary,
@@ -46,7 +43,7 @@ export const RoomingHouseList = () => {
   };
 
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <Header
         title='Danh sách nhà trọ'
         height={20}
@@ -70,7 +67,7 @@ export const RoomingHouseList = () => {
         contentContainerStyle={{
           justifyContent: 'center',
           alignSelf: 'center',
-          paddingBottom: hp(28),
+          paddingBottom: hp(10)
         }}
         onScroll={onScroll}
         showsVerticalScrollIndicator={false}
@@ -108,4 +105,4 @@ export const RoomingHouseList = () => {
       />
     </View>
   );
-};  
+};
