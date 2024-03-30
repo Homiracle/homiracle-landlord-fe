@@ -25,7 +25,7 @@ export const RoomDetailComponent = ({ data }: any) => {
       width: wp(96),
       paddingHorizontal: wp(4),
       paddingTop: hp(1),
-      paddingBottom: hp(2),
+      maxHeight: hp(50),
     },
     title: {
       color: theme.colors.primary,
