@@ -11,6 +11,7 @@ import { Mutex } from 'async-mutex';
 import { signout, saveToken } from '../Store/reducers/auth';
 import { setUser } from '../Store/reducers';
 import { RootState } from '../Store';
+import { RoomingHouse } from './rooming-houses/interface';
 
 // create a new mutex
 const mutex = new Mutex();
@@ -86,5 +87,6 @@ const baseQueryWithInterceptor: BaseQueryFn<
 
 export const API = createApi({
   baseQuery: baseQueryWithInterceptor,
+  tagTypes: ['RoomingHouse'],
   endpoints: () => ({}),
 });

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { FlatList, List, Text, View } from 'native-base';
-import { Button, Searchbar } from 'react-native-paper';
+import { AnimatedFAB, Button, Searchbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { RootScreens } from '../../Constants/RootScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -10,13 +10,22 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import { useGetRoomingHousesQuery } from '../../Services';
+import { NativeScrollEvent, StyleSheet } from 'react-native';
+import { useAppTheme } from '../../Theme';
 
 export const RoomingHouseList = () => {
+  const theme = useAppTheme();
+  const styles = StyleSheet.create({
+    fabStyle: {
+      bottom: hp(2),
+      right: wp(4),
+      position: 'absolute',
+      backgroundColor: theme.colors.primary,
+    },
+  });
   const [searchQuery, setSearchQuery] = React.useState('');
-
   const navigation = useNavigation();
   const { data, isLoading, isSuccess, isError } = useGetRoomingHousesQuery();
-
   useEffect(() => {
     if (isSuccess) {
       console.log('data', data);
@@ -25,46 +34,20 @@ export const RoomingHouseList = () => {
     }
   }, [isSuccess, isError]);
 
-  const houseList: HouseItemProps[] = [
-    {
-      house_id: '1',
-      house_name: 'nha tro xuan hong',
-      address: '127 ly thuong kiet abc xyz abc xyz abc xyz abc xyz',
-      num_of_room: 10,
-      num_of_tenant: 20,
-    },
-    {
-      house_id: '2',
-      house_name: 'nha tro xuan hong',
-      address: '127 ly thuong kiet abc xyz',
-      num_of_room: 10,
-      num_of_tenant: 20,
-    },
-    {
-      house_id: '3',
-      house_name: 'nha tro xuan hong',
-      address: '127 ly thuong kiet abc xyz',
-      num_of_room: 10,
-      num_of_tenant: 20,
-    },
-    {
-      house_id: '4',
-      house_name: 'Nha tro xuan hong',
-      address: '127 ly thuong kiet abc xyz',
-      num_of_room: 10,
-      num_of_tenant: 20,
-    },
-  ];
+  const [isExtended, setIsExtended] = React.useState(true);
+  const onScroll = ({ nativeEvent }: { nativeEvent: NativeScrollEvent }) => {
+    const currentScrollPosition =
+      Math.floor(nativeEvent?.contentOffset?.y) ?? 0;
+
+    setIsExtended(currentScrollPosition <= 0);
+  };
 
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <Header
         title='Danh sách nhà trọ'
         height={20}
         mode='center-aligned'
-        onNotification={() => {
-          console.log('notification');
-        }}
       >
         <Searchbar
           style={{
@@ -76,22 +59,14 @@ export const RoomingHouseList = () => {
           value={searchQuery}
         ></Searchbar>
       </Header>
-      <Button
-        style={{}}
-        onPress={() => {
-          navigation.navigate(RootScreens.CREATE_ROOMING_HOUSE as never);
-        }}
-      >
-        create rooming house
-      </Button>
-
       <FlatList
         data={data}
         contentContainerStyle={{
           justifyContent: 'center',
           alignSelf: 'center',
-          paddingBottom: hp(24),
+          paddingBottom: hp(10)
         }}
+        onScroll={onScroll}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
           <HouseItem
@@ -112,6 +87,19 @@ export const RoomingHouseList = () => {
         )}
         keyExtractor={item => item.house_id}
       />
+      <AnimatedFAB
+        icon={'plus'}
+        label={'Thêm nhà trọ'}
+        extended={isExtended}
+        onPress={() => {
+          navigation.navigate(RootScreens.CREATE_ROOMING_HOUSE as never);
+        }}
+        visible={true}
+        animateFrom={'right'}
+        iconMode={'dynamic'}
+        style={styles.fabStyle}
+        color={theme.colors.onPrimary}
+      />
     </View>
   );
-};  
+};

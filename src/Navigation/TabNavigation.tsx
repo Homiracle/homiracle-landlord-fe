@@ -4,14 +4,11 @@ import { useAppTheme } from '../Theme';
 import {
   HomeStack,
   RoomingHouseStack,
-  InvoiceStack,
   FinanceStack,
   ProfileStack,
+  NotificationStack,
 } from './Stacks';
-import HomeIconSvg from '../static/icon/homeIcon';
-import RoomIconSvg from '../static/icon/roomIconSvg';
-import HistoryIconSvg from '../static/icon/HistoryIconSvg';
-import ProfileIconSvg from '../static/icon/ProfileIconSvg';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const Tab = createBottomTabNavigator();
 
@@ -24,12 +21,12 @@ export const TabNavigator = () => {
         headerStatusBarHeight: 4,
         tabBarActiveTintColor: theme.colors.primary,
         tabBarLabelPosition: 'below-icon',
-        tabBarInactiveTintColor: '#6B7280',
+        tabBarInactiveTintColor: '#b8b4b4',
         tabBarLabelStyle: { fontWeight: '600' },
         headerShown: false,
       }}
     >
-      <Tab.Screen
+      {/* <Tab.Screen
         name='HomeStack'
         component={HomeStack}
         options={{
@@ -38,24 +35,14 @@ export const TabNavigator = () => {
             <HomeIconSvg width={size} height={size} color={color} />
           ),
         }}
-      />
+      /> */}
       <Tab.Screen
         name='RoomingHouseStack'
         component={RoomingHouseStack}
         options={{
           tabBarLabel: 'Nhà trọ',
           tabBarIcon: ({ color, size }) => (
-            <RoomIconSvg width={size} height={size} color={color} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name='InvoiceStack'
-        component={InvoiceStack}
-        options={{
-          tabBarLabel: 'Hoá đơn',
-          tabBarIcon: ({ color, size }) => (
-            <HistoryIconSvg width={size} height={size} color={color} />
+            <Icon name='home-outline' size={size} color={color} />
           ),
         }}
       />
@@ -65,7 +52,17 @@ export const TabNavigator = () => {
         options={{
           tabBarLabel: 'Tài chính',
           tabBarIcon: ({ color, size }) => (
-            <HistoryIconSvg width={size} height={size} color={color} />
+            <Icon name='finance' size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name='NotificationStack'
+        component={NotificationStack}
+        options={{
+          tabBarLabel: 'Thông báo',
+          tabBarIcon: ({ color, size }) => (
+            <Icon name='bell-outline' size={size} color={color} />
           ),
         }}
       />
@@ -75,7 +72,7 @@ export const TabNavigator = () => {
         options={{
           tabBarLabel: 'Hồ sơ',
           tabBarIcon: ({ color, size }) => (
-            <ProfileIconSvg width={size} height={size} color={color} />
+            <Icon name='account-outline' size={size} color={color} />
           ),
         }}
       />

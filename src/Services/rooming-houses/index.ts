@@ -14,9 +14,11 @@ const roomingHouseApi = API.injectEndpoints({
         method: 'POST',
         body: data,
       }),
+      invalidatesTags: ['RoomingHouse'],
     }),
     getRoomingHouses: build.query<House[], void>({
       query: () => `rooming-houses`,
+      providesTags: ['RoomingHouse'],
     }),
     getRoomingHouseDetails: build.query<HouseDetails, string>({
       query: id => `rooming-houses/${id}`
