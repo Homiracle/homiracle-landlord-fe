@@ -6,21 +6,14 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import { Searchbar } from 'react-native-paper';
-import { View } from 'react-native';
+import { NativeScrollEvent, View } from 'react-native';
 
 export interface DeviceListProps {
-  house_id?: string;
-  floor_id?: string;
-  room_id?: string;
+  data: any[];
+  onScroll?: ({ nativeEvent }: { nativeEvent: NativeScrollEvent }) => void;
 }
 
-export const DeviceList = ({
-  house_id,
-  floor_id,
-  room_id,
-}: DeviceListProps) => {
-  const [searchQuery, setSearchQuery] = React.useState('');
-
+export const DeviceList = ({ data, onScroll }: DeviceListProps) => {
   const devicedata = [
     {
       device_id: '1',
@@ -49,6 +42,7 @@ export const DeviceList = ({
           justifyContent: 'center',
           alignSelf: 'center',
           gap: 10,
+          paddingBottom: hp(10),
         }}
         horizontal={false}
         showsVerticalScrollIndicator={false}
@@ -61,6 +55,7 @@ export const DeviceList = ({
             status={item.status}
           />
         )}
+        onScroll={onScroll}
       />
     </View>
   );
