@@ -1,6 +1,6 @@
 import { useAppTheme } from '../../Theme';
 import React from 'react';
-import { Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -16,92 +16,74 @@ export const RoomAndTenant = ({
   num_of_room,
   num_of_tenant,
 }: RoomAndTenantProps) => {
-  const homiralceTheme = useAppTheme();
+  const theme = useAppTheme();
+  const styles = StyleSheet.create({
+    container: {
+      display: 'flex',
+      width: wp(100),
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignSelf: 'center',
+      paddingHorizontal: wp(5),
+    },
+    inView: {
+      width: wp(43),
+      height: hp(9),
+      borderRadius: 16,
+      backgroundColor: 'white',
+      alignItems: 'center',
+      flexDirection: 'row',
+      gap: wp(2),
+    },
+    left: {
+      paddingLeft: wp(5),
+      width: wp(25),
+    },
+    roomIconRight: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: 48,
+      height: 48,
+      borderRadius: 24,
+      backgroundColor: '#6FFBBE',
+    },
+    tenantIconRight: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: 48,
+      height: 48,
+      borderRadius: 24,
+      backgroundColor: '#FFDBCB',
+    },
+  });
   return (
-    <View
-      style={{
-        display: 'flex',
-        width: wp('100%'),
-        flexDirection: 'row',
-        justifyContent: 'center',
-        gap: wp('2%'),
-        alignSelf: 'center',
-      }}
-    >
-      <View
-        style={{
-          width: wp('40%'),
-          height: 68,
-          borderRadius: 10,
-          backgroundColor: 'white',
-          alignItems: 'center',
-          flexDirection: 'row',
-          gap: 10,
-        }}
-      >
-        <View
-          style={{
-            paddingLeft: 18,
-            width: 90,
-          }}
-        >
-          <Text style={[homiralceTheme.fonts.titleMedium]}>
+    <View style={styles.container}>
+      <View style={styles.inView}>
+        <View style={styles.left}>
+          <Text style={[theme.fonts.titleMedium]}>
             {num_of_tenant ? num_of_tenant : 0}
           </Text>
 
-          <Text style={[homiralceTheme.fonts.bodySmall]}>Phòng trống</Text>
+          <Text style={[theme.fonts.bodySmall]}>Phòng trống</Text>
         </View>
 
-        <View
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: 48,
-            height: 48,
-            borderRadius: 24,
-            backgroundColor: '#6FFBBE',
-          }}
-        >
+        <View style={styles.roomIconRight}>
           <Icon name='home-variant' size={24} color='white' />
         </View>
       </View>
 
-      <View
-        style={{
-          width: wp('40%'),
-          height: 68,
-          borderRadius: 10,
-          backgroundColor: 'white',
-          alignItems: 'center',
-          flexDirection: 'row',
-          gap: 10,
-        }}
-      >
-        <View
-          style={{
-            paddingLeft: 18,
-            width: 90,
-          }}
-        >
-          <Text style={[homiralceTheme.fonts.titleMedium]}>
+      <View style={styles.inView}>
+        <View style={styles.left}>
+          <Text style={[theme.fonts.titleMedium]}>
             {num_of_room ? num_of_room : 0}
           </Text>
 
-          <Text style={[homiralceTheme.fonts.bodySmall]}>Người ở</Text>
+          <Text style={[theme.fonts.bodySmall]}>Người ở</Text>
         </View>
 
-        <View
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: 48,
-            height: 48,
-            borderRadius: 24,
-            backgroundColor: '#FFDBCB',
-          }}
-        >
+        <View style={styles.tenantIconRight}>
           <Icon name='account-multiple' size={24} color='white' />
         </View>
       </View>
