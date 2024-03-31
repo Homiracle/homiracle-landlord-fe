@@ -13,7 +13,6 @@ export interface HeaderProps {
   top?: number | string;
   scroll?: 'horizontal' | 'vertical' | 'none';
   onBack?: () => void;
-  onNotification?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -23,7 +22,6 @@ export const Header: React.FC<HeaderProps> = ({
   mode = 'small',
   scroll = 'none',
   onBack,
-  onNotification,
 }) => {
   const theme = useAppTheme();
 
@@ -74,13 +72,6 @@ export const Header: React.FC<HeaderProps> = ({
           color={theme.colors.onPrimary}
           titleStyle={theme.fonts.titleLarge}
         />
-        {onNotification && (
-          <Appbar.Action
-            icon='bell-outline'
-            onPress={onNotification}
-            color={theme.colors.onPrimary}
-          />
-        )}
       </Appbar.Header>
       <Box
         height={height}

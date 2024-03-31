@@ -183,12 +183,16 @@ export const CreateRoomingHouse = () => {
   const handleSubmit = async () => {
     console.log(roomingHouseData);
     await createRoomingHouse(roomingHouseData as Partial<RoomingHouseProps>);
-    if (isSuccess) {
-      console.log(error);
-    } else if (isError) {
-      console.log('error', error);
-    }
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      console.log('Create rooming house success');
+      navigation.goBack();
+    } else if (isError) {
+      console.log(error);
+    }
+  }, [isSuccess, isError]);
 
   const isTouched = (field: string, nestedField?: string) => {
     if (nestedField) {

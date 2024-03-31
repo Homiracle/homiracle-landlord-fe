@@ -1,15 +1,23 @@
 import { FlatList } from 'native-base';
 import React from 'react';
-import { View } from 'react-native';
+import { NativeScrollEvent, View } from 'react-native';
 import { FloorItem } from './FloorItem';
+import { FlatListProps } from 'react-native';
+import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
-export const FloorList = ({ data }: any) => {
+export interface FloorListProps {
+  data: any;
+  onScroll?: ({ nativeEvent }: { nativeEvent: NativeScrollEvent }) => void;
+}
+
+export const FloorList = ({ data, onScroll }: FloorListProps) => {
   return (
     <View>
       <FlatList
         contentContainerStyle={{
           justifyContent: 'center',
           alignSelf: 'center',
+          paddingBottom: hp(10)
         }}
         horizontal={false}
         showsVerticalScrollIndicator={false}
@@ -22,6 +30,7 @@ export const FloorList = ({ data }: any) => {
             num_of_room={item.number_of_rooms}
           />
         )}
+        onScroll={onScroll}
       />
     </View>
   );
