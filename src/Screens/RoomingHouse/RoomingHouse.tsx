@@ -99,7 +99,7 @@ export const RoomingHouseList = () => {
         }}
         visible={true}
         animateFrom={'right'}
-        iconMode={'static'}
+        iconMode={'dynamic'}
         style={styles.fabStyle}
         color={theme.colors.onPrimary}
       />
