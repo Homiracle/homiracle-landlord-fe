@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View } from 'native-base';
+import { View,ScrollView } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
 import { RootScreens } from '../../Constants/RootScreen';
 import {
@@ -31,13 +31,9 @@ export const RoomDetail = () => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
+      marginTop: 0,
     },
     content: {
-      flex: 1,
-      marginTop: hp(5),
-      flexDirection: 'column',
-      gap: hp(2),
-      position: 'relative',
     },
   });
   const [focus, setFocus] = React.useState(<RoomDetailComponent data={[]}/>);
@@ -56,11 +52,10 @@ export const RoomDetail = () => {
       <Header
         title={'Chi tiết phòng ' + room_id}
         height={8}
-        scroll='vertical'
         mode='center-aligned'
         onBack={() => navigation.navigate(RootScreens.FLOORDETAIL as never)}
-      >
-        <View style={styles.content}>
+      />
+       <View>
           <TabView>
             <TabButton
               isClicked={status === 'info'}
@@ -92,9 +87,8 @@ export const RoomDetail = () => {
               }}
             />
           </TabView>
-        </View>
-        {focus}
-      </Header>
+          </View>
+          {focus}
     </View>
   );
 };

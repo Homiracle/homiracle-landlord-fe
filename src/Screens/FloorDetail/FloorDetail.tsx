@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import { FlatList, View } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
 import { RootScreens } from '../../Constants/RootScreen';
-import { Header, TabView, RoomAndTenant } from '../../Components';
-import { RoomItem, RoomItemProps } from '../../Components/Room';
+import { Header, TabView, RoomAndTenant,TenantList, DeviceList, FloorList } from '../../Components';
+import { RoomList } from '../../Components/Room';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -28,7 +28,7 @@ export const FloorDetail = () => {
     isSuccess: isRoomSuccess,
     isError: isRoomError,
   } = useGetRoomsQuery({ house_id, floor_id });
-
+  const [focus, setFocused] = React.useState(<RoomList data = {roomData}/>)
   return (
     <View>
       <Header
@@ -50,38 +50,25 @@ export const FloorDetail = () => {
           name='Phòng'
           number={floorData?.number_of_rooms}
           displayNumber={true}
+          onFocus={()=>{setFocused(<FloorList data = {roomData}/>);}}
         />
         <TabButton
           isClicked={false}
           name='Thiết bị'
           number={floorData?.number_of_devices}
           displayNumber={true}
+          onFocus={()=>{setFocused(<DeviceList floor_id={floor_id}/>);}}
         />
         <TabButton
           isClicked={false}
           name='Khách thuê'
           number={floorData?.number_of_tenants}
           displayNumber={true}
+          onFocus={()=>{setFocused(<TenantList floor_id={floor_id}/>);}}
         />
       </TabView>
 
-      <FlatList
-        contentContainerStyle={{
-          justifyContent: 'center',
-          alignSelf: 'center',
-        }}
-        horizontal={false}
-        data={roomData}
-        renderItem={({ item }) => (
-          <RoomItem
-            room_id={item?.room_id}
-            room_name={item?.room_name}
-            num_of_device={item?.number_of_devices}
-            cost={item?.room_cost}
-            num_of_tenant={item?.number_of_tenants}
-          ></RoomItem>
-        )}
-      />
+      {focus}
     </View>
   );
 };
