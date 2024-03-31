@@ -5,7 +5,6 @@ import { ListRoom } from '../../Services/rooms/type';
 
 export const RoomList = ({data}: any) => {
 return (
-    <View>
         <FlatList
           contentContainerStyle={{justifyContent: 'center', alignSelf: 'center'}}
           horizontal={false}
@@ -19,6 +18,5 @@ return (
             num_of_tenant={item.number_of_tenants}
             ></RoomItem>)}
           />
-    </View>
 );
 };
