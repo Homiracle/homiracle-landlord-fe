@@ -48,9 +48,6 @@ export const RoomingHouseList = () => {
         title='Danh sách nhà trọ'
         height={20}
         mode='center-aligned'
-        onNotification={() => {
-          console.log('notification');
-        }}
       >
         <Searchbar
           style={{

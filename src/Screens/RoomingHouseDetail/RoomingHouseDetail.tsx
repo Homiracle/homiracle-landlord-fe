@@ -98,9 +98,6 @@ export const RoomingHouseDetail = ({
         title={'Nhà trọ ' + (roomingHouseData?.house_name || '')}
         height={20}
         mode='center-aligned'
-        onNotification={() => {
-          console.log('notification');
-        }}
         onBack={() => {
           navigation.navigate(RootScreens.ROOMING_HOUSE_LIST as never);
         }}

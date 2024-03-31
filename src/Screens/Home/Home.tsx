@@ -19,9 +19,6 @@ export const Home = () => {
         onBack={() => {
           console.log('back');
         }}
-        onNotification={() => {
-          console.log('noti');
-        }}
       >
         <View
           style={{
