@@ -1,4 +1,3 @@
-import { RoomingHouse, RoomingHouseResponse } from '@/Services';
 import * as Yup from 'yup';
 
 export const roomingHouseFormValidationSchema = Yup.object().shape({
@@ -22,10 +21,10 @@ export const roomingHouseFormValidationSchema = Yup.object().shape({
     street: Yup.string().required('Địa chỉ không được để trống'),
   }),
   reference_cost: Yup.object({
-    deposit: Yup.number().optional().positive(),
-    room_cost: Yup.number().optional().positive(),
-    water_cost: Yup.number().optional().positive(),
-    power_cost: Yup.number().optional().positive(),
+    deposit: Yup.number().optional().positive().min(0),
+    room_cost: Yup.number().optional().positive().min(0),
+    water_cost: Yup.number().optional().positive().min(0),
+    power_cost: Yup.number().optional().positive().min(0),
     // cost_per_person: Yup.number().positive(),
     // cost_per_room: Yup.number().positive(),
   }),
