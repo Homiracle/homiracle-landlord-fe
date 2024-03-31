@@ -2,9 +2,9 @@ export type Contract = {
     house_id: number;
     floor_id: number;
     room_id: number;
-    start_date: Date;
-    end_date: Date;
-    couting_fee_day:number;
+    start_date: string;
+    end_date: string;
+    couting_fee_day:string;
     paying_cost_cycle: number;
     maximmum_number_of_people: number;
     reference_cost: {

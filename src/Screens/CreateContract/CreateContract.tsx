@@ -120,9 +120,9 @@ export const CreateContract = () => {
       house_id: Number(useAppSelector(getHouseId)),
       floor_id: Number(useAppSelector(getHouseId)),
       room_id: Number(useAppSelector(getHouseId)),
-      start_date: new Date(),
-      end_date: new Date(),
-      couting_fee_day: 0,
+      start_date: '',
+      end_date: '',
+      couting_fee_day: '',
       paying_cost_cycle: 0,
       maximmum_number_of_people: 4,
       reference_cost: {
@@ -227,8 +227,9 @@ export const CreateContract = () => {
           mode='date'
           display='calendar'
           onChange={(event, selectedDate) => {
+            
             if (datetimePicker.closingHour) {
-                showDatetimePicker({ ...datetimePicker, closingHour: false, openingHour: false, feeDay: false });
+                showDatetimePicker({ ...datetimePicker, closingHour: false });
                 if (selectedDate) {
                     handleInputChange(
                         'closing_hour',
@@ -236,7 +237,7 @@ export const CreateContract = () => {
                     );
                 }
             } else if (datetimePicker.openingHour) {
-                showDatetimePicker({ ...datetimePicker, closingHour: false, openingHour: false, feeDay: false });
+                showDatetimePicker({ ...datetimePicker,openingHour: false});
                 if (selectedDate) {
                     handleInputChange(
                         'opening_hour',
@@ -244,7 +245,7 @@ export const CreateContract = () => {
                     );
                 }
             } else if (datetimePicker.feeDay) {
-                showDatetimePicker({ ...datetimePicker, closingHour: false, openingHour: false, feeDay: false });
+                showDatetimePicker({ ...datetimePicker, feeDay: false });
                 if (selectedDate) {
                     handleInputChange(
                         'couting_fee_day',
@@ -343,7 +344,7 @@ export const CreateContract = () => {
                         handleInputChange('opening_hour', text)
                       }
                       showSoftInputOnFocus
-               
+                      value={contractData.start_date}
                       onBlur={() => onBlur('opening_hour')}
                     />
                   </Pressable>
@@ -365,7 +366,7 @@ export const CreateContract = () => {
                         handleInputChange('closing_hour', text)
                       }
                       showSoftInputOnFocus
-                      
+                      value={contractData.end_date}
                       onBlur={() => onBlur('closing_hour')}
                     />
                   </Pressable>
@@ -381,12 +382,15 @@ export const CreateContract = () => {
                       })
                     }
                   >
-                <TextInput
-                  placeholder='1/1/2024'
-                  style={styles.textInput}
-                  onChangeText={text => handleInputChange('couting_fee_day', text)}
-                  onBlur={() => onBlur('couting_fee_day')}
-                  showSoftInputOnFocus
+              <TextInput
+                      placeholder='05:00'
+                      style={styles.textInput}
+                      onChangeText={text =>
+                        handleInputChange('couting_fee_day', text)
+                      }
+                      showSoftInputOnFocus
+                      value={contractData.couting_fee_day}
+                      onBlur={() => onBlur('couting_fee_day')}
                     />
                   </Pressable>
                   {isTouched('couting_fee_day') ? (
