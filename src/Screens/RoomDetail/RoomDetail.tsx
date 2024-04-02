@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect} from 'react';
 import { View,ScrollView } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
 import { RootScreens } from '../../Constants/RootScreen';
@@ -10,6 +10,7 @@ import {
   TenantList,
 } from '../../Components';
 import { StyleSheet } from 'react-native';
+import { Button } from 'react-native-paper';
 import { useAppTheme } from '../../Theme';
 import {
   widthPercentageToDP as wp,
@@ -88,6 +89,14 @@ export const RoomDetail = () => {
             />
           </TabView>
           </View>
+          <Button
+        style={{}}
+        onPress={() => {
+          navigation.navigate(RootScreens.CREATE_CONTRACT as never);
+        }}
+      >
+        create contract
+      </Button>
           {focus}
     </View>
   );

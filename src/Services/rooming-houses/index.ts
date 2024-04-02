@@ -8,10 +8,7 @@ import {
 
 const roomingHouseApi = API.injectEndpoints({
   endpoints: build => ({
-    createRoomingHouse: build.mutation<
-      RoomingHouseResponse,
-      Partial<RoomingHouse>
-    >({
+    createRoomingHouse: build.mutation<RoomingHouseResponse, Partial<RoomingHouse>>({
       query: data => ({
         url: 'rooming-houses',
         method: 'POST',

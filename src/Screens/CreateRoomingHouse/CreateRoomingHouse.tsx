@@ -227,7 +227,7 @@ export const CreateRoomingHouse = () => {
       {(datetimePicker.closingHour || datetimePicker.openingHour) && (
         <DateTimePicker
           value={new Date()}
-          mode='time'
+          mode='date'
           is24Hour={true}
           display='spinner'
           // onTouchCancel={}

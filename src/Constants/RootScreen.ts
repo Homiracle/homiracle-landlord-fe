@@ -16,5 +16,6 @@ export enum RootScreens {
   ROOMDETAIL = 'RoomDetail',
   CREATE_FLOOR = 'CreateFloor',
   CREATE_ROOM = 'CreateRoom',
+  CREATE_CONTRACT = 'CreateContract',
   NOTIFICATION = 'Notification',
 }
