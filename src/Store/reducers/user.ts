@@ -1,9 +1,22 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '..';
 
+const initUser = {
+  user_id: "",
+  user_name: "",
+  password: "",
+  email: "",
+  role: "",
+  isMale: null,
+  date_of_birth: null,
+  phone: null,
+  CID: null,
+  address: null
+}
+
 const slice = createSlice({
   name: 'user',
-  initialState: { user: { user_id: null } },
+  initialState: { user: initUser },
   reducers: {
     setUser: (state, { payload: { ...user } }) => {
       state.user = user;
