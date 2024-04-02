@@ -63,7 +63,7 @@ export const RoomAndTenant = ({
       <View style={styles.inView}>
         <View style={styles.left}>
           <Text style={[theme.fonts.titleMedium]}>
-            {num_of_tenant ? num_of_tenant : 0}
+            {num_of_room ? num_of_room : 0}
           </Text>
 
           <Text style={[theme.fonts.bodySmall]}>Phòng trống</Text>
@@ -77,7 +77,7 @@ export const RoomAndTenant = ({
       <View style={styles.inView}>
         <View style={styles.left}>
           <Text style={[theme.fonts.titleMedium]}>
-            {num_of_room ? num_of_room : 0}
+            {num_of_tenant ? num_of_tenant : 0}
           </Text>
 
           <Text style={[theme.fonts.bodySmall]}>Người ở</Text>
