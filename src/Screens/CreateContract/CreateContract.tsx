@@ -88,12 +88,12 @@ export const CreateContract = () => {
       color: 'red',
     },
     tenantButton:{
-      backgroundColor: theme.colors.primary,
-      maxWidth: wp(90),
+      borderRadius: wp(2),
+      width: wp(96),
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
-    datePress:{
-      backgroundColor: theme.colors.primary,
-    }
   });
 
   // other hooks
@@ -113,7 +113,7 @@ export const CreateContract = () => {
       start_date: '',
       end_date: '',
       couting_fee_day: '',
-      paying_cost_cycle: 0,
+      paying_cost_cycle: '',
       maximmum_number_of_people: 4,
       reference_cost: {
           deposit: 0,
@@ -222,16 +222,16 @@ export const CreateContract = () => {
                 showDatetimePicker({ ...datetimePicker, endDate: false });
                 if (selectedDate) {
                     handleInputChange(
-                        'closing_hour',
-                        moment(selectedDate).format("MMM Do YY"),
+                        'end_date',
+                        moment(selectedDate).format("L"),
                     );
                 }
             } else if (datetimePicker.startDate) {
                 showDatetimePicker({ ...datetimePicker,startDate: false});
                 if (selectedDate) {
                     handleInputChange(
-                        'opening_hour',
-                        moment(selectedDate).format("MMM Do YY"),
+                        'start_date',
+                        moment(selectedDate).format("L"),
                     );
                 }
             } else if (datetimePicker.feeDay) {
@@ -239,7 +239,7 @@ export const CreateContract = () => {
                 if (selectedDate) {
                     handleInputChange(
                         'couting_fee_day',
-                        moment(selectedDate).format("MMM Do YY"),
+                        moment(selectedDate).format("L"),
                     );
                 }
             }
@@ -302,7 +302,7 @@ export const CreateContract = () => {
                 <TextInput
                   placeholder='CCCD/CMND'
                   style={styles.textInput}
-                  onChangeText={text => handleInputChange('lanl_id', text)}
+                  onChangeText={text => handleInputChange('landl_id', text)}
                   onBlur={() => onBlur('landl_name')}
                 />
                 
@@ -319,13 +319,12 @@ export const CreateContract = () => {
               <View style={{ flexDirection: 'row', gap: wp(2) }}>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.subTitle}>Ngày bắt đầu</Text>
-                  <Pressable style={styles.datePress}
+                  <Pressable
                     onPress={() =>{
                       showDatetimePicker({
                         ...datetimePicker,
                         startDate: true,
                       });
-                    console.log(datetimePicker.startDate);
                     }}
                   >
                     <TextInput
@@ -337,6 +336,7 @@ export const CreateContract = () => {
                       showSoftInputOnFocus
                       value={contractData.start_date}
                       onBlur={() => onBlur('start_date')}
+                      editable = {false}
                     />
                   </Pressable>
                 </View>
@@ -348,7 +348,6 @@ export const CreateContract = () => {
                         ...datetimePicker,
                         endDate: true,
                       });
-                    console.log(datetimePicker.endDate);
                     }}
                   >
                     <TextInput
@@ -360,6 +359,7 @@ export const CreateContract = () => {
                       showSoftInputOnFocus
                       value={contractData.end_date}
                       onBlur={() => onBlur('end_date')}
+                      editable = {false}
                     />
                   </Pressable>
                 </View>
@@ -372,11 +372,10 @@ export const CreateContract = () => {
                         ...datetimePicker,
                         feeDay: true,
                       });
-                      console.log(datetimePicker.feeDay);
                     }}
                   >
                     <TextInput
-                      placeholder='05:00'
+                      placeholder='1/1/2024'
                       style={styles.textInput}
                       onChangeText={text =>
                         handleInputChange('couting_fee_day', text)
@@ -384,8 +383,24 @@ export const CreateContract = () => {
                       showSoftInputOnFocus
                       value={contractData.couting_fee_day}
                       onBlur={() => onBlur('couting_fee_day')}
+                      editable = {false}
                     />
                 </Pressable>         
+              </View>
+              <View>
+                <Text style={styles.subTitle}>Kì thanh toán tiền phòng</Text>
+    
+                    <TextInput
+                      placeholder='1 tháng'
+                      style={styles.textInput}
+                      onChangeText={text =>
+                        handleInputChange('paying_cost_cycle', text)
+                      }
+                      showSoftInputOnFocus
+                      value={contractData.paying_cost_cycle}
+                      onBlur={() => onBlur('paying_cost_cycle')}
+                    />
+         
               </View>
           </Surface>
           <Surface style={styles.surface}>
@@ -457,29 +472,17 @@ export const CreateContract = () => {
             </View>
           </Surface>
 
-          {/* <Surface style={styles.surface}>
-            <Text style={[theme.fonts.titleMedium, styles.title]}>
-              Quy định chung của nhà trọ
-            </Text>
-            <View
-              style={{
-                flexDirection: 'column',
-                flex: 1,
-                gap: hp(2),
-                marginTop: hp(1),
-              }}
-            >
-              <View>
-                <Text style={styles.subTitle}>Điều 1</Text>
-                <TextInput
-                  placeholder='Không nuôi thú cưng'
-                  style={styles.textInput}
-                />
-              </View>
-            </View>
-          </Surface> */}
         </View>
-        <Button>Thêm khách thuê</Button>
+        <View style = {styles.buttonContainer}>
+        <Button 
+          buttonColor={theme.colors.primary}
+          textColor={theme.colors.onPrimary}
+          style = {styles.tenantButton}
+          icon="account-multiple-plus"
+        >
+          Thêm khách thuê
+        </Button>
+        </View>
         <View style={styles.buttonContainer}>
           <Button
             buttonColor={theme.colors.error}
