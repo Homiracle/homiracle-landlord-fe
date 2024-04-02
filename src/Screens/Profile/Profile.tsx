@@ -1,16 +1,19 @@
 import React from 'react';
 import { Header } from '../../Components';
 import { useAppTheme } from '../../Theme';
+import { useAppSelector } from '../../Store/hook';
+import { RootScreens } from '../../Constants/RootScreen';
+import { useNavigation } from '@react-navigation/native';
 import { View, StyleSheet, TouchableHighlight, Image } from 'react-native';
 import { Text, Avatar, Surface, DataTable, Button } from 'react-native-paper';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { useAppSelector } from '../../Store/hook';
 
 export const Profile = () => {
   const theme = useAppTheme();
+  const navigation = useNavigation();
   const styles = StyleSheet.create({
     content: {
       flex: 1,
@@ -78,7 +81,7 @@ export const Profile = () => {
         title='Thông tin cá nhân'
         height={20}
         mode='center-aligned'
-        onBack={() => {}}
+        onBack={() => navigation.navigate(RootScreens.HOME as never)}
         // onNotification={() => {}}
         scroll='vertical'
       >
@@ -127,9 +130,7 @@ export const Profile = () => {
             {/* Gender */}
             <DataTable.Row style={styles.profileRow}>
               <DataTable.Cell>Giới tính</DataTable.Cell>
-              <DataTable.Cell numeric>
-                {profile.isMale}
-              </DataTable.Cell>
+              <DataTable.Cell numeric>{profile.isMale}</DataTable.Cell>
             </DataTable.Row>
 
             {/* CID */}
