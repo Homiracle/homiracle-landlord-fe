@@ -81,7 +81,7 @@ export const RoomItem = ({
                     position: 'absolute',
                     left: 175,
                     top: 35,
-                }, homiralceTheme.fonts.bodySmall]}
+                }, homiralceTheme.fonts.bodyMedium]}
                 numberOfLines={2}
                 ellipsizeMode='tail'
             >{cost}</Text>

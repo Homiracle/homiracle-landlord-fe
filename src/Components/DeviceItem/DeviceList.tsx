@@ -9,7 +9,7 @@ import { Searchbar } from 'react-native-paper';
 import { NativeScrollEvent, View } from 'react-native';
 
 export interface DeviceListProps {
-  data: any[];
+  data: any;
   onScroll?: ({ nativeEvent }: { nativeEvent: NativeScrollEvent }) => void;
 }
 
@@ -36,7 +36,6 @@ export const DeviceList = ({ data, onScroll }: DeviceListProps) => {
   ];
 
   return (
-    <View>
       <FlatList
         contentContainerStyle={{
           justifyContent: 'center',
@@ -57,6 +56,5 @@ export const DeviceList = ({ data, onScroll }: DeviceListProps) => {
         )}
         onScroll={onScroll}
       />
-    </View>
   );
 };

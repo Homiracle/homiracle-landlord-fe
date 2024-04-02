@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { FlatList, View } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
 import { RootScreens } from '../../Constants/RootScreen';
-import { Header, TabView, RoomAndTenant,TenantList, DeviceList, FloorList } from '../../Components';
+import { Header, TabView, RoomAndTenant,TenantList, DeviceList, SearchBar } from '../../Components';
 import { RoomList } from '../../Components/Room';
 import {
   widthPercentageToDP as wp,
@@ -12,9 +12,18 @@ import { TabButton } from '../../Components/TabView/TabButton';
 import { useAppSelector } from '../../Store/hook';
 import { getFloorId, getHouseId } from '../../Store/reducers';
 import { useGetFloorDetailQuery, useGetRoomsQuery } from '../../Services';
+import { AnimatedFAB, Surface} from 'react-native-paper';
+import { StyleSheet, NativeScrollEvent} from 'react-native';
+import { useAppTheme } from '../../Theme';
+import {FloorDetailsNavigationProp} from './FloorDetailContainer';
+export const FloorDetail = (
+  {
+    navigation,
+  }: {
+    navigation: FloorDetailsNavigationProp;
+  }
+) => {
 
-export const FloorDetail = () => {
-  const navigation = useNavigation();
   const house_id = useAppSelector(getHouseId) as string;
   const floor_id = useAppSelector(getFloorId) as string;
   const {
@@ -28,9 +37,52 @@ export const FloorDetail = () => {
     isSuccess: isRoomSuccess,
     isError: isRoomError,
   } = useGetRoomsQuery({ house_id, floor_id });
-  const [focus, setFocused] = React.useState(<RoomList data = {roomData}/>)
+
+  useEffect(() => {
+    if (isRoomSuccess) {
+      console.log('Floors Data:', roomData);
+      setFocus(<RoomList data={roomData} />);
+    } else if (isRoomError) {
+      console.log('Error fetching floors data');
+    }
+  }, [isRoomSuccess, isRoomError, roomData]);
+  const [focus, setFocus] = React.useState(<RoomList data = {roomData}/>)
+  const [status, setStatus] = React.useState('room');
+  const [placeholder, setPlaceholder] = React.useState('Tìm kiếm phòng' as string);
+  const [search, setSearch] = React.useState('');
+  const [label, setLabel] = React.useState('Thêm phòng');
+  const setStatusFilter = (status: string) => {
+    if (status === 'room') {
+      setPlaceholder('Tìm kiếm phòng');
+      setLabel('Thêm phòng');
+    } else if (status === 'device') {
+      setPlaceholder('Tìm kiếm thiết bị');
+      setLabel('Thêm thiết bị');
+    } else if (status === 'tenant') {
+      setPlaceholder('Tìm kiếm khách thuê');
+      setLabel('Thêm khách thuê');
+    }
+    setStatus(status);
+  };
+  const [isExtended, setIsExtended] = React.useState(true);
+  const onScroll = ({ nativeEvent }: { nativeEvent: NativeScrollEvent }) => {
+    const currentScrollPosition =
+      Math.floor(nativeEvent?.contentOffset?.y) ?? 0;
+
+    setIsExtended(currentScrollPosition <= 0);
+  };
+  const theme = useAppTheme();
+  const styles = StyleSheet.create({
+    fabStyle: {
+      position: 'absolute',
+      bottom: hp(2),
+      right: wp(4),
+      backgroundColor: theme.colors.primary,
+    },
+  });
+  
   return (
-    <View>
+    <View style={{flex : 1}}>
       <Header
         title={'Tầng ' + floorData?.floor_name}
         height={20}
@@ -46,29 +98,55 @@ export const FloorDetail = () => {
       </Header>
       <TabView>
         <TabButton
-          isClicked={true}
+          isClicked={status === 'room'}
           name='Phòng'
+          displayNumber={true}
           number={floorData?.number_of_rooms}
-          displayNumber={true}
-          onFocus={()=>{setFocused(<FloorList data = {roomData}/>);}}
+          onFocus={() => {
+            setStatusFilter('room');
+            setFocus(<RoomList data={roomData} onScroll={onScroll} />);
+          }}
         />
         <TabButton
-          isClicked={false}
+          isClicked={status === 'device'}
           name='Thiết bị'
-          number={floorData?.number_of_devices}
           displayNumber={true}
-          onFocus={()=>{setFocused(<DeviceList floor_id={floor_id}/>);}}
+          number={floorData?.number_of_devices}
+          onFocus={() => {
+            setStatusFilter('device');
+            setFocus(<DeviceList data={[]} onScroll={onScroll} />);
+          }}
         />
         <TabButton
-          isClicked={false}
+          isClicked={status === 'tenant'}
           name='Khách thuê'
-          number={floorData?.number_of_tenants}
           displayNumber={true}
-          onFocus={()=>{setFocused(<TenantList floor_id={floor_id}/>);}}
+          number={floorData?.number_of_tenants}
+          onFocus={() => {
+            setStatusFilter('tenant');
+            setFocus(<TenantList data={[]} onScroll={onScroll} />);
+          }}
         />
       </TabView>
+      <SearchBar placeholder={placeholder} value={search} />
 
-      {focus}
+        {focus}
+
+      {status == 'room' && (
+        <AnimatedFAB
+          icon={'plus'}
+          label={label}
+          extended={isExtended}
+          onPress={() => {
+            navigation.navigate(RootScreens.CREATE_ROOM as never);
+          }}
+          visible={true}
+          animateFrom={'right'}
+          iconMode={'dynamic'}
+          style={styles.fabStyle}
+          color={theme.colors.onPrimary}
+        />
+      )}
     </View>
   );
 };
