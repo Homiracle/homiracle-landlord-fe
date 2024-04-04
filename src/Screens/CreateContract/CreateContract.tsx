@@ -19,6 +19,7 @@ import { useAppSelector } from '../../Store/hook';
 import { getHouseId, selectUserId } from '../../Store/reducers';
 import { contractFormValidationSchema as schema } from '../../Utils';
 import { useFormik } from 'formik';
+import { selectUser } from '../../Store/reducers';
 
 export const CreateContract = () => {
   // styles
@@ -207,7 +208,7 @@ export const CreateContract = () => {
     }
   };
 
-
+  const user = useAppSelector(selectUser);
 
   return (
     <View style={styles.container}>
@@ -294,16 +295,14 @@ export const CreateContract = () => {
               <View>
                 <Text style={styles.subTitle}>Đại diện bên cho thuê</Text>
                 <TextInput
-                  placeholder='Họ và tên'
+                  placeholder={user.user_name}
                   style={styles.textInput}
-                  onChangeText={text => handleInputChange('landl_name', text)}
-                  onBlur={() => onBlur('landl_name')}
+                  editable={false}
                 />
                 <TextInput
-                  placeholder='CCCD/CMND'
+                  placeholder={user.CID || ''}
                   style={styles.textInput}
-                  onChangeText={text => handleInputChange('landl_id', text)}
-                  onBlur={() => onBlur('landl_name')}
+                  editable={false}
                 />
                 
               </View>

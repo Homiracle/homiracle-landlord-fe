@@ -131,8 +131,9 @@ export const FloorDetail = (
       <SearchBar placeholder={placeholder} value={search} />
 
         {focus}
+        
 
-      {status == 'room' && (
+      {status === 'room' && (
         <AnimatedFAB
           icon={'plus'}
           label={label}
