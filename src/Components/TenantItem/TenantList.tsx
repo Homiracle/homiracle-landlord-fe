@@ -9,7 +9,7 @@ import { NativeScrollEvent, View } from 'react-native';
 import { TenantItem } from './TenantItem';
 
 export interface TenantListProps {
-  data: any[];
+  data: any;
   onScroll?: ({ nativeEvent }: { nativeEvent: NativeScrollEvent }) => void;
   isRoom?: boolean;
 }

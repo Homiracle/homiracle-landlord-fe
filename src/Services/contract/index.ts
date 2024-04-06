@@ -1,12 +1,19 @@
 import { getClosestBreakpoint } from 'native-base/lib/typescript/theme/tools';
 import { API } from '../base';
-import {Contract } from './interface'
+import {Contract,ContractDetails } from './interface'
 
 
 export type ContractResponse = Partial<Contract> & {
     house_id: string;
   };
-  
+export type ContractMini = Partial<Contract> & {
+    house_id: string;
+    floor_id: string;
+    room_id: string;
+    reference_cost:{
+      room_cost: number;
+    }
+};
 const contractApi = API.injectEndpoints({
   endpoints: build => ({
     createContract: build.mutation<ContractResponse, Partial<Contract>>({
@@ -16,10 +23,10 @@ const contractApi = API.injectEndpoints({
         body: data,
       }),
     }),
-    getContractList: build.query<ContractResponse, {house_id: string, floor_id:string,room_id: string}>({
+    getContractList: build.query<ContractDetails[], {house_id: string, floor_id:string, room_id: string}>({
       query: ({house_id,floor_id,room_id})=> `contracts?house_id=${house_id}&floor_id=${floor_id}&room_id=${room_id}`
     }),
-    getContract: build.query<ContractResponse, string>({
+    getContract: build.query<ContractMini, string>({
       query: contract_id => `contracts.${contract_id}`
     })
 
@@ -30,4 +37,6 @@ const contractApi = API.injectEndpoints({
 
 export const {
   useCreateContractMutation,
+  useGetContractListQuery,
+  useGetContractQuery,
 } = contractApi;

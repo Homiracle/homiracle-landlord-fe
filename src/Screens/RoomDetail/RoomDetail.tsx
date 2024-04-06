@@ -8,23 +8,25 @@ import {
   TabButton,
   DeviceList,
   TenantList,
+  
 } from '../../Components';
-import { StyleSheet } from 'react-native';
-import { Button } from 'react-native-paper';
+import { StyleSheet, NativeScrollEvent } from 'react-native';
+import { Button, AnimatedFAB } from 'react-native-paper';
 import { useAppTheme } from '../../Theme';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import { RoomDetailComponent } from '../../Components/Room/RoomDetailComponent';
-import { Room as RoomProps, useGetRoomQuery } from '../../Services';
+import { Room as RoomProps, useGetRoomQuery, useGetContractListQuery } from '../../Services';
 import { useAppSelector } from '../../Store/hook';
-import { getRoomId } from '../../Store/reducers';
-
+import { getRoomId, getFloorId, getHouseId } from '../../Store/reducers';
+import { ContractList } from '../../Components/Contract/ContractList';
 export const RoomDetail = () => {
   const navigation = useNavigation();
   //hooks
   const [status, setStatus] = React.useState('info');
+  const [label, setLabel] = React.useState('Thêm hợp đồng');
   const setStatusFilter = (status: string) => {
     setStatus(status);
   };
@@ -36,9 +38,24 @@ export const RoomDetail = () => {
     },
     content: {
     },
+    fabStyle: {
+      position: 'absolute',
+      bottom: hp(2),
+      right: wp(4),
+      backgroundColor: theme.colors.primary,
+    },
   });
   const [focus, setFocus] = React.useState(<RoomDetailComponent data={[]}/>);
   const room_id = useAppSelector(getRoomId) as string;
+  const house_id = useAppSelector(getHouseId) as string;
+  const floor_id = useAppSelector(getFloorId) as string;
+  const [isExtended, setIsExtended] = React.useState(true);
+  const onScroll = ({ nativeEvent }: { nativeEvent: NativeScrollEvent }) => {
+    const currentScrollPosition =
+      Math.floor(nativeEvent?.contentOffset?.y) ?? 0;
+
+    setIsExtended(currentScrollPosition <= 0);
+  };
   const { data: roomData, isSuccess: isRoomSuccess } = useGetRoomQuery(room_id);
 
   useEffect(() => {
@@ -47,7 +64,11 @@ export const RoomDetail = () => {
       console.log('Room Data:', roomData);
     }
   }, [isRoomSuccess, roomData]);
-
+  const {
+    data: contractsData,
+    isSuccess: isFloorsSuccess,
+    isError: isFloorsError,
+  } = useGetContractListQuery({house_id,floor_id, room_id});
   return (
     <View style={styles.container}>
       <Header
@@ -64,6 +85,7 @@ export const RoomDetail = () => {
               displayNumber={false}
               onFocus={() => {
                 setStatusFilter('info');
+                setLabel('Thêm hợp đồng');
                 setFocus(<RoomDetailComponent data={roomData}/>);
               }}
             />
@@ -74,7 +96,8 @@ export const RoomDetail = () => {
               displayNumber={true}
               onFocus={() => {
                 setStatusFilter('device');
-                setFocus(<DeviceList />);
+                setLabel('Thêm thiết bị');
+                setFocus(<DeviceList data={[]} />);
               }}
             />
             <TabButton
@@ -84,20 +107,31 @@ export const RoomDetail = () => {
               displayNumber={true}
               onFocus={() => {
                 setStatusFilter('tenant');
-                setFocus(<TenantList />);
+                setFocus(<TenantList data={[]} />);
+                setLabel('Thêm khách thuê');
               }}
             />
           </TabView>
           </View>
-          <Button
-        style={{}}
-        onPress={() => {
-          navigation.navigate(RootScreens.CREATE_CONTRACT as never);
-        }}
-      >
-        create contract
-      </Button>
           {focus}
+          {status === 'info' && (
+            <ContractList data={contractsData} />
+          )}
+          {status !== 'tenant' && (
+        <AnimatedFAB
+          icon={'plus'}
+          label={label}
+          extended={isExtended}
+          onPress={() => {
+            navigation.navigate(RootScreens.CREATE_CONTRACT as never);
+          }}
+          visible={true}
+          animateFrom={'right'}
+          iconMode={'dynamic'}
+          style={styles.fabStyle}
+          color={theme.colors.onPrimary}
+        />
+      )}
     </View>
   );
 };
