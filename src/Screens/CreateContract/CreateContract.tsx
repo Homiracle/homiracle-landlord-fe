@@ -20,19 +20,6 @@ import { getHouseId, selectUserId } from '../../Store/reducers';
 import { contractFormValidationSchema as schema } from '../../Utils';
 import { useFormik } from 'formik';
 
-const province = [
-  { id: 1, name: 'Hà Nội' },
-  { id: 2, name: 'TP. Hồ Chí Minh' },
-];
-const district = [
-  { id: 1, name: 'Quận Ba Đình' },
-  { id: 2, name: 'Quận 10' },
-];
-const commune = [
-  { id: 1, name: 'Phường A' },
-  { id: 2, name: 'Phường B' },
-];
-
 export const CreateContract = () => {
   // styles
   const theme = useAppTheme();
@@ -103,6 +90,9 @@ export const CreateContract = () => {
     tenantButton:{
       backgroundColor: theme.colors.primary,
       maxWidth: wp(90),
+    },
+    datePress:{
+      backgroundColor: theme.colors.primary,
     }
   });
 
@@ -111,8 +101,8 @@ export const CreateContract = () => {
   const [backDialog, showBackDialog] = React.useState(false);
   const [cancelDialog, showCancelDialog] = React.useState(false);
   const [datetimePicker, showDatetimePicker] = React.useState({
-    openingHour: false,
-    closingHour: false,
+    startDate: false,
+    endDate: false,
     feeDay: false,
   });
   const [contractData, setContractData] =
@@ -221,23 +211,23 @@ export const CreateContract = () => {
 
   return (
     <View style={styles.container}>
-      {(datetimePicker.closingHour || datetimePicker.openingHour || datetimePicker.feeDay) && (
+      {(datetimePicker.endDate || datetimePicker.startDate || datetimePicker.feeDay) && (
         <DateTimePicker
           value={new Date()}
           mode='date'
           display='calendar'
           onChange={(event, selectedDate) => {
             
-            if (datetimePicker.closingHour) {
-                showDatetimePicker({ ...datetimePicker, closingHour: false });
+            if (datetimePicker.endDate) {
+                showDatetimePicker({ ...datetimePicker, endDate: false });
                 if (selectedDate) {
                     handleInputChange(
                         'closing_hour',
                         moment(selectedDate).format("MMM Do YY"),
                     );
                 }
-            } else if (datetimePicker.openingHour) {
-                showDatetimePicker({ ...datetimePicker,openingHour: false});
+            } else if (datetimePicker.startDate) {
+                showDatetimePicker({ ...datetimePicker,startDate: false});
                 if (selectedDate) {
                     handleInputChange(
                         'opening_hour',
@@ -329,45 +319,47 @@ export const CreateContract = () => {
               <View style={{ flexDirection: 'row', gap: wp(2) }}>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.subTitle}>Ngày bắt đầu</Text>
-                  <Pressable
-                    onPress={() =>
+                  <Pressable style={styles.datePress}
+                    onPress={() =>{
                       showDatetimePicker({
                         ...datetimePicker,
-                        openingHour: true,
-                      })
-                    }
+                        startDate: true,
+                      });
+                    console.log(datetimePicker.startDate);
+                    }}
                   >
                     <TextInput
                       placeholder='1/1/2024'
                       style={styles.textInput}
                       onChangeText={text =>
-                        handleInputChange('opening_hour', text)
+                        handleInputChange('start_date', text)
                       }
                       showSoftInputOnFocus
                       value={contractData.start_date}
-                      onBlur={() => onBlur('opening_hour')}
+                      onBlur={() => onBlur('start_date')}
                     />
                   </Pressable>
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.subTitle}>Ngày kết thúc</Text>
                   <Pressable
-                    onPress={() =>
+                    onPress={() =>{
                       showDatetimePicker({
                         ...datetimePicker,
-                        closingHour: true,
-                      })
-                    }
+                        endDate: true,
+                      });
+                    console.log(datetimePicker.endDate);
+                    }}
                   >
                     <TextInput
                       placeholder='1/1/2024'
                       style={styles.textInput}
                       onChangeText={text =>
-                        handleInputChange('closing_hour', text)
+                        handleInputChange('end_date', text)
                       }
                       showSoftInputOnFocus
                       value={contractData.end_date}
-                      onBlur={() => onBlur('closing_hour')}
+                      onBlur={() => onBlur('end_date')}
                     />
                   </Pressable>
                 </View>
@@ -375,14 +367,15 @@ export const CreateContract = () => {
               <View>
                 <Text style={styles.subTitle}>Ngày bắt đầu tính tiền</Text>
                 <Pressable
-                    onPress={() =>
+                    onPress={() =>{
                       showDatetimePicker({
                         ...datetimePicker,
                         feeDay: true,
-                      })
-                    }
+                      });
+                      console.log(datetimePicker.feeDay);
+                    }}
                   >
-              <TextInput
+                    <TextInput
                       placeholder='05:00'
                       style={styles.textInput}
                       onChangeText={text =>
@@ -392,14 +385,8 @@ export const CreateContract = () => {
                       value={contractData.couting_fee_day}
                       onBlur={() => onBlur('couting_fee_day')}
                     />
-                  </Pressable>
-                  {isTouched('couting_fee_day') ? (
-                    <Text style={styles.badText}>
-                      {formik.errors.couting_fee_day}
-                    </Text>
-                  ) : null}
-         
-                </View>
+                </Pressable>         
+              </View>
           </Surface>
           <Surface style={styles.surface}>
             <Text style={[theme.fonts.titleMedium, styles.title]}>
