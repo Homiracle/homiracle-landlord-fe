@@ -7,26 +7,28 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { Pressable, StyleSheet, TextInput, TextStyle } from 'react-native';
+import { StyleSheet, TextInput, TextStyle } from 'react-native';
 import { Button, Surface, Portal } from 'react-native-paper';
 import { Dropdown } from 'react-native-searchable-dropdown-kj';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import moment from 'moment';
-import { useCreateContractMutation } from '../../Services';
 
-import {CreateDevice as CreateDeviceProps } from '../../Services/devices/type/create-device.type';
+import { CreateDevice as DeviceProps } from '../../Services/devices/type/create-device.type';
 import { useAppSelector } from '../../Store/hook';
-import { getHouseId, selectUserId } from '../../Store/reducers';
+import { getHouseId, getFloorId, getRoomId } from '../../Store/reducers';
 // import { contractFormValidationSchema as schema } from '../../Utils';
 import { useFormik } from 'formik';
 import { useCreateDeviceMutation } from '../../Services/devices';
+import { DeviceType } from '../../Constants/DeviceType';
+import { Props as CreateDeviceProps } from './CreateDeviceContainer';
 
 const deviceType = [
-    { id: 1, type: 'bóng đèn' },
-    { id: 2, type: 'cảm biến nhiệt độ' },
-  ];
+  { id: 1, type: DeviceType.CAMERA, name: 'Camera' },
+  { id: 2, type: DeviceType.LIGHT, name: 'Đèn' },
+  { id: 3, type: DeviceType.FAN, name: 'Quạt' },
+  { id: 4, type: DeviceType.HUMIDTY_SENSOR, name: 'Cảm biến độ ẩm' },
+  { id: 5, type: DeviceType.TEMPERATURE_SENSOR, name: 'Cảm biến nhiệt độ' },
+];
 
-export const CreateDevice = () => {
+export const CreateDevice = ({ route, navigation }: CreateDeviceProps) => {
   // styles
   const theme = useAppTheme();
   const styles = StyleSheet.create({
@@ -52,11 +54,10 @@ export const CreateDevice = () => {
     title: {
       color: theme.colors.primary,
       fontWeight: 'bold',
-    
     },
     subTitle: {
       fontWeight: 'bold',
-      marginTop:hp(1),
+      marginTop: hp(1),
     },
     textInput: {
       borderBottomColor: theme.colors.primary,
@@ -93,14 +94,13 @@ export const CreateDevice = () => {
     badText: {
       color: 'red',
     },
-    tenantButton:{
+    tenantButton: {
       backgroundColor: theme.colors.primary,
       maxWidth: wp(90),
-    }
+    },
   });
 
   // other hooks
-  const navigation = useNavigation();
   const [backDialog, showBackDialog] = React.useState(false);
   const [cancelDialog, showCancelDialog] = React.useState(false);
   const [datetimePicker, showDatetimePicker] = React.useState({
@@ -108,14 +108,25 @@ export const CreateDevice = () => {
     closingHour: false,
     feeDay: false,
   });
-  const [deviceData, setDeviceData] =
-    React.useState<CreateDeviceProps>({
-      name: '',
-      type: '',
-    });
+  const isHouse = route.params?.isHouse;
+  const isFloor = route.params?.isFloor;
+  const isRoom = route.params?.isRoom;
 
-  const [CreateDevice, { data, error, isSuccess, isLoading, isError }] =
-    useCreateDeviceMutation();
+  const getScopeId = () => {
+    if (isHouse) {
+      return useAppSelector(getHouseId);
+    } else if (isFloor) {
+      return useAppSelector(getFloorId);
+    } else if (isRoom) {
+      return useAppSelector(getRoomId);
+    }
+  };
+  const [deviceData, setDeviceData] = React.useState<DeviceProps>({
+    name: '',
+    type: '',
+    accessable_scope: isHouse ? 'house' : isFloor ? 'floor' : 'room',
+    accessable_scope_id: getScopeId() || '',
+  });
 
   const formik = useFormik({
     initialValues: deviceData,
@@ -135,27 +146,35 @@ export const CreateDevice = () => {
 
   // console.log(useAppSelector(state => state.user));
 
-  const handleInputChange = (
-    fieldName: string,
-    text: string | number,
-    nestedField?: string,
-  ) => {
+  const handleInputChange = (fieldName: string, text: string | number) => {
     // console.log(fieldName, text);
 
     setDeviceData(prevData => ({
-        ...prevData,
-        [fieldName]: text,
-      }));
-      formik.handleChange(fieldName)(String(text));
-    }
+      ...prevData,
+      [fieldName]: text,
+    }));
+    formik.handleChange(fieldName)(String(text));
+  };
+
+  const [CreateDevice, { data, error, isSuccess, isLoading, isError }] =
+    useCreateDeviceMutation();
 
   const handleSubmit = async () => {
     console.log();
     await CreateDevice(deviceData as Partial<CreateDeviceProps>);
   };
 
+  useEffect(() => {
+    if (isSuccess) {
+      console.log('Create device success:', data);
+      navigation.goBack();
+    } else if (isError) {
+      console.log('Create device error:', error);
+    }
+  }, [isSuccess, isError, data, error]);
+
   const isTouched = (field: string) => {
-      return formik.touched[field] && formik.errors[field];
+    return formik.touched[field] && formik.errors[field];
   };
 
   const onBlur = (field: string, nestedField?: string) => {
@@ -220,8 +239,10 @@ export const CreateDevice = () => {
                 <TextInput
                   placeholder='Nhà test-tầng 1-phòng 2'
                   style={styles.textInput}
+                  value='Nhà test-tầng 1-phòng 2'
                   onChangeText={text => handleInputChange('name', text)}
                   onBlur={() => onBlur('name')}
+                  editable={false}
                 />
                 {isTouched('name') ? (
                   <Text style={styles.badText}>{formik.errors.name}</Text>
@@ -240,30 +261,25 @@ export const CreateDevice = () => {
                 ) : null}
               </View>
               <View>
-                <Text style={styles.subTitle}>Tỉnh/Thành phố</Text>
+                <Text style={styles.subTitle}>Loại thiết bị</Text>
                 <Dropdown
                   style={styles.dropdown}
                   placeholderStyle={styles.placeholderStyle}
                   data={deviceType}
-                  labelField='type'
+                  labelField='name'
                   valueField='id'
-                  onChange={item =>
-                    handleInputChange('type', item.type)
-                  }
+                  onChange={item => handleInputChange('type', item.type)}
                   placeholder='Chọn loại thiết bị'
                   search
                   searchPlaceholder='Tìm loại thiết bị'
                   onBlur={() => onBlur('type')}
                 />
                 {isTouched('type') ? (
-                  <Text style={styles.badText}>
-                    {formik.errors.type}
-                  </Text>
+                  <Text style={styles.badText}>{formik.errors.type}</Text>
                 ) : null}
               </View>
             </View>
           </Surface>
-
         </View>
         <View style={styles.buttonContainer}>
           <Button

@@ -49,6 +49,7 @@ export const RoomingHouseDetail = ({
     isError: isRoomingHouseError,
   } = useGetRoomingHouseDetailsQuery(house_id);
 
+
   // Gọi useQuery cho floors
   const {
     data: floorsData,
@@ -70,14 +71,17 @@ export const RoomingHouseDetail = ({
   const [search, setSearch] = useState('');
   const [placeholder, setPlaceholder] = useState('Tìm kiếm tầng' as string);
   const [label, setLabel] = useState('Thêm tầng');
+  const [screen, setScreen] = useState(RootScreens.CREATE_FLOOR as string);
   const [status, setStatus] = useState('floor');
   const setStatusFilter = (status: string) => {
     if (status === 'floor') {
       setPlaceholder('Tìm kiếm tầng');
       setLabel('Thêm tầng');
+      setScreen(RootScreens.CREATE_FLOOR as string);
     } else if (status === 'device') {
       setPlaceholder('Tìm kiếm thiết bị');
       setLabel('Thêm thiết bị');
+      setScreen(RootScreens.CREATE_DEVICE as string);
     } else if (status === 'tenant') {
       setPlaceholder('Tìm kiếm khách thuê');
       setLabel('Thêm khách thuê');
@@ -148,7 +152,11 @@ export const RoomingHouseDetail = ({
           label={label}
           extended={isExtended}
           onPress={() => {
-            navigation.navigate(RootScreens.CREATE_FLOOR as never);
+            if (status === 'device') {
+              navigation.navigate(RootScreens.CREATE_DEVICE, { isHouse: true });
+            } else {
+              navigation.navigate(screen as never);
+            }
           }}
           visible={true}
           animateFrom={'right'}

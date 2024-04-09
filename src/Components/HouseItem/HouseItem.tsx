@@ -20,6 +20,7 @@ export interface HouseItemProps {
 
 export type RootStackHouseParamList = {
     RoomingHouseDetail: { house_id: string } | undefined;
+    CreateDevice: { isHouse?: boolean; isFloor?: boolean; isRoom?: boolean } | undefined;
   };
 
 export const HouseItem = ({
