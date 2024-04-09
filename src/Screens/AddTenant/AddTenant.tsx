@@ -1,19 +1,22 @@
 import React from 'react';
 import { View, Image, StyleSheet, TouchableHighlight } from 'react-native';
-import { Searchbar, Button, Text } from 'react-native-paper';
+import { Searchbar, Button, Text, Portal } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
 import { useAppTheme } from '../../Theme';
-import { Header } from '../../Components';
+import { Header, CustomDialog } from '../../Components';
 
 const AddTenant = () => {
   const theme = useAppTheme();
+  const navigation = useNavigation();
 
   // states
   const [searchQuery, setSearchQuery] = React.useState<string>('');
+  const [confirmDialog, setConfirmDialog] = React.useState<boolean>(false);
 
   // style
   const styles = StyleSheet.create({
@@ -52,9 +55,23 @@ const AddTenant = () => {
     },
   });
 
+  const onBack = () => {
+    navigation.goBack();
+  };
+
+  const onAddTenant = () => {
+    setConfirmDialog(true);
+    // call api here
+  };
+
   return (
     <View>
-      <Header title='Thêm khách thuê' height={20} mode='center-aligned'>
+      <Header
+        title='Thêm khách thuê'
+        height={20}
+        mode='center-aligned'
+        onBack={onBack}
+      >
         <Searchbar
           style={{
             width: wp('90%'),
@@ -82,12 +99,21 @@ const AddTenant = () => {
           <Button
             textColor={theme.colors.onPrimary}
             style={styles.button}
-            onPress={() => {}}
+            onPress={() => setConfirmDialog(true)}
           >
             Thêm
           </Button>
         </TouchableHighlight>
       </View>
+      <Portal>
+        <CustomDialog
+          visible={confirmDialog}
+          title='Thêm người thuê'
+          content='Bạn có muốn thêm người thuê này không?'
+          onDismiss={() => setConfirmDialog(false)}
+          onConfirm={onAddTenant}
+        />
+      </Portal>
     </View>
   );
 };
