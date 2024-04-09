@@ -60,7 +60,7 @@ const AddTenant = () => {
   };
 
   const onAddTenant = () => {
-    setConfirmDialog(true);
+    setConfirmDialog(false);
     // call api here
   };
 
