@@ -7,7 +7,7 @@ import {
   CreateFloorContainer,
   CreateRoomContainer,
   FloorDetailContainer,
-
+  AddTenantContainer,
 } from '../../Screens';
 import { CreateContractContainer } from '../../Screens/CreateContract';
 import { RoomDetailContainer } from '../../Screens/RoomDetail';
@@ -58,6 +58,10 @@ export const RoomingHouseStack = () => {
       <Stack.Screen
         name={RootScreens.CREATE_DEVICE}
         component={CreateDeviceContainer}
+      />
+      <Stack.Screen
+        name={RootScreens.ADD_TENANT}
+        component={AddTenantContainer}
       />
       {/* Add more screens here if needed */}
     </Stack.Navigator>
