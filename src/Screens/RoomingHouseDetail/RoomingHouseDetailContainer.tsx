@@ -13,8 +13,7 @@ type RoomingHouseDetailsRouteProp = RouteProp<
 >;
 export type RoomingHouseDetailsNavigationProp = StackNavigationProp<
   RootStackHouseParamList,
-  RootScreens.ROOMING_HOUSED_DETAIL,
-  RootScreens.CREATE_FLOOR
+  RootScreens.ROOMING_HOUSED_DETAIL
 >;
 
 type Props = {

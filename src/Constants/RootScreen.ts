@@ -3,8 +3,8 @@ export enum RootScreens {
   WELCOME = 'Welcome',
   ONBOARDING = 'Onboarding',
   NOT_FOUND = '*',
-  SIGNIN ='SignIn',
-  SIGNUP ='SignUp',
+  SIGNIN = 'SignIn',
+  SIGNUP = 'SignUp',
   HOME = 'Home',
   ROOMING_HOUSED_DETAIL = 'RoomingHouseDetail',
   ROOMING_HOUSE_LIST = 'RoomingHouseList',
@@ -18,5 +18,7 @@ export enum RootScreens {
   CREATE_ROOM = 'CreateRoom',
   CREATE_CONTRACT = 'CreateContract',
   CONTRACT_DETAIL = 'ContractDetail',
+  CREATE_DEVICE = 'CreateDevice',
   NOTIFICATION = 'Notification',
+  ADD_TENANT = 'AddTenant',
 }
