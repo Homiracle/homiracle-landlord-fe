@@ -1,5 +1,6 @@
 export type ContractDetails = {
-    room_id: number;
+    room_id: string;
+    contract_id: number;
     start_date: string;
     end_date: string;
     couting_fee_day:string;

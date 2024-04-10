@@ -16,7 +16,7 @@ import { useCreateContractMutation } from '../../Services';
 
 import {Contract as ContractProps } from '../../Services/contract/interface';
 import { useAppSelector } from '../../Store/hook';
-import { getHouseId, selectUserId } from '../../Store/reducers';
+import { getHouseId, getFloorId, getRoomId, selectUserId } from '../../Store/reducers';
 import { contractFormValidationSchema as schema } from '../../Utils';
 import { useFormik } from 'formik';
 import { selectUser } from '../../Store/reducers';
@@ -108,13 +108,13 @@ export const CreateContract = () => {
   });
   const [contractData, setContractData] =
     React.useState<ContractProps>({
-      house_id: Number(useAppSelector(getHouseId)),
-      floor_id: Number(useAppSelector(getHouseId)),
-      room_id: Number(useAppSelector(getHouseId)),
+      house_id: (useAppSelector(getHouseId)),
+      floor_id: (useAppSelector(getFloorId)),
+      room_id: (useAppSelector(getRoomId)),
       start_date: '',
       end_date: '',
       couting_fee_day: '',
-      paying_cost_cycle: '',
+      paying_cost_cycle: 0,
       maximmum_number_of_people: 4,
       reference_cost: {
           deposit: 0,
@@ -153,7 +153,6 @@ export const CreateContract = () => {
     text: string | number,
     nestedField?: string,
   ) => {
-    // console.log(fieldName, text);
     if (nestedField) {
       setContractData(prevData => ({
         ...prevData,
@@ -170,16 +169,12 @@ export const CreateContract = () => {
       }));
       formik.handleChange(fieldName)(String(text));
     }
+    console.log(formik.errors);
   };
 
   const handleSubmit = async () => {
     console.log(contractData);
     await createContract(contractData as Partial<ContractProps>);
-    if (isSuccess) {
-      console.log(error);
-    } else if (isError) {
-      console.log('error', error);
-    }
   };
 
   const isTouched = (field: string, nestedField?: string) => {
@@ -309,10 +304,8 @@ export const CreateContract = () => {
               <View>
               <Text style={styles.subTitle}>Số phòng</Text>
                 <TextInput
-                  placeholder='Phòng 101'
+                  placeholder= {contractData.room_id}
                   style={styles.textInput}
-                  onChangeText={text => handleInputChange('room_id', text)}
-                  onBlur={() => onBlur('room_id')}
                 />
               </View>
               <View style={{ flexDirection: 'row', gap: wp(2) }}>
@@ -396,7 +389,7 @@ export const CreateContract = () => {
                         handleInputChange('paying_cost_cycle', text)
                       }
                       showSoftInputOnFocus
-                      value={contractData.paying_cost_cycle}
+                      value={contractData.paying_cost_cycle+""}
                       onBlur={() => onBlur('paying_cost_cycle')}
                     />
          

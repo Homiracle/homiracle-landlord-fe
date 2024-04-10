@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 
 export const roomFormValidationSchema = Yup.object().shape({
-  name: Yup.string().required('Tên tòa nhà không được để trống'),
+  name: Yup.string().required('Tên phòng không được để trống'),
   number_of_bedroom: Yup.number().required('Số phòng ngủ không được để trống'),
   number_of_bathroom: Yup.number().required('Số phòng tắm không được để trống'),
   reference_cost: Yup.object({

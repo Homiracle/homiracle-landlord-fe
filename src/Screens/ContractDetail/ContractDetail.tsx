@@ -16,7 +16,7 @@ import { useCreateContractMutation } from '../../Services';
 import { ContractDetailsNavigationProp } from './ContractDetailContainer';
 import {Contract as ContractProps } from '../../Services/contract/interface';
 import { useAppSelector } from '../../Store/hook';
-import { getHouseId, selectUserId } from '../../Store/reducers';
+import { getHouseId, getFloorId, getRoomId, selectUserId } from '../../Store/reducers';
 import { contractFormValidationSchema as schema } from '../../Utils';
 import { useFormik } from 'formik';
 import { selectUser } from '../../Store/reducers';
@@ -110,18 +110,19 @@ export const ContractDetail = ({
   });
   const [contractData, setContractData] =
     React.useState<ContractProps>({
-      house_id: Number(useAppSelector(getHouseId)),
-      floor_id: Number(useAppSelector(getHouseId)),
-      room_id: Number(useAppSelector(getHouseId)),
+      house_id: (useAppSelector(getHouseId)),
+      floor_id: (useAppSelector(getFloorId)),
+      room_id: (useAppSelector(getRoomId)),
+      contract_id: 0,
       start_date: '',
       end_date: '',
       couting_fee_day: '',
-      paying_cost_cycle: '',
+      paying_cost_cycle: 0,
       maximmum_number_of_people: 4,
       reference_cost: {
           deposit: 0,
           room_cost: 0,
-          water_cost: 8,
+          water_cost: 0,
           power_cost: 0,
           cost_per_person: 0,
           cost_per_room: 0,
@@ -239,7 +240,7 @@ export const ContractDetail = ({
         }}
         />
       )}
-      <Portal>
+      {/* <Portal>
         <CustomDialog
           visible={backDialog}
           title='Thoát'
@@ -262,7 +263,7 @@ export const ContractDetail = ({
             navigation.goBack();
           }}
         />
-      </Portal>
+      </Portal> */}
       <Header
         title='Chi tiết hợp đồng'
         height={hp(8)}
@@ -374,7 +375,7 @@ export const ContractDetail = ({
                         handleInputChange('paying_cost_cycle', text)
                       }
                       showSoftInputOnFocus
-                      value={contractData.paying_cost_cycle}
+                      value={contractData.paying_cost_cycle +""}
                       onBlur={() => onBlur('paying_cost_cycle')}
                     />
          
