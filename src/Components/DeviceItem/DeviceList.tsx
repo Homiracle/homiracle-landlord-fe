@@ -1,19 +1,20 @@
 import { FlatList } from 'native-base';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { DeviceItem } from './DeviceItem';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { Searchbar } from 'react-native-paper';
 import { NativeScrollEvent, View } from 'react-native';
+import { useGetDevicesQuery } from '../../Services';
 
 export interface DeviceListProps {
-  data: any;
+  scope: string;
+  scope_id: string;
   onScroll?: ({ nativeEvent }: { nativeEvent: NativeScrollEvent }) => void;
 }
 
-export const DeviceList = ({ data, onScroll }: DeviceListProps) => {
+export const DeviceList = ({ scope, scope_id, onScroll }: DeviceListProps) => {
   const devicedata = [
     {
       device_id: '1',
@@ -35,26 +36,39 @@ export const DeviceList = ({ data, onScroll }: DeviceListProps) => {
     },
   ];
 
+  const { data, isSuccess, error } = useGetDevicesQuery({
+    accessable_scope: scope,
+    accessable_scope_id: scope_id,
+  });
+
+  useEffect(() => {
+    if (isSuccess) {
+      console.log('data', data);
+    } else if (error) {
+      console.log('error', error);
+    }
+  }, [isSuccess, error]);
+
   return (
-      <FlatList
-        contentContainerStyle={{
-          justifyContent: 'center',
-          alignSelf: 'center',
-          gap: 10,
-          paddingBottom: hp(10),
-        }}
-        horizontal={false}
-        showsVerticalScrollIndicator={false}
-        data={devicedata}
-        renderItem={({ item }) => (
-          <DeviceItem
-            device_id={item.device_id}
-            device_name={item.device_name}
-            type={item.type}
-            status={item.status}
-          />
-        )}
-        onScroll={onScroll}
-      />
+    <FlatList
+      contentContainerStyle={{
+        justifyContent: 'center',
+        alignSelf: 'center',
+        gap: 10,
+        paddingBottom: hp(10),
+      }}
+      horizontal={false}
+      showsVerticalScrollIndicator={false}
+      data={data}
+      renderItem={({ item }) => (
+        <DeviceItem
+          device_id={item?.device_id || ''}
+          device_name={item?.name || ''}
+          type={item?.type || ''}
+          status={item?.status || ''}
+        />
+      )}
+      onScroll={onScroll}
+    />
   );
 };

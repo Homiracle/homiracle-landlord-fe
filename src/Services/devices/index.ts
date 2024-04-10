@@ -1,8 +1,5 @@
 import { API } from '../base';
-import {
-    CreateDevice,
-    CreateDeviceResponse
-} from './type';
+import { CreateDevice, CreateDeviceResponse, ListDevice } from './type';
 
 const deviceApi = API.injectEndpoints({
   endpoints: build => ({
@@ -14,10 +11,18 @@ const deviceApi = API.injectEndpoints({
       }),
       invalidatesTags: ['Device'],
     }),
+    getDevices: build.query<
+      ListDevice,
+      { accessable_scope: string; accessable_scope_id: string }
+    >({
+      query: ({ accessable_scope, accessable_scope_id }) => ({
+        url: `iot-devices?accessable_scope=${accessable_scope}&accessable_scope_id=${accessable_scope_id}`,
+        method: 'GET',
+      }),
+      providesTags: ['Device'],
+    }),
   }),
   overrideExisting: true,
 });
 
-export const {
-  useCreateDeviceMutation,
-} = deviceApi;
+export const { useCreateDeviceMutation, useGetDevicesQuery } = deviceApi;

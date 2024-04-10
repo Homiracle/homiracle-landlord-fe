@@ -26,6 +26,7 @@ import { NativeScrollEvent, StyleSheet } from 'react-native';
 import { AnimatedFAB } from 'react-native-paper';
 import { RoomingHouseDetailsNavigationProp } from './RoomingHouseDetailContainer';
 import { useAppTheme } from '../../Theme';
+import { DeviceScope } from '../../Constants/DeviceScope';
 
 export const RoomingHouseDetail = ({
   navigation,
@@ -130,7 +131,7 @@ export const RoomingHouseDetail = ({
           number={roomingHouseData?.number_of_devices}
           onFocus={() => {
             setStatusFilter('device');
-            setFocus(<DeviceList data={[]} onScroll={onScroll} />);
+            setFocus(<DeviceList scope={DeviceScope.HOUSE} scope_id={house_id} onScroll={onScroll} />);
           }}
         />
         <TabButton
