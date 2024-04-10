@@ -22,8 +22,12 @@ import { Room as RoomProps, useGetRoomQuery, useGetContractListQuery } from '../
 import { useAppSelector } from '../../Store/hook';
 import { getRoomId, getFloorId, getHouseId } from '../../Store/reducers';
 import { ContractList } from '../../Components/Contract/ContractList';
-export const RoomDetail = () => {
-  const navigation = useNavigation();
+import { RoomingHouseDetailsNavigationProp } from './RoomDetailContainer';
+export const RoomDetail = ({
+  navigation,
+}: {
+  navigation: RoomingHouseDetailsNavigationProp;
+}) => {
   //hooks
   const [status, setStatus] = React.useState('info');
   const [label, setLabel] = React.useState('Thêm hợp đồng');
@@ -45,6 +49,7 @@ export const RoomDetail = () => {
       backgroundColor: theme.colors.primary,
     },
   });
+  
   const [focus, setFocus] = React.useState(<RoomDetailComponent data={[]}/>);
   const room_id = useAppSelector(getRoomId) as string;
   const house_id = useAppSelector(getHouseId) as string;
@@ -57,7 +62,7 @@ export const RoomDetail = () => {
     setIsExtended(currentScrollPosition <= 0);
   };
   const { data: roomData, isSuccess: isRoomSuccess } = useGetRoomQuery(room_id);
-
+  const [screen, setScreen] = React.useState(RootScreens.CREATE_FLOOR as string);
   useEffect(() => {
     if (isRoomSuccess) {
       setFocus(<RoomDetailComponent data={roomData} />);
@@ -86,6 +91,7 @@ export const RoomDetail = () => {
               onFocus={() => {
                 setStatusFilter('info');
                 setLabel('Thêm hợp đồng');
+                setScreen(RootScreens.CREATE_CONTRACT);
                 setFocus(<RoomDetailComponent data={roomData}/>);
               }}
             />
@@ -97,7 +103,8 @@ export const RoomDetail = () => {
               onFocus={() => {
                 setStatusFilter('device');
                 setLabel('Thêm thiết bị');
-                setFocus(<DeviceList data={[]} />);
+      
+                setFocus(<DeviceList data={[]} onScroll={onScroll}/>);
               }}
             />
             <TabButton
@@ -107,7 +114,8 @@ export const RoomDetail = () => {
               displayNumber={true}
               onFocus={() => {
                 setStatusFilter('tenant');
-                setFocus(<TenantList data={[]} />);
+                setFocus(<TenantList data={[]} onScroll={onScroll} />);
+                setScreen(RootScreens.ADD_TENANT);
                 setLabel('Thêm khách thuê');
               }}
             />
@@ -117,13 +125,17 @@ export const RoomDetail = () => {
           {status === 'info' && (
             <ContractList data={contractsData} />
           )}
-          {status !== 'tenant' && (
+        
         <AnimatedFAB
           icon={'plus'}
           label={label}
           extended={isExtended}
           onPress={() => {
-            navigation.navigate(RootScreens.CREATE_CONTRACT as never);
+            if (status === 'device') {
+              navigation.navigate(RootScreens.CREATE_DEVICE, { isRoom: true });
+            } else {
+              navigation.navigate(screen as never);
+            }
           }}
           visible={true}
           animateFrom={'right'}
@@ -131,7 +143,7 @@ export const RoomDetail = () => {
           style={styles.fabStyle}
           color={theme.colors.onPrimary}
         />
-      )}
+  
     </View>
   );
 };

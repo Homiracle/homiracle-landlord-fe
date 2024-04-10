@@ -12,7 +12,7 @@ import { Button, Surface, Portal } from 'react-native-paper';
 import { Dropdown } from 'react-native-searchable-dropdown-kj';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
-import { useCreateContractMutation } from '../../Services';
+import { useCreateContractMutation, useGetRoomQuery } from '../../Services';
 
 import {Contract as ContractProps } from '../../Services/contract/interface';
 import { useAppSelector } from '../../Store/hook';
@@ -115,7 +115,7 @@ export const CreateContract = () => {
       end_date: '',
       couting_fee_day: '',
       paying_cost_cycle: 0,
-      maximmum_number_of_people: 4,
+      maximum_number_of_peoples: 0,
       reference_cost: {
           deposit: 0,
           room_cost: 0,
@@ -147,7 +147,7 @@ export const CreateContract = () => {
   };
 
   // console.log(useAppSelector(state => state.user));
-
+  const { data: roomData, isSuccess: isRoomSuccess } = useGetRoomQuery(useAppSelector(getRoomId) as string);
   const handleInputChange = (
     fieldName: string,
     text: string | number,
@@ -176,7 +176,14 @@ export const CreateContract = () => {
     console.log(contractData);
     await createContract(contractData as Partial<ContractProps>);
   };
-
+  useEffect(() => {
+    if (isSuccess) {
+      console.log('Create contract success');
+      navigation.goBack();
+    } else if (isError) {
+      console.log(error);
+    }
+  }, [isSuccess, isError]);
   const isTouched = (field: string, nestedField?: string) => {
     if (nestedField) {
       return (
@@ -304,8 +311,9 @@ export const CreateContract = () => {
               <View>
               <Text style={styles.subTitle}>Số phòng</Text>
                 <TextInput
-                  placeholder= {contractData.room_id}
+                  placeholder= {roomData?.name}
                   style={styles.textInput}
+                  editable={false}
                 />
               </View>
               <View style={{ flexDirection: 'row', gap: wp(2) }}>
@@ -380,7 +388,7 @@ export const CreateContract = () => {
                 </Pressable>         
               </View>
               <View>
-                <Text style={styles.subTitle}>Kì thanh toán tiền phòng</Text>
+                <Text style={styles.subTitle}>Kì thanh toán tiền phòng (Đơn vị: tháng)</Text>
     
                     <TextInput
                       placeholder='1 tháng'
@@ -389,10 +397,22 @@ export const CreateContract = () => {
                         handleInputChange('paying_cost_cycle', text)
                       }
                       showSoftInputOnFocus
-                      value={contractData.paying_cost_cycle+""}
+                      keyboardType='numeric'
                       onBlur={() => onBlur('paying_cost_cycle')}
                     />
          
+              </View>
+              <View>
+                <Text style={styles.subTitle}>Số người ở tối đa</Text>
+                <TextInput
+                  placeholder='4                              (người)'
+                  style={styles.textInput}
+                  onChangeText={text =>
+                    handleInputChange('maximum_number_of_peoples', text)
+                  }
+                  keyboardType='numeric'
+                  onBlur={() => onBlur('maximum_number_of_peoples')}
+                />
               </View>
           </Surface>
           <Surface style={styles.surface}>

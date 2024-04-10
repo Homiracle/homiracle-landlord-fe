@@ -19,6 +19,7 @@ export enum RootScreens {
   CREATE_CONTRACT = 'CreateContract',
   CONTRACT_DETAIL = 'ContractDetail',
   CREATE_DEVICE = 'CreateDevice',
+  DEVICE_DETAIL = 'DeviceDetail',
   NOTIFICATION = 'Notification',
   ADD_TENANT = 'AddTenant',
 }

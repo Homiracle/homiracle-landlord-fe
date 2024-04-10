@@ -53,7 +53,7 @@ export const DeviceItem = ({
                 style.container,
             ]}
             onPress={() => {
-                // navigation.navigate(RootScreens.CREATE_ROOMING_HOUSE, {device_id})
+                navigation.navigate(RootScreens.DEVICE_DETAIL)
             }}
         >
             <View
