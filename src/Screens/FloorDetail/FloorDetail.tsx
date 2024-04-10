@@ -16,6 +16,7 @@ import { AnimatedFAB, Surface} from 'react-native-paper';
 import { StyleSheet, NativeScrollEvent} from 'react-native';
 import { useAppTheme } from '../../Theme';
 import {FloorDetailsNavigationProp} from './FloorDetailContainer';
+import { DeviceScope } from '../../Constants/DeviceScope';
 export const FloorDetail = (
   {
     navigation,
@@ -114,7 +115,7 @@ export const FloorDetail = (
           number={floorData?.number_of_devices}
           onFocus={() => {
             setStatusFilter('device');
-            setFocus(<DeviceList data={[]} onScroll={onScroll} />);
+            setFocus(<DeviceList scope={DeviceScope.FLOOR} scope_id={floor_id} onScroll={onScroll} />);
           }}
         />
         <TabButton
