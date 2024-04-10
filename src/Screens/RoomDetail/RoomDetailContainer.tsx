@@ -5,18 +5,18 @@ import { RootStackHouseParamList } from '@/Components';
 import { RootScreens } from '@/Constants/RootScreen';
 import { RouteProp } from '@react-navigation/native';
 
-type RoomingHouseDetailsRouteProp = RouteProp<
+type RoomDetailsRouteProp = RouteProp<
   RootStackHouseParamList,
   RootScreens.ROOMING_HOUSED_DETAIL
 >;
-export type RoomingHouseDetailsNavigationProp = StackNavigationProp<
+export type RoomDetailsNavigationProp = StackNavigationProp<
   RootStackHouseParamList,
   RootScreens.ROOMING_HOUSED_DETAIL
 >;
 
 type Props = {
-  route: RoomingHouseDetailsRouteProp;
-  navigation: RoomingHouseDetailsNavigationProp;
+  route: RoomDetailsRouteProp;
+  navigation: RoomDetailsNavigationProp;
 };
 export const RoomDetailContainer = ({navigation}:Props) => {
   return <RoomDetail navigation = {navigation}/>;

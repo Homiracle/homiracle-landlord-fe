@@ -22,11 +22,13 @@ import { Room as RoomProps, useGetRoomQuery, useGetContractListQuery } from '../
 import { useAppSelector } from '../../Store/hook';
 import { getRoomId, getFloorId, getHouseId } from '../../Store/reducers';
 import { ContractList } from '../../Components/Contract/ContractList';
-import { RoomingHouseDetailsNavigationProp } from './RoomDetailContainer';
+import { RoomDetailsNavigationProp } from './RoomDetailContainer';
+import { DeviceScope } from '../../Constants/DeviceScope';
+
 export const RoomDetail = ({
   navigation,
 }: {
-  navigation: RoomingHouseDetailsNavigationProp;
+  navigation: RoomDetailsNavigationProp;
 }) => {
   //hooks
   const [status, setStatus] = React.useState('info');
@@ -62,7 +64,7 @@ export const RoomDetail = ({
     setIsExtended(currentScrollPosition <= 0);
   };
   const { data: roomData, isSuccess: isRoomSuccess } = useGetRoomQuery(room_id);
-  const [screen, setScreen] = React.useState(RootScreens.CREATE_FLOOR as string);
+  const [screen, setScreen] = React.useState(RootScreens.CREATE_CONTRACT as string);
   useEffect(() => {
     if (isRoomSuccess) {
       setFocus(<RoomDetailComponent data={roomData} />);
@@ -80,7 +82,7 @@ export const RoomDetail = ({
         title={'Chi tiết phòng ' + room_id}
         height={8}
         mode='center-aligned'
-        onBack={() => navigation.navigate(RootScreens.FLOORDETAIL as never)}
+        onBack={() => navigation.navigate(RootScreens.CREATE_CONTRACT as never)}
       />
        <View>
           <TabView>
@@ -98,13 +100,13 @@ export const RoomDetail = ({
             <TabButton
               isClicked={status === 'device'}
               name='Thiết bị'
-              number={12}
+              number={0}
               displayNumber={true}
               onFocus={() => {
                 setStatusFilter('device');
                 setLabel('Thêm thiết bị');
       
-                setFocus(<DeviceList data={[]} onScroll={onScroll}/>);
+                setFocus(<DeviceList scope={DeviceScope.ROOM} scope_id={room_id} onScroll={onScroll}/>);
               }}
             />
             <TabButton
