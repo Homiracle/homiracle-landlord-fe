@@ -20,6 +20,7 @@ export type RootStackParamList = {
   [RootScreens.NOTIFICATION]: undefined;
   [RootScreens.CREATE_DEVICE]: undefined;
   [RootScreens.ADD_TENANT]: undefined;
+  [RootScreens.DEVICE_DETAIL]: undefined;
   AuthStack: undefined;
   HomeStack: undefined;
   RoomingHouseStack: undefined;

@@ -12,16 +12,19 @@ import { Button, Surface, Portal } from 'react-native-paper';
 import { Dropdown } from 'react-native-searchable-dropdown-kj';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
-import { useCreateContractMutation, useGetRoomQuery } from '../../Services';
-
+import { useCreateContractMutation } from '../../Services';
+import { ContractDetailsNavigationProp } from './ContractDetailContainer';
 import {Contract as ContractProps } from '../../Services/contract/interface';
 import { useAppSelector } from '../../Store/hook';
 import { getHouseId, getFloorId, getRoomId, selectUserId } from '../../Store/reducers';
 import { contractFormValidationSchema as schema } from '../../Utils';
 import { useFormik } from 'formik';
 import { selectUser } from '../../Store/reducers';
+import { RootScreens } from '../../Constants/RootScreen';
 
-export const CreateContract = () => {
+export const ContractDetail = ({
+  navigation,
+}:{navigation: ContractDetailsNavigationProp}) => {
   // styles
   const theme = useAppTheme();
   const styles = StyleSheet.create({
@@ -98,7 +101,6 @@ export const CreateContract = () => {
   });
 
   // other hooks
-  const navigation = useNavigation();
   const [backDialog, showBackDialog] = React.useState(false);
   const [cancelDialog, showCancelDialog] = React.useState(false);
   const [datetimePicker, showDatetimePicker] = React.useState({
@@ -111,15 +113,16 @@ export const CreateContract = () => {
       house_id: (useAppSelector(getHouseId)),
       floor_id: (useAppSelector(getFloorId)),
       room_id: (useAppSelector(getRoomId)),
+      contract_id: 0,
       start_date: '',
       end_date: '',
       couting_fee_day: '',
       paying_cost_cycle: 0,
-      maximum_number_of_peoples: 0,
+      maximmum_number_of_people: 4,
       reference_cost: {
           deposit: 0,
           room_cost: 0,
-          water_cost: 8,
+          water_cost: 0,
           power_cost: 0,
           cost_per_person: 0,
           cost_per_room: 0,
@@ -127,9 +130,7 @@ export const CreateContract = () => {
         tenant_id: '',
     });
 
-  const [createContract, { data, error, isSuccess, isLoading, isError }] =
-    useCreateContractMutation();
-
+  
   const formik = useFormik({
     initialValues: contractData,
     validationSchema: schema,
@@ -147,12 +148,13 @@ export const CreateContract = () => {
   };
 
   // console.log(useAppSelector(state => state.user));
-  const { data: roomData, isSuccess: isRoomSuccess } = useGetRoomQuery(useAppSelector(getRoomId) as string);
+
   const handleInputChange = (
     fieldName: string,
     text: string | number,
     nestedField?: string,
   ) => {
+    // console.log(fieldName, text);
     if (nestedField) {
       setContractData(prevData => ({
         ...prevData,
@@ -169,21 +171,10 @@ export const CreateContract = () => {
       }));
       formik.handleChange(fieldName)(String(text));
     }
-    console.log(formik.errors);
   };
 
-  const handleSubmit = async () => {
-    console.log(contractData);
-    await createContract(contractData as Partial<ContractProps>);
-  };
-  useEffect(() => {
-    if (isSuccess) {
-      console.log('Create contract success');
-      navigation.goBack();
-    } else if (isError) {
-      console.log(error);
-    }
-  }, [isSuccess, isError]);
+
+
   const isTouched = (field: string, nestedField?: string) => {
     if (nestedField) {
       return (
@@ -249,7 +240,7 @@ export const CreateContract = () => {
         }}
         />
       )}
-      <Portal>
+      {/* <Portal>
         <CustomDialog
           visible={backDialog}
           title='Thoát'
@@ -272,12 +263,14 @@ export const CreateContract = () => {
             navigation.goBack();
           }}
         />
-      </Portal>
+      </Portal> */}
       <Header
-        title='Tạo hợp đồng'
+        title='Chi tiết hợp đồng'
         height={hp(8)}
         mode='center-aligned'
-        onBack={onBack}
+        onBack={() => {
+          navigation.navigate(RootScreens.ROOMDETAIL as never);
+        }}
         scroll='vertical'
       >
         <View style={styles.content}>
@@ -306,27 +299,31 @@ export const CreateContract = () => {
                   style={styles.textInput}
                   editable={false}
                 />
-                
+                <Text style={styles.subTitle}>Đại diện bên thuê</Text>
+                <TextInput
+                  placeholder='Ha Huy Bao'
+                  style={styles.textInput}
+                  editable={false}
+                />
+                <TextInput
+                  placeholder='12345678910'
+                  style={styles.textInput}
+                  editable={false}
+                />  
               </View>
               <View>
               <Text style={styles.subTitle}>Số phòng</Text>
                 <TextInput
-                  placeholder= {roomData?.name}
+                  placeholder='Phòng 101'
                   style={styles.textInput}
                   editable={false}
+                  onChangeText={text => handleInputChange('room_id', text)}
+                  onBlur={() => onBlur('room_id')}
                 />
               </View>
               <View style={{ flexDirection: 'row', gap: wp(2) }}>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.subTitle}>Ngày bắt đầu</Text>
-                  <Pressable
-                    onPress={() =>{
-                      showDatetimePicker({
-                        ...datetimePicker,
-                        startDate: true,
-                      });
-                    }}
-                  >
                     <TextInput
                       placeholder='1/1/2024'
                       style={styles.textInput}
@@ -338,18 +335,9 @@ export const CreateContract = () => {
                       onBlur={() => onBlur('start_date')}
                       editable = {false}
                     />
-                  </Pressable>
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.subTitle}>Ngày kết thúc</Text>
-                  <Pressable
-                    onPress={() =>{
-                      showDatetimePicker({
-                        ...datetimePicker,
-                        endDate: true,
-                      });
-                    }}
-                  >
                     <TextInput
                       placeholder='1/1/2024'
                       style={styles.textInput}
@@ -361,19 +349,10 @@ export const CreateContract = () => {
                       onBlur={() => onBlur('end_date')}
                       editable = {false}
                     />
-                  </Pressable>
                 </View>
               </View>
               <View>
                 <Text style={styles.subTitle}>Ngày bắt đầu tính tiền</Text>
-                <Pressable
-                    onPress={() =>{
-                      showDatetimePicker({
-                        ...datetimePicker,
-                        feeDay: true,
-                      });
-                    }}
-                  >
                     <TextInput
                       placeholder='1/1/2024'
                       style={styles.textInput}
@@ -384,11 +363,10 @@ export const CreateContract = () => {
                       value={contractData.couting_fee_day}
                       onBlur={() => onBlur('couting_fee_day')}
                       editable = {false}
-                    />
-                </Pressable>         
+                    />        
               </View>
               <View>
-                <Text style={styles.subTitle}>Kì thanh toán tiền phòng (Đơn vị: tháng)</Text>
+                <Text style={styles.subTitle}>Kì thanh toán tiền phòng</Text>
     
                     <TextInput
                       placeholder='1 tháng'
@@ -397,22 +375,10 @@ export const CreateContract = () => {
                         handleInputChange('paying_cost_cycle', text)
                       }
                       showSoftInputOnFocus
-                      keyboardType='numeric'
+                      value={contractData.paying_cost_cycle +""}
                       onBlur={() => onBlur('paying_cost_cycle')}
                     />
          
-              </View>
-              <View>
-                <Text style={styles.subTitle}>Số người ở tối đa</Text>
-                <TextInput
-                  placeholder='4                              (người)'
-                  style={styles.textInput}
-                  onChangeText={text =>
-                    handleInputChange('maximum_number_of_peoples', text)
-                  }
-                  keyboardType='numeric'
-                  onBlur={() => onBlur('maximum_number_of_peoples')}
-                />
               </View>
           </Surface>
           <Surface style={styles.surface}>
@@ -484,37 +450,6 @@ export const CreateContract = () => {
             </View>
           </Surface>
 
-        </View>
-        <View style = {styles.buttonContainer}>
-        <Button 
-          buttonColor={theme.colors.primary}
-          textColor={theme.colors.onPrimary}
-          style = {styles.tenantButton}
-          icon="account-multiple-plus"
-        >
-          Thêm khách thuê
-        </Button>
-        </View>
-        <View style={styles.buttonContainer}>
-          <Button
-            buttonColor={theme.colors.error}
-            textColor={theme.colors.onPrimary}
-            style={styles.button}
-            onPress={() => {
-              showCancelDialog(true);
-            }}
-          >
-            Hủy
-          </Button>
-          <Button
-            buttonColor={theme.colors.primary}
-            textColor={theme.colors.onPrimary}
-            style={styles.button}
-            onPress={handleSubmit}
-            disabled={!formik.isValid}
-          >
-            Tạo hợp đồng
-          </Button>
         </View>
       </Header>
     </View>

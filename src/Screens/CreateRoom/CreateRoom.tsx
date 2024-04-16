@@ -12,7 +12,7 @@ import { Button, Surface, Portal } from 'react-native-paper';
 import { Room as RoomProps, useCreateRoomMutation } from '../../Services';
 import { useAppSelector } from '../../Store/hook';
 import { getHouseId } from '../../Store/reducers';
-import { roomingHouseFormValidationSchema as schema } from '../../Utils';
+import { roomFormValidationSchema as schema } from '../../Utils';
 import { useFormik } from 'formik';
 
 export const CreateRoom = () => {
@@ -153,13 +153,8 @@ export const CreateRoom = () => {
   const handleSubmit = async () => {
     console.log(roomData);
     await createRoom(roomData as Partial<RoomProps>);
-    if (isSuccess) {
-      console.log(error);
-    } else if (isError) {
-      console.log('error', error);
-    }
   };
-
+  useEffect
   const isTouched = (field: string, nestedField?: string) => {
     if (nestedField) {
       return (
@@ -186,7 +181,7 @@ export const CreateRoom = () => {
     }
   };
 
-  // console.log(formik.touched);
+  console.log(formik.touched);
   console.log(formik.errors);
 
   // console.log(formik.isValid);
