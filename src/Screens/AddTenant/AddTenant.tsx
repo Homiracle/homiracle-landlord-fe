@@ -1,6 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Image, StyleSheet, TouchableHighlight } from 'react-native';
-import { Searchbar, Button, Text, Portal } from 'react-native-paper';
+import {
+  Searchbar,
+  Button,
+  Text,
+  Portal,
+  ActivityIndicator,
+} from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import {
   widthPercentageToDP as wp,
@@ -9,15 +15,10 @@ import {
 
 import { useAppTheme } from '../../Theme';
 import { Header, CustomDialog } from '../../Components';
+import { useAddTenantMutation, useLazySearchUserQuery } from '../../Services';
 
 const AddTenant = () => {
   const theme = useAppTheme();
-  const navigation = useNavigation();
-
-  // states
-  const [searchQuery, setSearchQuery] = React.useState<string>('');
-  const [confirmDialog, setConfirmDialog] = React.useState<boolean>(false);
-
   // style
   const styles = StyleSheet.create({
     avatar: {
@@ -44,6 +45,7 @@ const AddTenant = () => {
       display: 'flex',
       flexDirection: 'row',
       gap: wp(2),
+      justifyContent: 'center',
     },
     tenantText: { flexGrow: 1 },
     tenantPhone: { color: theme.palettes.neutral[80] },
@@ -55,14 +57,69 @@ const AddTenant = () => {
     },
   });
 
+  // hooks
+  const navigation = useNavigation();
+
+  // states
+  const [searchQuery, setSearchQuery] = React.useState<string>('');
+  const [isSearching, setIsSearching] = React.useState<boolean>(false);
+  const [confirmDialog, setConfirmDialog] = React.useState<boolean>(false);
+
+  const [
+    searchUser,
+    {
+      data: userData,
+      error: userError,
+      isSuccess: userSuccess,
+      isFetching: userFetching,
+    },
+  ] = useLazySearchUserQuery();
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (searchQuery) {
+        console.log('Searching for:', searchQuery);
+        setIsSearching(true);
+        searchUser({ phone: searchQuery }).then(() => {
+          setIsSearching(false);
+        });
+      }
+    }, 1000);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    if (userData) {
+      console.log('userData:', userData);
+    } else if (userError) {
+      console.log('userError:', userError);
+    }
+  }, [userData, userError]);
+
   const onBack = () => {
     navigation.goBack();
   };
 
+  const [addTenant, { isSuccess: addTenantSuccess, error: addTenantError }] =
+    useAddTenantMutation();
+
   const onAddTenant = () => {
-    setConfirmDialog(false);
     // call api here
+    addTenant({
+      contract_id: '61fa1a2e-7867-42de-9965-834e60d18d42',
+      tenant_id: userData?.user_id as string,
+    });
   };
+
+  useEffect(() => {
+    if (addTenantSuccess) {
+      console.log('addTenantSuccess:', addTenantSuccess);
+      setConfirmDialog(false);
+    } else if (addTenantError) {
+      console.log('addTenantError:', addTenantError);
+    }
+  }, [addTenantSuccess, addTenantError]);
 
   return (
     <View>
@@ -77,33 +134,43 @@ const AddTenant = () => {
             width: wp('90%'),
             left: wp('5%'),
           }}
-          placeholder='Tìm khách thuê'
+          placeholder='Nhập số điện thoại'
           onChangeText={setSearchQuery}
           value={searchQuery}
+          placeholderTextColor={theme.palettes.neutral[50]}
         />
       </Header>
       <View style={styles.tenanContent}>
-        <View style={styles.tenantContainer}>
-          <Image
-            style={styles.avatar}
-            source={{
-              uri: 'https://static.zerochan.net/Snorlax.1024.2347543.webp',
-            }}
-          />
-          <View style={styles.tenantText}>
-            <Text variant='titleMedium'>{'Chí Phèo'}</Text>
-            <Text style={styles.tenantPhone}>{'099999xxx'}</Text>
-          </View>
-        </View>
-        <TouchableHighlight activeOpacity={0.6} style={{ alignSelf: 'center' }}>
-          <Button
-            textColor={theme.colors.onPrimary}
-            style={styles.button}
-            onPress={() => setConfirmDialog(true)}
-          >
-            Thêm
-          </Button>
-        </TouchableHighlight>
+        {userFetching && <ActivityIndicator animating={true} size={30} />}
+        {!userFetching && !userData && <Text>Không tìm thấy kết quả</Text>}
+        {userSuccess && userData && (
+          <>
+            <View style={styles.tenantContainer}>
+              <Image
+                style={styles.avatar}
+                source={{
+                  uri: 'https://static.zerochan.net/Snorlax.1024.2347543.webp',
+                }}
+              />
+              <View style={styles.tenantText}>
+                <Text variant='titleMedium'>{userData?.user_name}</Text>
+                <Text style={styles.tenantPhone}>{userData?.phone}</Text>
+              </View>
+            </View>
+            <TouchableHighlight
+              activeOpacity={0.6}
+              style={{ alignSelf: 'center' }}
+            >
+              <Button
+                textColor={theme.colors.onPrimary}
+                style={styles.button}
+                onPress={() => setConfirmDialog(true)}
+              >
+                Thêm
+              </Button>
+            </TouchableHighlight>
+          </>
+        )}
       </View>
       <Portal>
         <CustomDialog

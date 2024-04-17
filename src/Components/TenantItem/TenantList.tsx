@@ -7,62 +7,26 @@ import {
 import { Searchbar } from 'react-native-paper';
 import { NativeScrollEvent, View } from 'react-native';
 import { TenantItem } from './TenantItem';
+import { DeviceScope as Scope } from '../../Constants/DeviceScope';
+import { useAppSelector } from '../../Store/hook';
+import { getFloorId, getHouseId, getRoomId } from '../../Store/reducers';
+import { useGetListTenantQuery } from '../../Services';
 
 export interface TenantListProps {
-  data: any;
+  scope: string;
   onScroll?: ({ nativeEvent }: { nativeEvent: NativeScrollEvent }) => void;
-  isRoom?: boolean;
 }
 
-export const TenantList = ({
-  data,
-  onScroll,
-  isRoom = false,
-}: TenantListProps) => {
-  const tenantdata = [
-    {
-      tenant_id: '1',
-      tenant_name: 'Phan Hai Ha',
-      phone: '0xxxxxxxxx',
-      room_name: '301',
-      role: 'thanh vien',
-    },
-    {
-      tenant_id: '1',
-      tenant_name: 'Phan Hai Ha',
-      phone: '0xxxxxxxxx',
-      room_name: '301',
-      role: 'truong phong',
-    },
-    {
-      tenant_id: '1',
-      tenant_name: 'Phan Hai Ha',
-      phone: '0xxxxxxxxx',
-      room_name: '301',
-      role: 'thanh vien',
-    },
-    {
-      tenant_id: '1',
-      tenant_name: 'Phan Hai Ha',
-      phone: '0xxxxxxxxx',
-      room_name: '301',
-      role: 'thanh vien',
-    },
-    {
-      tenant_id: '1',
-      tenant_name: 'Phan Hai Ha',
-      phone: '0xxxxxxxxx',
-      room_name: '301',
-      role: 'thanh vien',
-    },
-    {
-      tenant_id: '1',
-      tenant_name: 'Tran Nhu Buu',
-      phone: '0xxxxxxxxx',
-      room_name: '301',
-      role: 'thanh vien',
-    },
-  ];
+export const TenantList = ({ onScroll, scope }: TenantListProps) => {
+  const house_id = useAppSelector(getHouseId) as string;
+  const floor_id = useAppSelector(getFloorId) as string;
+  const room_id = useAppSelector(getRoomId) as string;
+
+  const { data: tenantData } = useGetListTenantQuery({
+    house_id,
+    floor_id,
+    room_id,
+  });
 
   return (
     <FlatList
@@ -70,18 +34,18 @@ export const TenantList = ({
         justifyContent: 'center',
         alignSelf: 'center',
         gap: 10,
-        paddingBottom: isRoom ? hp(10) : hp(2),
+        paddingBottom: scope === Scope.ROOM ? hp(10) : hp(2),
       }}
       horizontal={false}
       showsVerticalScrollIndicator={false}
-      data={tenantdata}
+      data={tenantData || []}
       renderItem={({ item }) => (
         <TenantItem
-          tenant_id={item.tenant_id}
-          tenant_name={item.tenant_name}
-          phone={item.phone}
-          role={item.role}
-          room_name={item.room_name}
+          tenant_id={item.tenant?.user_id}
+          tenant_name={item.tenant?.user_name}
+          phone={item.tenant?.phone || '033xxxxxxx'}
+          role={'Thành viên'}
+          room_name={'Phòng 101'}
         />
       )}
       onScroll={onScroll}
