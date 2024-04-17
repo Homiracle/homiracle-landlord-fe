@@ -76,10 +76,11 @@ export const RoomDetail = ({
     isSuccess: isFloorsSuccess,
     isError: isFloorsError,
   } = useGetContractListQuery({house_id,floor_id, room_id});
+
   return (
     <View style={styles.container}>
       <Header
-        title={'Chi tiết phòng ' + room_id}
+        title={'Chi tiết phòng ' + roomData?.name}
         height={8}
         mode='center-aligned'
         onBack={() => navigation.navigate(RootScreens.CREATE_CONTRACT as never)}
@@ -100,12 +101,12 @@ export const RoomDetail = ({
             <TabButton
               isClicked={status === 'device'}
               name='Thiết bị'
-              number={0}
+              number={roomData?.number_of_devices}
               displayNumber={true}
               onFocus={() => {
                 setStatusFilter('device');
                 setLabel('Thêm thiết bị');
-      
+
                 setFocus(<DeviceList scope={DeviceScope.ROOM} scope_id={room_id} onScroll={onScroll}/>);
               }}
             />

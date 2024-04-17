@@ -6,4 +6,5 @@ export type RoomDetail = {
   number_of_bathroom: number;
   max_tenant: number;
   number_of_tenants: number;
+  number_of_devices: number;
 }
