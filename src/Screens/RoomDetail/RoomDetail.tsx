@@ -83,7 +83,7 @@ export const RoomDetail = ({
         title={'Chi tiết phòng ' + roomData?.name}
         height={8}
         mode='center-aligned'
-        onBack={() => navigation.navigate(RootScreens.CREATE_CONTRACT as never)}
+        onBack={() => navigation.goBack()}
       />
        <View>
           <TabView>
@@ -117,7 +117,7 @@ export const RoomDetail = ({
               displayNumber={true}
               onFocus={() => {
                 setStatusFilter('tenant');
-                setFocus(<TenantList data={[]} onScroll={onScroll} />);
+                setFocus(<TenantList scope={DeviceScope.ROOM} onScroll={onScroll} />);
                 setScreen(RootScreens.ADD_TENANT);
                 setLabel('Thêm khách thuê');
               }}

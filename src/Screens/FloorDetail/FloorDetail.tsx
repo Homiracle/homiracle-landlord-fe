@@ -125,7 +125,7 @@ export const FloorDetail = (
           number={floorData?.number_of_tenants}
           onFocus={() => {
             setStatusFilter('tenant');
-            setFocus(<TenantList data={[]} onScroll={onScroll} />);
+            setFocus(<TenantList scope={DeviceScope.FLOOR} onScroll={onScroll} />);
           }}
         />
       </TabView>
