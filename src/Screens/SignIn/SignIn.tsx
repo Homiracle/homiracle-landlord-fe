@@ -33,7 +33,7 @@ export const SignIn = () => {
   }, [isSuccess]);
 
   const handleSignUp = () => {
-    navigation.navigate(RootScreens.SIGNIN as never);
+    navigation.navigate(RootScreens.SIGNUP as never);
   };
 
   return (

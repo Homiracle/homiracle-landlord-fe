@@ -5,7 +5,12 @@ export interface userSignin {
   email: string;
   password: string;
 }
-
+export interface userSignup {
+  email: string;
+  password: string;
+  user_name: string;
+  role: string;
+}
 export interface userSigninResponse {
   accessToken: string;
   refreshToken: string;
@@ -28,8 +33,15 @@ const authApi = API.injectEndpoints({
         } as userSigninResponse;
       },
     }),
+    signUp: build.mutation<userSigninResponse, userSignup>({
+      query: (credentials: userSignup) => ({
+        url: 'auth/signup',
+        method: 'POST',
+        body: credentials,
+      }),
+    }),
   }),
   overrideExisting: true,
 });
 
-export const { useSigninMutation } = authApi;
+export const { useSigninMutation, useSignUpMutation } = authApi;

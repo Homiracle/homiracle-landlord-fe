@@ -9,5 +9,4 @@ export type CreateDevice = {
 export type CreateDeviceResponse = Partial<CreateDevice> & {
     device_id: string;
     status: string;
-    path: string;
 };

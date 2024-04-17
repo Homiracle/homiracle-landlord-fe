@@ -124,7 +124,6 @@ export const CreateContract = () => {
           cost_per_person: 0,
           cost_per_room: 0,
         },
-        tenant_id: '',
     });
 
   const [createContract, { data, error, isSuccess, isLoading, isError }] =
