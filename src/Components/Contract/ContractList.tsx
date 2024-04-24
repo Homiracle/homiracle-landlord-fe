@@ -12,28 +12,25 @@ export interface ContractListProps {
 
 export const ContractList = ({ data, onScroll }: ContractListProps) => {
   return (
-    <View>
       <FlatList
         contentContainerStyle={{
+          marginTop: 10,
           justifyContent: 'center',
           alignSelf: 'center',
-          paddingBottom: hp(10)
         }}
-        horizontal={false}
         showsVerticalScrollIndicator={false}
-        numColumns={2}
+        horizontal={false}
         data={data}
         renderItem={({ item }: { item: any }) => (
           <ContractItem
             room_id={item.room_id}
             floor_id={item.floor_id}
-            address={item.address}
             contract_id={item.contract_id}
             room_cost={item.room_cost}
           />
         )}
+        keyExtractor={item => item.contract_id}
         onScroll={onScroll}
       />
-    </View>
   );
 };

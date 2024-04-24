@@ -20,6 +20,7 @@ import { getHouseId, getFloorId, getRoomId, selectUserId } from '../../Store/red
 import { contractFormValidationSchema as schema } from '../../Utils';
 import { useFormik } from 'formik';
 import { selectUser } from '../../Store/reducers';
+import { useAddTenantMutation, useLazySearchUserQuery } from '../../Services';
 
 export const CreateContract = () => {
   // styles
@@ -101,6 +102,7 @@ export const CreateContract = () => {
   const navigation = useNavigation();
   const [backDialog, showBackDialog] = React.useState(false);
   const [cancelDialog, showCancelDialog] = React.useState(false);
+  const [phone, setPhone] = React.useState('');
   const [datetimePicker, showDatetimePicker] = React.useState({
     startDate: false,
     endDate: false,
@@ -210,7 +212,36 @@ export const CreateContract = () => {
   };
 
   const user = useAppSelector(selectUser);
+  const [searchQuery, setSearchQuery] = React.useState<string>('');
+  const [isSearching, setIsSearching] = React.useState<boolean>(false);
+  const [
+    searchUser,
+    {
+      data: userData,
+      error: userError,
+      isSuccess: userSuccess,
+      isFetching: userFetching,
+    },
+  ] = useLazySearchUserQuery();
 
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (searchQuery) {
+        console.log('Searching for:', searchQuery);
+        setIsSearching(true);
+        searchUser({ phone: searchQuery }).then(() => {
+          setIsSearching(false);
+        });
+      }
+    }, 1000);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchQuery]);
+  useEffect(() => {
+    if (userSuccess && userData) {
+      handleInputChange('tenant_id', userData.user_id);
+    }
+  }, [userSuccess, userData]);
   return (
     <View style={styles.container}>
       {(datetimePicker.endDate || datetimePicker.startDate || datetimePicker.feeDay) && (
@@ -404,7 +435,7 @@ export const CreateContract = () => {
               <View>
                 <Text style={styles.subTitle}>Số người ở tối đa</Text>
                 <TextInput
-                  placeholder='4                              (người)'
+                  placeholder='4 người'
                   style={styles.textInput}
                   onChangeText={text =>
                     handleInputChange('maximum_number_of_peoples', text)
@@ -474,26 +505,41 @@ export const CreateContract = () => {
                   onBlur={() => onBlur('reference_cost', 'water_cost')}
                 />
               </View>
-              {/* <View>
-                <Text style={styles.subTitle}>Phí dịch vụ chung cho phòng</Text>
-              </View>
-              <View>
-                <Text style={styles.subTitle}>Phí dịch vụ theo đầu người</Text>
-              </View> */}
+
             </View>
           </Surface>
+          <Surface style={styles.surface}>
+            <Text style={[theme.fonts.titleMedium, styles.title]}>
+              Khách thuê 
+            </Text>
+            <View
+              style={{
+                flexDirection: 'column',
+                flex: 1,
+                gap: hp(2),
+                marginTop: hp(1),
+              }}
+            >
+              <View>
+                <Text style={styles.subTitle}>Số điện thoại</Text>
+                <TextInput
+                  placeholder='Nhập số điện thoại'
+                  style={styles.textInput}
+                  onChangeText={setSearchQuery}
+                  value = {searchQuery}                  
+                  keyboardType='numeric'
 
+                />
+              </View>
+              <View>
+                <Text style={styles.subTitle}>Khách thuê</Text>
+                {!userData && <Text>Không tìm thấy kết quả</Text>}
+                {userSuccess && userData && <Text>{userData.user_name}</Text>}
+              </View>
+            </View>
+          </Surface>
         </View>
-        <View style = {styles.buttonContainer}>
-        <Button 
-          buttonColor={theme.colors.primary}
-          textColor={theme.colors.onPrimary}
-          style = {styles.tenantButton}
-          icon="account-multiple-plus"
-        >
-          Thêm khách thuê
-        </Button>
-        </View>
+
         <View style={styles.buttonContainer}>
           <Button
             buttonColor={theme.colors.error}

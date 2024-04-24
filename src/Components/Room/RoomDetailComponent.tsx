@@ -1,30 +1,29 @@
 import React, { useEffect } from 'react';
-import {  Text, View } from 'native-base';
+import {  Text, View, ScrollView } from 'native-base';
 import { Surface } from 'react-native-paper';
-import { TextInput, StyleSheet } from 'react-native';
+import { TextInput, StyleSheet, NativeScrollEvent } from 'react-native';
 import { useAppTheme } from '../../Theme';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-
-export const RoomDetailComponent = ({ data }: any) => {
+export interface RoomInfoProps{
+  data: any;
+  onScroll?: ({ nativeEvent }: { nativeEvent: NativeScrollEvent }) => void;
+}
+export const RoomDetailComponent = ({ data, onScroll }: RoomInfoProps) => {
   const theme = useAppTheme();
   const styles = StyleSheet.create({
-    content: {
-      flex: 1,
-      flexDirection: 'column',
-      gap: hp(2),
-    },
     surface: {
-      flex: 1,
       flexDirection: 'column',
       backgroundColor: theme.colors.onPrimary,
       marginHorizontal: wp(2),
       borderRadius: wp(2),
       width: wp(96),
+      height: hp(40),
       paddingHorizontal: wp(4),
       paddingTop: hp(1),
+      marginBottom: hp(1),
     },
     title: {
       color: theme.colors.primary,
@@ -42,7 +41,7 @@ export const RoomDetailComponent = ({ data }: any) => {
   });
 
   return (
-    <View style={styles.content}>
+    <View>
       <Surface style={styles.surface}>
         <Text style={[theme.fonts.titleMedium, styles.title]}>
           {'Thông tin phòng ' + data?.name}
