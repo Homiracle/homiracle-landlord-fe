@@ -107,7 +107,7 @@ const AddTenant = () => {
   const onAddTenant = () => {
     // call api here
     addTenant({
-      contract_id: '61fa1a2e-7867-42de-9965-834e60d18d42',
+      contract_id: '7b216c5c-ce2b-4c00-b6bc-60ed5f332b4d',
       tenant_id: userData?.user_id as string,
     });
   };

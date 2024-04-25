@@ -22,12 +22,12 @@ const attendanceApi = API.injectEndpoints({
         const hasRoom =
           room_id !== undefined || room_id !== null || room_id !== '';
         if (hasFloor && hasRoom) {
-          return `attendances?house_id=${house_id}&floor_id=${floor_id}&room_id=${room_id}`;
+          return `attendances/landlord?house_id=${house_id}&floor_id=${floor_id}&room_id=${room_id}`;
         }
         if (hasFloor) {
-          return `attendances?house_id=${house_id}&floor_id=${floor_id}`;
+          return `attendances/landlord?house_id=${house_id}&floor_id=${floor_id}`;
         }
-        return `attendances?house_id=${house_id}`;
+        return `attendances/landlord?house_id=${house_id}`;
       },
     }),
   }),
