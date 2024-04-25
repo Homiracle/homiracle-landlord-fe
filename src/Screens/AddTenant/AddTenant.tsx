@@ -15,7 +15,13 @@ import {
 
 import { useAppTheme } from '../../Theme';
 import { Header, CustomDialog } from '../../Components';
-import { useAddTenantMutation, useLazySearchUserQuery } from '../../Services';
+import {
+  useAddTenantMutation,
+  useGetContractIdByRoomIdQuery,
+  useLazySearchUserQuery,
+} from '../../Services';
+import { useAppSelector } from '../../Store/hook';
+import { getRoomId } from '../../Store/reducers';
 
 const AddTenant = () => {
   const theme = useAppTheme();
@@ -104,12 +110,25 @@ const AddTenant = () => {
   const [addTenant, { isSuccess: addTenantSuccess, error: addTenantError }] =
     useAddTenantMutation();
 
+  const roomId = useAppSelector(getRoomId) || '';
+  const [contractId, setContractId] = React.useState<string>('');
+  const { data: ContractIdData } = useGetContractIdByRoomIdQuery(roomId);
+
+  useEffect(() => {
+    if (ContractIdData) {
+      setContractId(ContractIdData.contract_id);
+    }
+  }, [ContractIdData]);
+
   const onAddTenant = () => {
     // call api here
-    addTenant({
-      contract_id: '7b216c5c-ce2b-4c00-b6bc-60ed5f332b4d',
-      tenant_id: userData?.user_id as string,
-    });
+    if (contractId !== '' || !contractId) {
+      console.log("🚀 ~ onAddTenant ~ contractId:", contractId)
+      addTenant({
+        contract_id: contractId as string,
+        tenant_id: userData?.user_id as string,
+      });
+    }
   };
 
   useEffect(() => {
@@ -142,7 +161,7 @@ const AddTenant = () => {
       </Header>
       <View style={styles.tenanContent}>
         {userFetching && <ActivityIndicator animating={true} size={30} />}
-        {!userFetching && !userData && <Text>Không tìm thấy kết quả</Text>}
+        {userSuccess && !userData && <Text>Không tìm thấy kết quả</Text>}
         {userSuccess && userData && (
           <>
             <View style={styles.tenantContainer}>
