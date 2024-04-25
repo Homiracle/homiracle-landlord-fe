@@ -1,24 +1,33 @@
-import React, { useState } from "react";
+import React, { useState , useEffect} from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Checkbox, TextInput  } from "react-native-paper";
+import { useSignUpMutation } from "../../Services";
 import Logo from "../../static/image/logo";
-
+import { useNavigation } from "@react-navigation/native";
 export const SignUp = () => {
+  const navigation = useNavigation();
   const [email, setEmail] = useState('');
-  const [fullName, setFullName] = useState('');
+  const [user_name, setFullName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isChecked, setChecked] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const role = 'landlord';
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-
+  const [signup, { data, isSuccess, isLoading, isError }] = useSignUpMutation();
   const handleSignUp = () => {
     // Thực hiện xử lý đăng ký ở đây
-    console.log(`Email: ${email}, Full Name: ${fullName}, Password: ${password}, Confirm Password: ${confirmPassword}, Agreement: ${isChecked}`);
+    signup({email, password, user_name,role});
+    console.log(`Email: ${email}, Full Name: ${user_name}, Password: ${password}, Confirm Password: ${confirmPassword}, Agreement: ${isChecked}`);
   };
-
+useEffect(() => {
+    if (isSuccess) {
+      console.log(data);
+      navigation.navigate('SignIn' as never);
+    }
+  }, [isSuccess]);
   return (
     <View style={styles.container}>
       <View style ={styles.header}>
@@ -30,14 +39,14 @@ export const SignUp = () => {
         onChangeText={(text) => setEmail(text)}
         value={email}
         mode='outlined'
-        label="Enter your email"
+        label="Email"
       />
 
     <TextInput
       style={styles.input}
       label="Họ và Tên"
       onChangeText={(text) => setFullName(text)}
-      value={fullName}
+      value={user_name}
       mode='outlined'
     />
 
@@ -107,16 +116,11 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: 'bold',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
   input: {
     width: '100%',
     padding: 10,
-    marginBottom: 16,
-    height: 20,
+    marginBottom: 12,
+    height: 25,
     borderColor: '#ccc',
     borderRadius: 4,
   },

@@ -7,11 +7,11 @@ import { RootStackHouseParamList } from '@/Components';
 
 type RoomingHouseDetailsRouteProp = RouteProp<
   RootStackHouseParamList,
-  RootScreens.CREATE_DEVICE
+  RootScreens.DEVICE_DETAIL
 >;
 type RoomingHouseDetailsNavigationProp = StackNavigationProp<
   RootStackHouseParamList,
-  RootScreens.CREATE_DEVICE
+  RootScreens.DEVICE_DETAIL
 >;
 
 export type Props = {

@@ -118,7 +118,7 @@ export const ContractDetail = ({
       end_date: '',
       couting_fee_day: '',
       paying_cost_cycle: 0,
-      maximmum_number_of_people: 4,
+      maximum_number_of_peoples: 4,
       reference_cost: {
           deposit: 0,
           room_cost: 0,
