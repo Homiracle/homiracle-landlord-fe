@@ -28,9 +28,11 @@ const FloorApi = API.injectEndpoints({
         method: 'POST',
         body: data,
       }),
+      invalidatesTags: ['Floor'],
     }),
     getFloors: build.query<ListFloor, string>({
       query: id => `floors?roomingHouseId=${id}`,
+      providesTags: ['Floor'],
     }),
     getFloorDetail: build.query<FloorDetail, string>({
       query: id => `floors/${id}`,
