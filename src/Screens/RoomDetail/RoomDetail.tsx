@@ -59,7 +59,7 @@ export const RoomDetail = ({
   const room_id = useAppSelector(getRoomId) as string;
   const house_id = useAppSelector(getHouseId) as string;
   const floor_id = useAppSelector(getFloorId) as string;
-  const src = 'created';
+  const src = 'accepted';
   const [isExtended, setIsExtended] = React.useState(true);
   const onScroll = ({ nativeEvent }: { nativeEvent: NativeScrollEvent }) => {
     const currentScrollPosition =
@@ -81,7 +81,7 @@ export const RoomDetail = ({
     isError: isCTError,
     error,
   } = useGetContractListQuery({house_id,floor_id, room_id,src});
-  console.log(contractsData)
+  console.log(contractsData,isCTSuccess)
   return (
     <View style={styles.container}>
       <Header
@@ -133,7 +133,7 @@ export const RoomDetail = ({
               number={contractsData?.length}
               displayNumber={true}
               onFocus={() => {
-                setStatusFilter('contracts');
+                setStatusFilter('contract');
                 setFocus(<ContractList data = {contractsData }onScroll={onScroll} />);
                 setScreen(RootScreens.CREATE_CONTRACT);
                 setLabel('Thêm hợp đồng');

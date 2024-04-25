@@ -12,8 +12,8 @@ import { Button, Surface, Portal } from 'react-native-paper';
 import { Dropdown } from 'react-native-searchable-dropdown-kj';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
-import { useCreateContractMutation } from '../../Services';
-import { ContractDetailsNavigationProp } from './ContractDetailContainer';
+import { useCreateContractMutation, useGetContractQuery } from '../../Services';
+import { ContractDetailRouteProp } from './ContractDetailContainer';
 import {Contract as ContractProps } from '../../Services/contract/interface';
 import { useAppSelector } from '../../Store/hook';
 import { getHouseId, getFloorId, getRoomId, selectUserId } from '../../Store/reducers';
@@ -23,9 +23,10 @@ import { selectUser } from '../../Store/reducers';
 import { RootScreens } from '../../Constants/RootScreen';
 
 export const ContractDetail = ({
-  navigation,
-}:{navigation: ContractDetailsNavigationProp}) => {
+  navigation, route
+}: ContractDetailRouteProp) => {
   // styles
+  
   const theme = useAppTheme();
   const styles = StyleSheet.create({
     container: {
@@ -130,6 +131,21 @@ export const ContractDetail = ({
         tenant_id: '',
     });
 
+  const {data: ContractDetail,
+    isSuccess: isContractDetailSuccess,
+    error: isContractDetailError,
+  } = useGetContractQuery(route.params.contract_id);
+  console.log(route.params.contract_id);
+  useEffect(() => {
+    if (isContractDetailSuccess) {
+      console.log(ContractDetail);
+    }
+    else 
+    {
+      console.log(isContractDetailError);
+    }
+  }, [isContractDetailSuccess, ContractDetail]);  
+  
   
   const formik = useFormik({
     initialValues: contractData,
@@ -149,121 +165,10 @@ export const ContractDetail = ({
 
   // console.log(useAppSelector(state => state.user));
 
-  const handleInputChange = (
-    fieldName: string,
-    text: string | number,
-    nestedField?: string,
-  ) => {
-    // console.log(fieldName, text);
-    if (nestedField) {
-      setContractData(prevData => ({
-        ...prevData,
-        [fieldName]: {
-          ...prevData[fieldName],
-          [nestedField]: text,
-        },
-      }));
-      formik.handleChange(`${fieldName}.${nestedField}`)(String(text));
-    } else {
-      setContractData(prevData => ({
-        ...prevData,
-        [fieldName]: text,
-      }));
-      formik.handleChange(fieldName)(String(text));
-    }
-  };
-
-
-
-  const isTouched = (field: string, nestedField?: string) => {
-    if (nestedField) {
-      return (
-        formik.touched[field as keyof typeof formik.touched]?.[
-          nestedField as keyof (typeof formik.touched)[typeof field]
-        ] &&
-        formik.errors[field as keyof typeof formik.errors]?.[
-          nestedField as keyof (typeof formik.errors)[typeof field]
-        ]
-      );
-    } else {
-      return formik.touched[field] && formik.errors[field];
-    }
-  };
-
-  const onBlur = (field: string, nestedField?: string) => {
-    if (nestedField) {
-      return formik.setFieldTouched(field, {
-        ...(formik.touched[field] as any),
-        [nestedField]: true,
-      });
-    } else {
-      return formik.setFieldTouched(field, true);
-    }
-  };
-
   const user = useAppSelector(selectUser);
 
   return (
     <View style={styles.container}>
-      {(datetimePicker.endDate || datetimePicker.startDate || datetimePicker.feeDay) && (
-        <DateTimePicker
-          value={new Date()}
-          mode='date'
-          display='calendar'
-          onChange={(event, selectedDate) => {
-            
-            if (datetimePicker.endDate) {
-                showDatetimePicker({ ...datetimePicker, endDate: false });
-                if (selectedDate) {
-                    handleInputChange(
-                        'end_date',
-                        moment(selectedDate).format("L"),
-                    );
-                }
-            } else if (datetimePicker.startDate) {
-                showDatetimePicker({ ...datetimePicker,startDate: false});
-                if (selectedDate) {
-                    handleInputChange(
-                        'start_date',
-                        moment(selectedDate).format("L"),
-                    );
-                }
-            } else if (datetimePicker.feeDay) {
-                showDatetimePicker({ ...datetimePicker, feeDay: false });
-                if (selectedDate) {
-                    handleInputChange(
-                        'couting_fee_day',
-                        moment(selectedDate).format("L"),
-                    );
-                }
-            }
-        }}
-        />
-      )}
-      {/* <Portal>
-        <CustomDialog
-          visible={backDialog}
-          title='Thoát'
-          content='Bạn có muốn thoát không?'
-          onDismiss={() => showBackDialog(false)}
-          onConfirm={() => {
-            showBackDialog(false);
-            navigation.goBack();
-          }}
-        />
-      </Portal>
-      <Portal>
-        <CustomDialog
-          visible={cancelDialog}
-          title='Hủy tạo hợp đồng'
-          content='Bạn có muốn hủy tạo hợp đồng không?'
-          onDismiss={() => showCancelDialog(false)}
-          onConfirm={() => {
-            showCancelDialog(false);
-            navigation.goBack();
-          }}
-        />
-      </Portal> */}
       <Header
         title='Chi tiết hợp đồng'
         height={hp(8)}
@@ -290,7 +195,7 @@ export const ContractDetail = ({
               <View>
                 <Text style={styles.subTitle}>Đại diện bên cho thuê</Text>
                 <TextInput
-                  placeholder={user.user_name}
+                  value={user.user_name}
                   style={styles.textInput}
                   editable={false}
                 />
@@ -301,12 +206,12 @@ export const ContractDetail = ({
                 />
                 <Text style={styles.subTitle}>Đại diện bên thuê</Text>
                 <TextInput
-                  placeholder='Ha Huy Bao'
+                  value = {ContractDetail?.tenant.user_name}
                   style={styles.textInput}
                   editable={false}
                 />
                 <TextInput
-                  placeholder='12345678910'
+                 value = {ContractDetail?.tenant.phone}
                   style={styles.textInput}
                   editable={false}
                 />  
@@ -314,39 +219,29 @@ export const ContractDetail = ({
               <View>
               <Text style={styles.subTitle}>Số phòng</Text>
                 <TextInput
-                  placeholder='Phòng 101'
+                  value = {ContractDetail?.room.name}
                   style={styles.textInput}
                   editable={false}
-                  onChangeText={text => handleInputChange('room_id', text)}
-                  onBlur={() => onBlur('room_id')}
                 />
               </View>
               <View style={{ flexDirection: 'row', gap: wp(2) }}>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.subTitle}>Ngày bắt đầu</Text>
                     <TextInput
-                      placeholder='1/1/2024'
+                      
                       style={styles.textInput}
-                      onChangeText={text =>
-                        handleInputChange('start_date', text)
-                      }
                       showSoftInputOnFocus
-                      value={contractData.start_date}
-                      onBlur={() => onBlur('start_date')}
+                      value={ContractDetail?.start_date}
+                
                       editable = {false}
                     />
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.subTitle}>Ngày kết thúc</Text>
                     <TextInput
-                      placeholder='1/1/2024'
+                     
                       style={styles.textInput}
-                      onChangeText={text =>
-                        handleInputChange('end_date', text)
-                      }
-                      showSoftInputOnFocus
-                      value={contractData.end_date}
-                      onBlur={() => onBlur('end_date')}
+                      value= {ContractDetail?.end_date}
                       editable = {false}
                     />
                 </View>
@@ -354,14 +249,9 @@ export const ContractDetail = ({
               <View>
                 <Text style={styles.subTitle}>Ngày bắt đầu tính tiền</Text>
                     <TextInput
-                      placeholder='1/1/2024'
+                    
                       style={styles.textInput}
-                      onChangeText={text =>
-                        handleInputChange('couting_fee_day', text)
-                      }
-                      showSoftInputOnFocus
-                      value={contractData.couting_fee_day}
-                      onBlur={() => onBlur('couting_fee_day')}
+                      value={ContractDetail?.couting_fee_day}
                       editable = {false}
                     />        
               </View>
@@ -371,12 +261,10 @@ export const ContractDetail = ({
                     <TextInput
                       placeholder='1 tháng'
                       style={styles.textInput}
-                      onChangeText={text =>
-                        handleInputChange('paying_cost_cycle', text)
-                      }
+                     
                       showSoftInputOnFocus
-                      value={contractData.paying_cost_cycle +""}
-                      onBlur={() => onBlur('paying_cost_cycle')}
+                      value={ContractDetail?.paying_cost_cycle +""}
+                    
                     />
          
               </View>
@@ -398,23 +286,15 @@ export const ContractDetail = ({
                 <TextInput
                   placeholder='Nhập tiền cọc tham khảo'
                   style={styles.textInput}
-                  onChangeText={text =>
-                    handleInputChange('reference_cost', text, 'deposit')
-                  }
-                  keyboardType='numeric'
-                  onBlur={() => onBlur('reference_cost', 'deposit')}
+                  value= {ContractDetail?.cost?.deposit + ""}
                 />
               </View>
               <View>
                 <Text style={styles.subTitle}>Giá phòng tham khảo</Text>
                 <TextInput
-                  placeholder='Nhập giá phòng tham khảo'
+                  
                   style={styles.textInput}
-                  onChangeText={text =>
-                    handleInputChange('reference_cost', text, 'room_cost')
-                  }
-                  keyboardType='numeric'
-                  onBlur={() => onBlur('reference_cost', 'room_cost')}
+                  value= {ContractDetail?.cost?.room_cost +""}
                 />
               </View>
               <View>
@@ -422,11 +302,7 @@ export const ContractDetail = ({
                 <TextInput
                   placeholder='Nhập giá điện tham khảo'
                   style={styles.textInput}
-                  onChangeText={text =>
-                    handleInputChange('reference_cost', text, 'power_cost')
-                  }
-                  keyboardType='numeric'
-                  onBlur={() => onBlur('reference_cost', 'power_cost')}
+                  value={ContractDetail?.cost?.power_cost +""}
                 />
               </View>
               <View>
@@ -434,19 +310,10 @@ export const ContractDetail = ({
                 <TextInput
                   placeholder='Nhập giá nước tham khảo'
                   style={styles.textInput}
-                  onChangeText={text =>
-                    handleInputChange('reference_cost', text, 'water_cost')
-                  }
-                  keyboardType='numeric'
-                  onBlur={() => onBlur('reference_cost', 'water_cost')}
+                  value={ContractDetail?.cost?.water_cost +""}
                 />
               </View>
-              {/* <View>
-                <Text style={styles.subTitle}>Phí dịch vụ chung cho phòng</Text>
-              </View>
-              <View>
-                <Text style={styles.subTitle}>Phí dịch vụ theo đầu người</Text>
-              </View> */}
+       
             </View>
           </Surface>
 

@@ -84,7 +84,7 @@ export const RoomItem = ({
                 }, homiralceTheme.fonts.bodyMedium]}
                 numberOfLines={2}
                 ellipsizeMode='tail'
-            >{cost}</Text>
+            >{"Giá phòng: " + cost}</Text>
 
             
             <Icon 

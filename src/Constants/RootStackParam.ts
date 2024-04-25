@@ -21,7 +21,7 @@ export type RootStackParamList = {
   [RootScreens.CREATE_DEVICE]: undefined;
   [RootScreens.ADD_TENANT]: undefined;
   [RootScreens.DEVICE_DETAIL]: undefined;
-  [RootScreens.CONTRACT_DETAIL]: undefined;
+  [RootScreens.CONTRACT_DETAIL]: { contract_id: string};
   AuthStack: undefined;
   HomeStack: undefined;
   RoomingHouseStack: undefined;

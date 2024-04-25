@@ -23,10 +23,10 @@ export const ContractList = ({ data, onScroll }: ContractListProps) => {
         data={data}
         renderItem={({ item }: { item: any }) => (
           <ContractItem
-            room_id={item.room_id}
-            floor_id={item.floor_id}
+            room_id={item?.room.room_id}
+            floor_id={item.room.floor.floor_id}
             contract_id={item.contract_id}
-            room_cost={item.room_cost}
+            room_cost={item.cost.room_cost}
           />
         )}
         keyExtractor={item => item.contract_id}
