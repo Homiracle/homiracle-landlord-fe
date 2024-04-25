@@ -70,6 +70,9 @@ const AddTenant = () => {
   const [searchQuery, setSearchQuery] = React.useState<string>('');
   const [isSearching, setIsSearching] = React.useState<boolean>(false);
   const [confirmDialog, setConfirmDialog] = React.useState<boolean>(false);
+  const [successfulDialog, setSuccessfulDialog] =
+    React.useState<boolean>(false);
+  const [errorDialog, setErrorDialog] = React.useState<boolean>(false);
 
   const [
     searchUser,
@@ -123,9 +126,10 @@ const AddTenant = () => {
   const onAddTenant = () => {
     // call api here
     if (contractId !== '' || !contractId) {
-      console.log("🚀 ~ onAddTenant ~ contractId:", contractId)
+      console.log('🚀 ~ onAddTenant ~ contractId:', contractId);
       addTenant({
         contract_id: contractId as string,
+        // contract_id: '',
         tenant_id: userData?.user_id as string,
       });
     }
@@ -135,7 +139,10 @@ const AddTenant = () => {
     if (addTenantSuccess) {
       console.log('addTenantSuccess:', addTenantSuccess);
       setConfirmDialog(false);
+      setSuccessfulDialog(true);
     } else if (addTenantError) {
+      setConfirmDialog(false);
+      setErrorDialog(true);
       console.log('addTenantError:', addTenantError);
     }
   }, [addTenantSuccess, addTenantError]);
@@ -198,6 +205,24 @@ const AddTenant = () => {
           content='Bạn có muốn thêm người thuê này không?'
           onDismiss={() => setConfirmDialog(false)}
           onConfirm={onAddTenant}
+        />
+      </Portal>
+      <Portal>
+        <CustomDialog
+          visible={successfulDialog}
+          content='Mời người thuê vào phòng thành công!'
+          onConfirm={() => {
+            setSuccessfulDialog(false);
+          }}
+        />
+      </Portal>
+      <Portal>
+        <CustomDialog
+          visible={errorDialog}
+          content='Vui lòng ký hợp đồng trước khi thêm khách thuê vào phòng!'
+          onConfirm={() => {
+            setErrorDialog(false);
+          }}
         />
       </Portal>
     </View>
