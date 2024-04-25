@@ -1,5 +1,5 @@
 import React, { useEffect} from 'react';
-import { View,ScrollView } from 'native-base';
+import { View,ScrollView} from 'native-base';
 import { useNavigation } from '@react-navigation/native';
 import { RootScreens } from '../../Constants/RootScreen';
 import {
@@ -10,7 +10,7 @@ import {
   TenantList,
   
 } from '../../Components';
-import { StyleSheet, NativeScrollEvent } from 'react-native';
+import { StyleSheet, NativeScrollEvent,Text } from 'react-native';
 import { Button, AnimatedFAB } from 'react-native-paper';
 import { useAppTheme } from '../../Theme';
 import {
@@ -24,6 +24,7 @@ import { getRoomId, getFloorId, getHouseId } from '../../Store/reducers';
 import { ContractList } from '../../Components/Contract/ContractList';
 import { RoomDetailsNavigationProp } from './RoomDetailContainer';
 import { DeviceScope } from '../../Constants/DeviceScope';
+import { ErrorMessage } from 'formik';
 
 export const RoomDetail = ({
   navigation,
@@ -40,9 +41,11 @@ export const RoomDetail = ({
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      marginTop: 0,
     },
     content: {
+      flex: 1,
+      flexDirection: 'column',
+      gap: hp(2),
     },
     fabStyle: {
       position: 'absolute',
@@ -56,6 +59,7 @@ export const RoomDetail = ({
   const room_id = useAppSelector(getRoomId) as string;
   const house_id = useAppSelector(getHouseId) as string;
   const floor_id = useAppSelector(getFloorId) as string;
+  const src = 'created';
   const [isExtended, setIsExtended] = React.useState(true);
   const onScroll = ({ nativeEvent }: { nativeEvent: NativeScrollEvent }) => {
     const currentScrollPosition =
@@ -73,10 +77,11 @@ export const RoomDetail = ({
   }, [isRoomSuccess, roomData]);
   const {
     data: contractsData,
-    isSuccess: isFloorsSuccess,
-    isError: isFloorsError,
-  } = useGetContractListQuery({house_id,floor_id, room_id});
-
+    isSuccess: isCTSuccess,
+    isError: isCTError,
+    error,
+  } = useGetContractListQuery({house_id,floor_id, room_id,src});
+  console.log(contractsData)
   return (
     <View style={styles.container}>
       <Header
@@ -85,7 +90,7 @@ export const RoomDetail = ({
         mode='center-aligned'
         onBack={() => navigation.goBack()}
       />
-       <View>
+        <View>
           <TabView>
             <TabButton
               isClicked={status === 'info'}
@@ -106,7 +111,7 @@ export const RoomDetail = ({
               onFocus={() => {
                 setStatusFilter('device');
                 setLabel('Thêm thiết bị');
-
+                setScreen(RootScreens.CREATE_DEVICE);
                 setFocus(<DeviceList scope={DeviceScope.ROOM} scope_id={room_id} onScroll={onScroll}/>);
               }}
             />
@@ -122,13 +127,22 @@ export const RoomDetail = ({
                 setLabel('Thêm khách thuê');
               }}
             />
+              <TabButton
+              isClicked={status === 'contract'}
+              name='Hợp đồng'
+              number={contractsData?.length}
+              displayNumber={true}
+              onFocus={() => {
+                setStatusFilter('contracts');
+                setFocus(<ContractList data = {contractsData }onScroll={onScroll} />);
+                setScreen(RootScreens.CREATE_CONTRACT);
+                setLabel('Thêm hợp đồng');
+              }}
+            />
           </TabView>
-          </View>
-          {focus}
-          {status === 'info' && (
-            <ContractList data={contractsData} />
-          )}
-        
+        </View>
+            {focus}
+        {status !== 'info' &&(
         <AnimatedFAB
           icon={'plus'}
           label={label}
@@ -146,7 +160,7 @@ export const RoomDetail = ({
           style={styles.fabStyle}
           color={theme.colors.onPrimary}
         />
-  
+        )}
     </View>
   );
 };

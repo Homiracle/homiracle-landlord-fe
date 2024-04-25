@@ -16,7 +16,7 @@ import { useAppSelector } from '../../Store/hook';
 import { getHouseId, getFloorId, getRoomId } from '../../Store/reducers';
 // import { contractFormValidationSchema as schema } from '../../Utils';
 import { useFormik } from 'formik';
-import { useCreateDeviceMutation } from '../../Services/devices';
+import { useGetDeviceQuery, useGetDevicesQuery } from '../../Services/devices';
 import { DeviceType } from '../../Constants/DeviceType';
 import { Props as CreateDeviceProps } from './DeviceDetailContainer';
 
@@ -100,92 +100,23 @@ export const DeviceDetail = ({ route, navigation }: CreateDeviceProps) => {
     },
   });
 
-  // other hooks
-  const [backDialog, showBackDialog] = React.useState(false);
-  const [cancelDialog, showCancelDialog] = React.useState(false);
-  const [datetimePicker, showDatetimePicker] = React.useState({
-    openingHour: false,
-    closingHour: false,
-    feeDay: false,
-  });
-  const isHouse = route.params?.isHouse;
-  const isFloor = route.params?.isFloor;
-  const isRoom = route.params?.isRoom;
 
-  const getScopeId = () => {
-    if (isHouse) {
-      return useAppSelector(getHouseId);
-    } else if (isFloor) {
-      return useAppSelector(getFloorId);
-    } else if (isRoom) {
-      return useAppSelector(getRoomId);
-    }
-  };
-  const [deviceData, setDeviceData] = React.useState<DeviceProps>({
-    name: '',
-    type: '',
-    accessable_scope: isHouse ? 'house' : isFloor ? 'floor' : 'room',
-    accessable_scope_id: getScopeId() || '',
-  });
+  const device_id = route.params?.device_id || '';
 
-  const formik = useFormik({
-    initialValues: deviceData,
-    // validationSchema: schema,
-    onSubmit: values => {
-      console.log(values);
-    },
-    validateOnChange: true,
-    validateOnBlur: true,
-    validateOnMount: true,
-  });
+  console.log(device_id);
 
-  const onBack = () => {
-   //navigation.navigate()
-  };
-
-  // console.log(useAppSelector(state => state.user));
-
-  const handleInputChange = (fieldName: string, text: string | number) => {
-    // console.log(fieldName, text);
-
-    setDeviceData(prevData => ({
-      ...prevData,
-      [fieldName]: text,
-    }));
-    formik.handleChange(fieldName)(String(text));
-  };
-
-  const [CreateDevice, { data, error, isSuccess, isLoading, isError }] =
-    useCreateDeviceMutation();
-
-  const handleSubmit = async () => {
-    console.log();
-    await CreateDevice(deviceData as Partial<CreateDeviceProps>);
-  };
+  const { data: deviceData, error } = useGetDeviceQuery(device_id);
 
   useEffect(() => {
-    if (isSuccess) {
-      console.log('Create device success:', data);
-      navigation.goBack();
-    } else if (isError) {
-      console.log('Create device error:', error);
-    }
-  }, [isSuccess, isError, data, error]);
+    if (deviceData) 
+      console.log(deviceData);
+    else if (error)
+      console.log(error);
+  }, [deviceData, error]);
 
-  const isTouched = (field: string) => {
-    return formik.touched[field] && formik.errors[field];
-  };
-
-  const onBlur = (field: string, nestedField?: string) => {
-    if (nestedField) {
-      return formik.setFieldTouched(field, {
-        ...(formik.touched[field] as any),
-        [nestedField]: true,
-      });
-    } else {
-      return formik.setFieldTouched(field, true);
-    }
-  };
+  const onBack = () => {
+    navigation.goBack();
+  }
 
   return (
     <View style={styles.container}>
@@ -239,67 +170,43 @@ export const DeviceDetail = ({ route, navigation }: CreateDeviceProps) => {
                   placeholder='Nhà test-tầng 1-phòng 2'
                   style={styles.textInput}
                   value='Nhà test-tầng 1-phòng 2'
-                  onChangeText={text => handleInputChange('name', text)}
-                  onBlur={() => onBlur('name')}
                   editable={false}
                 />
-                {isTouched('name') ? (
-                  <Text style={styles.badText}>{formik.errors.name}</Text>
-                ) : null}
               </View>
               <View>
                 <Text style={styles.subTitle}>Tên thiết bị</Text>
                 <TextInput
                   placeholder='Nhập tên thiết bị'
                   style={styles.textInput}
-                  onChangeText={text => handleInputChange('name', text)}
-                  onBlur={() => onBlur('name')}
+                  editable={false}
+                  value={deviceData?.name || ''}
                 />
-                {isTouched('name') ? (
-                  <Text style={styles.badText}>{formik.errors.name}</Text>
-                ) : null}
               </View>
               <View>
                 <Text style={styles.subTitle}>Loại thiết bị</Text>
-                <Dropdown
-                  style={styles.dropdown}
-                  placeholderStyle={styles.placeholderStyle}
-                  data={deviceType}
-                  labelField='name'
-                  valueField='id'
-                  onChange={item => handleInputChange('type', item.type)}
-                  placeholder='Chọn loại thiết bị'
-                  search
-                  searchPlaceholder='Tìm loại thiết bị'
-                  onBlur={() => onBlur('type')}
+                <TextInput
+                  placeholder='Loại thiết bị'
+                  style={styles.textInput}
+                  editable={false}
+                  value={deviceData?.type || ''}
                 />
-                {isTouched('type') ? (
-                  <Text style={styles.badText}>{formik.errors.type}</Text>
-                ) : null}
               </View>
               <View>
                 <Text style={styles.subTitle}>Thiết bị được kết nối</Text>
                 <TextInput
-                  placeholder='Nhập tên thiết bị'
                   style={styles.textInput}
-                  onChangeText={text => handleInputChange('name', text)}
-                  onBlur={() => onBlur('name')}
+                  editable={false}
+                  value={deviceData?.status || ''}
                 />
-                {isTouched('name') ? (
-                  <Text style={styles.badText}>{formik.errors.name}</Text>
-                ) : null}
               </View>
               <View>
                 <Text style={styles.subTitle}>ID thiết bị</Text>
                 <TextInput
-                  placeholder='Nhập tên thiết bị'
                   style={styles.textInput}
-                  onChangeText={text => handleInputChange('name', text)}
-                  onBlur={() => onBlur('name')}
+                  editable={false}
+                  value={device_id}
                 />
-                {isTouched('name') ? (
-                  <Text style={styles.badText}>{formik.errors.name}</Text>
-                ) : null}
+        
               </View>
             </View>
           </Surface>

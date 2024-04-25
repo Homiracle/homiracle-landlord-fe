@@ -53,7 +53,7 @@ export const DeviceItem = ({
                 style.container,
             ]}
             onPress={() => {
-                navigation.navigate(RootScreens.DEVICE_DETAIL)
+                navigation.navigate(RootScreens.DEVICE_DETAIL, {device_id: device_id})
             }}
         >
             <View

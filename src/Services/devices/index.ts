@@ -1,5 +1,5 @@
 import { API } from '../base';
-import { CreateDevice, CreateDeviceResponse, ListDevice } from './type';
+import { CreateDevice, CreateDeviceResponse, Device, ListDevice } from './type';
 
 const deviceApi = API.injectEndpoints({
   endpoints: build => ({
@@ -21,8 +21,16 @@ const deviceApi = API.injectEndpoints({
       }),
       providesTags: ['Device'],
     }),
+    getDevice: build.query<Device, string>({
+      query: device_id => {
+        return {
+          url: `iot-devices/${device_id}`,
+          method: 'GET',
+        }
+      }
+    })
   }),
   overrideExisting: true,
 });
 
-export const { useCreateDeviceMutation, useGetDevicesQuery } = deviceApi;
+export const { useCreateDeviceMutation, useGetDevicesQuery, useGetDeviceQuery } = deviceApi;

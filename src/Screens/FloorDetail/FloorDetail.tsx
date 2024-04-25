@@ -134,7 +134,7 @@ export const FloorDetail = (
         {focus}
         
 
-      {status === 'room' && (
+      {status !== 'tenant' && (
         <AnimatedFAB
           icon={'plus'}
           label={label}

@@ -10,11 +10,13 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useAppDispatch } from '../../Store/hook';
 import { storeId } from '../../Store/reducers';
 import { RootStackContractList } from '../../Screens/ContractDetail/ContractDetailContainer';
-
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+  } from 'react-native-responsive-screen';
 export interface ContractItemProps{
     floor_id :string,
     room_id: string,
-    address: string,
     contract_id: string,
     room_cost:   number,
 }
@@ -22,7 +24,6 @@ export interface ContractItemProps{
 
 export const ContractItem = ({
     contract_id,
-    address,
     room_id,
     floor_id,
     room_cost
@@ -34,9 +35,9 @@ export const ContractItem = ({
     return (
         <TouchableOpacity
             style={{
-                width: 335,
-                height: 110,
+                width: wp(90),
                 display: 'flex',
+                flexDirection: 'column',
                 backgroundColor: "white",
                 borderRadius: 10,
                 shadowColor: homiralceTheme.colors.surfaceBright,
@@ -48,75 +49,55 @@ export const ContractItem = ({
             onPress={() => {
               navigation.navigate(RootScreens.CONTRACT_DETAIL,{contract_id});
             }}
-        >
-            <Text
-                style={[{
-                    textAlign: 'left',
-                    position: 'absolute',
-                    left: 175,
-                    top: 10,
-                }, homiralceTheme.fonts.titleMedium]}
-                numberOfLines={1}
-                ellipsizeMode='tail'
-            >{room_cost}</Text>
+        >   
+            <View style={[{ flexDirection: 'row', gap: wp(2),
 
-            <Text
-                style={[{
-                    textAlign: 'left',
-                    width: 149,
-                    height: 41,
-                    position: 'absolute',
-                    left: 175,
-                    top: 35,
-                }, homiralceTheme.fonts.bodySmall]}
-                numberOfLines={2}
-                ellipsizeMode='tail'
-            >{address}</Text>
+            }]}>
+                <View style={{ flex: 1 }}>
+                    <Text
+                    style={[{
+                    
+                    }, homiralceTheme.fonts.titleMedium]}
+                    numberOfLines={1}
+                    ellipsizeMode='tail'
+                >{'Giá phòng '+ room_cost}</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                    <Text
+                    style={[{
+                        textAlign: 'right',
+                    
+                    }, homiralceTheme.fonts.titleMedium]}
+                    numberOfLines={1}
+                    ellipsizeMode='head'
+                >{room_cost}</Text>
+                </View>
+                
+            </View>
+            <View style={[{ flexDirection: 'row', gap: wp(2),
 
+            }]}>
+                <View style={{ flex: 1 }}>
+                    <Text
+                    style={[{
+                    
+                    }, homiralceTheme.fonts.titleMedium]}
+                    numberOfLines={2}
+                >{'Tầng' + floor_id}</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                    <Text
+                    style={[{
+                        textAlign: 'right',
+                    
+                    }, homiralceTheme.fonts.titleMedium]}
+                    numberOfLines={1}
+                    ellipsizeMode='head'
+                >{'Phòng ' + room_id}</Text>
+                </View>
+                
+            </View>
             
-            <Icon 
-                style={{
-                    right: 138,
-                    bottom: 9,
-                    position: 'absolute',
-                }}
-                name='home-variant'size={24} color={homiralceTheme.colors.primary}
-            />
-            <Text
-                style={[
-                    {
-                        position: 'absolute',
-                        right: 123,
-                        bottom: 12,
-                        color: homiralceTheme.colors.primary,
-                    },
-                    homiralceTheme.fonts.bodySmall,
-                ]}>
-                {floor_id}
-            </Text>
-
-            <Icon 
-                style={{
-                    right: 52,
-                    bottom: 9,
-                    position: 'absolute',
-                }}
-                name='account-multiple'size={24} color={homiralceTheme.colors.primary}
-            />
-            <Text
-                style={[
-                    {
-                        position: 'absolute',
-                        right: 32,
-                        bottom: 12,
-                        color: homiralceTheme.colors.primary,
-                    },
-                    homiralceTheme.fonts.bodySmall
-                ]}>
-                {room_id}
-            </Text>
-
-
         </TouchableOpacity>
     );
 };
