@@ -26,11 +26,23 @@ const deviceApi = API.injectEndpoints({
         return {
           url: `iot-devices/${device_id}`,
           method: 'GET',
-        }
-      }
-    })
+        };
+      },
+    }),
+    connectDevice: build.mutation<void, string>({
+      query: id => ({
+        url: `iot-devices/${id}/connect`,
+        method: 'PUT',
+      }),
+      invalidatesTags: ['Device'],
+    }),
   }),
   overrideExisting: true,
 });
 
-export const { useCreateDeviceMutation, useGetDevicesQuery, useGetDeviceQuery } = deviceApi;
+export const {
+  useCreateDeviceMutation,
+  useGetDevicesQuery,
+  useGetDeviceQuery,
+  useConnectDeviceMutation,
+} = deviceApi;
