@@ -12,11 +12,18 @@ import { Button, Surface, Portal } from 'react-native-paper';
 import { Dropdown } from 'react-native-searchable-dropdown-kj';
 
 import { CreateDevice as DeviceProps } from '../../Services/devices/type/create-device.type';
-import { useAppSelector } from '../../Store/hook';
-import { getHouseId, getFloorId, getRoomId } from '../../Store/reducers';
+import {
+  getHouseId,
+  getFloorId,
+  getRoomId,
+  selectUserId,
+} from '../../Store/reducers';
 // import { contractFormValidationSchema as schema } from '../../Utils';
 import { useFormik } from 'formik';
-import { useGetDeviceQuery, useGetDevicesQuery } from '../../Services/devices';
+import {
+  useConnectDeviceMutation,
+  useGetDeviceQuery,
+} from '../../Services/devices';
 import { DeviceType } from '../../Constants/DeviceType';
 import { Props as CreateDeviceProps } from './DeviceDetailContainer';
 
@@ -98,25 +105,48 @@ export const DeviceDetail = ({ route, navigation }: CreateDeviceProps) => {
       backgroundColor: theme.colors.primary,
       maxWidth: wp(90),
     },
+    connect: {
+      borderColor: theme.colors.primary,
+      borderWidth: 1,
+      borderRadius: 10,
+      backgroundColor: theme.colors.background,
+      width: wp(30),
+    },
   });
 
-
   const device_id = route.params?.device_id || '';
-
-  console.log(device_id);
 
   const { data: deviceData, error } = useGetDeviceQuery(device_id);
 
   useEffect(() => {
-    if (deviceData) 
-      console.log(deviceData);
-    else if (error)
-      console.log(error);
+    if (deviceData) console.log(deviceData);
+    else if (error) console.log(error);
   }, [deviceData, error]);
 
   const onBack = () => {
     navigation.goBack();
-  }
+  };
+
+  const [
+    connectDevice,
+    {
+      isSuccess: connectSuccess,
+      isLoading: connectLoading,
+      error: connectError,
+    },
+  ] = useConnectDeviceMutation();
+
+  const handleConnect = () => {
+    connectDevice(device_id);
+  };
+
+  useEffect(() => {
+    if (connectSuccess) {
+      navigation.goBack();
+    } else if (connectError) {
+      console.log(connectError);
+    }
+  }, [connectSuccess, connectError]);
 
   return (
     <View style={styles.container}>
@@ -206,10 +236,31 @@ export const DeviceDetail = ({ route, navigation }: CreateDeviceProps) => {
                   editable={false}
                   value={device_id}
                 />
-        
               </View>
             </View>
           </Surface>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              gap: wp(10),
+              // marginVertical: hp(2),
+            }}
+          >
+            {deviceData?.status === 'connected' && (
+              <></>
+            )}
+            {deviceData?.status === 'disconnected' && (
+              <Button
+                mode='outlined'
+                style={styles.connect}
+                onPress={handleConnect}
+                loading={connectLoading}
+              >
+                Kết nối
+              </Button>
+            )}
+          </View>
         </View>
         {/* <View style={styles.buttonContainer}>
           <Button
