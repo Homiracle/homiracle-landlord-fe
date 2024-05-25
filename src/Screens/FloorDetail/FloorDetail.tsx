@@ -129,7 +129,7 @@ export const FloorDetail = (
           }}
         />
       </TabView>
-      <SearchBar placeholder={placeholder} value={search} />
+      {/* <SearchBar placeholder={placeholder} value={search} /> */}
 
         {focus}
         
