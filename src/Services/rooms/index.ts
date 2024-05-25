@@ -42,6 +42,7 @@ const RoomApi = API.injectEndpoints({
     }),
     getRoom: build.query<RoomDetail, String>({
       query: id => `rooms/${id}`,
+      providesTags: ['Room'],
     }),
   }),
   overrideExisting: true,
