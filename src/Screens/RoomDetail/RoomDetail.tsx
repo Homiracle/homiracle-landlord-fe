@@ -85,7 +85,7 @@ export const RoomDetail = ({
   return (
     <View style={styles.container}>
       <Header
-        title={'Chi tiết phòng ' + roomData?.name}
+        title={'Chi tiết phòng ' + (isRoomSuccess? roomData?.name : '')}
         height={8}
         mode='center-aligned'
         onBack={() => navigation.goBack()}

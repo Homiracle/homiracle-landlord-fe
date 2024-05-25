@@ -44,7 +44,7 @@ export const RoomDetailComponent = ({ data, onScroll }: RoomInfoProps) => {
     <View>
       <Surface style={styles.surface}>
         <Text style={[theme.fonts.titleMedium, styles.title]}>
-          {'Thông tin phòng ' + data?.name}
+          { 'Thông tin phòng '  + (data?.name || '')}
         </Text>
         <View
           style={{
@@ -56,11 +56,7 @@ export const RoomDetailComponent = ({ data, onScroll }: RoomInfoProps) => {
         >
           <View>
             <Text style={styles.subTitle}>Tên phòng</Text>
-            <TextInput
-              style={styles.textInput}
-              defaultValue={data?.name}
-              editable={false}
-            />
+            <Text style={styles.textInput}>{data?.name? data?.name: ''}</Text>
           </View>
           <View style={{ flexDirection: 'row', gap: wp(2) }}>
             <View style={{ flex: 1 }}>
@@ -69,7 +65,7 @@ export const RoomDetailComponent = ({ data, onScroll }: RoomInfoProps) => {
                 placeholder=''
                 style={styles.textInput}
                 editable={false}
-                defaultValue={String(data?.number_of_bedroom)}
+                defaultValue={String(data?.number_of_bedroom ? data?.number_of_bedroom : 0)}
               />
             </View>
             <View style={{ flex: 1 }}>
@@ -78,7 +74,7 @@ export const RoomDetailComponent = ({ data, onScroll }: RoomInfoProps) => {
                 placeholder=''
                 style={styles.textInput}
                 editable={false}
-                defaultValue={String(data?.number_of_bathroom)}
+                defaultValue={String(data?.number_of_bathroom ? data?.number_of_bathroom : 0)}
               />
             </View>
           </View>
@@ -89,7 +85,7 @@ export const RoomDetailComponent = ({ data, onScroll }: RoomInfoProps) => {
                 placeholder=''
                 style={styles.textInput}
                 editable={false}
-                defaultValue={String(data?.acreage)}
+                defaultValue={String(data?.acreage ? data?.acreage : 0)}
               />
             </View>
             <View style={{ flex: 1 }}>
@@ -97,7 +93,7 @@ export const RoomDetailComponent = ({ data, onScroll }: RoomInfoProps) => {
               <TextInput
                 style={styles.textInput}
                 editable={false}
-                defaultValue={String(data?.max_tenant)}
+                defaultValue={String(data?.max_tenant ? data?.max_tenant : 0)}
               />
             </View>
           </View>

@@ -206,7 +206,6 @@ export const DeviceDetail = ({ route, navigation }: CreateDeviceProps) => {
               <View>
                 <Text style={styles.subTitle}>Tên thiết bị</Text>
                 <TextInput
-                  placeholder='Nhập tên thiết bị'
                   style={styles.textInput}
                   editable={false}
                   value={deviceData?.name || ''}
@@ -215,7 +214,6 @@ export const DeviceDetail = ({ route, navigation }: CreateDeviceProps) => {
               <View>
                 <Text style={styles.subTitle}>Loại thiết bị</Text>
                 <TextInput
-                  placeholder='Loại thiết bị'
                   style={styles.textInput}
                   editable={false}
                   value={deviceData?.type || ''}
