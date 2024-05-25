@@ -9,7 +9,7 @@ const deviceApi = API.injectEndpoints({
         method: 'POST',
         body: data,
       }),
-      invalidatesTags: ['Device'],
+      invalidatesTags: ['Device', 'Floor', 'Room', 'RoomingHouse'],
     }),
     getDevices: build.query<
       ListDevice,
