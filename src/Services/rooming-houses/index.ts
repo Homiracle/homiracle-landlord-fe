@@ -21,7 +21,8 @@ const roomingHouseApi = API.injectEndpoints({
       providesTags: ['RoomingHouse'],
     }),
     getRoomingHouseDetails: build.query<HouseDetails, string>({
-      query: id => `rooming-houses/${id}`
+      query: id => `rooming-houses/${id}`,
+      providesTags: ['RoomingHouse'],
     }),
   }),
   overrideExisting: true,

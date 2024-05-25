@@ -36,6 +36,7 @@ const FloorApi = API.injectEndpoints({
     }),
     getFloorDetail: build.query<FloorDetail, string>({
       query: id => `floors/${id}`,
+      providesTags: ['Floor'],
     }),
   }),
   overrideExisting: true,

@@ -21,11 +21,11 @@ import { DeviceType } from '../../Constants/DeviceType';
 import { Props as CreateDeviceProps } from './CreateDeviceContainer';
 
 const deviceType = [
-  { id: 1, type: DeviceType.CAMERA, name: 'Camera' },
+  { id: 1, type: DeviceType.AIR_CONDITIONER, name: 'Điều hoà nhiệt độ' },
   { id: 2, type: DeviceType.LIGHT, name: 'Đèn' },
   { id: 3, type: DeviceType.FAN, name: 'Quạt' },
-  { id: 4, type: DeviceType.HUMIDTY_SENSOR, name: 'Cảm biến độ ẩm' },
-  { id: 5, type: DeviceType.TEMPERATURE_SENSOR, name: 'Cảm biến nhiệt độ' },
+  { id: 4, type: DeviceType.ELECTRIC_METER, name: 'Đồng hồ điện' },
+  { id: 5, type: DeviceType.WATER_METER, name: 'Đồng hồ nước' },
 ];
 
 export const CreateDevice = ({ route, navigation }: CreateDeviceProps) => {
