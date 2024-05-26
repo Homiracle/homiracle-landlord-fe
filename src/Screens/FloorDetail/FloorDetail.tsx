@@ -85,7 +85,7 @@ export const FloorDetail = (
   return (
     <View style={{flex : 1}}>
       <Header
-        title={'Tầng ' + floorData?.floor_name}
+        title={ 'Tầng ' + (isFloorSuccess ? floorData?.floor_name : '')}
         height={20}
         mode='center-aligned'
         onBack={() => {
@@ -129,7 +129,7 @@ export const FloorDetail = (
           }}
         />
       </TabView>
-      <SearchBar placeholder={placeholder} value={search} />
+      {/* <SearchBar placeholder={placeholder} value={search} /> */}
 
         {focus}
         

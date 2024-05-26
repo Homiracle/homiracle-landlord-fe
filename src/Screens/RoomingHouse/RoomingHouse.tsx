@@ -46,10 +46,10 @@ export const RoomingHouseList = () => {
     <View style={{ flex: 1 }}>
       <Header
         title='Danh sách nhà trọ'
-        height={20}
+        height={15}
         mode='center-aligned'
       >
-        <Searchbar
+        {/* <Searchbar
           style={{
             width: wp('90%'),
             left: wp('5%'),
@@ -57,7 +57,7 @@ export const RoomingHouseList = () => {
           placeholder='Tìm nhà trọ'
           onChangeText={setSearchQuery}
           value={searchQuery}
-        ></Searchbar>
+        ></Searchbar> */}
       </Header>
       <FlatList
         data={data}
