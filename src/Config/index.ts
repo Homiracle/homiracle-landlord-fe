@@ -1,4 +1,3 @@
 export const Config = {
-  API_URL: process.env.API_URL || 'http:/192.168.2.3:3000/',
+  API_URL: process.env.API_URL || 'https://api-homiracle.up.railway.app/',
 };
- 
