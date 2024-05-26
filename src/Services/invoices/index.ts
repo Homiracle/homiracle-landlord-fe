@@ -13,6 +13,8 @@ const invoiceApi = API.injectEndpoints({
             invoice_id: _.invoice_id,
             name: `Hoá đơn ${_.invoice_id}`,
             status: _.status,
+            start_paid_day: String(_.start_paid_day),
+            end_paid_day: String(_.end_paid_day),
             total: Object.values(_.cost).reduce((a, b) => a + b, 0),
             costs: Object.keys(_.cost).reduce((result: any[], key) => {
               // @ts-ignore
@@ -20,6 +22,7 @@ const invoiceApi = API.injectEndpoints({
             }, []),
           } as unknown as ItfInvoiceItem))
         },
+        providesTags: ['Invoices']
       }),
 
       /** get specific invoice */
@@ -30,6 +33,8 @@ const invoiceApi = API.injectEndpoints({
             invoice_id: resp.invoice_id,
             name: `Hoá đơn ${resp.invoice_id}`,
             status: resp.status,
+            start_paid_day: String(resp.start_paid_day),
+            end_paid_day: String(resp.end_paid_day),
             total: Object.values(resp.cost).reduce((a, b) => a + b, 0),
             costs: Object.keys(resp.cost).reduce((result: any[], key) => {
               // @ts-ignore
@@ -41,10 +46,13 @@ const invoiceApi = API.injectEndpoints({
 
       /** set specific invoice to PAID status */
       setInvoiceToPaid: build.mutation<void, { id: number }>({
-        query: param => ({
-          url: `/invoices/${param.id}/confirm_paid`,
-          method: 'PATCH'
-        }),
+        query: param => {
+          return {
+            url: `/invoices/${param.id}/confirm_paid`,
+            method: 'PATCH'
+          };
+        },
+        invalidatesTags: ['Invoices']
       },
       ),
     };

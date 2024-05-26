@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Card, Text, Button, DataTable } from 'react-native-paper';
+import { StyleSheet, TouchableHighlight, View } from 'react-native';
+import {
+  Card,
+  Text,
+  Button,
+  DataTable,
+  Portal,
+  Dialog,
+} from 'react-native-paper';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { Dropdown } from 'react-native-searchable-dropdown-kj';
 
 import theme from '../../Theme';
 import {
@@ -26,20 +32,10 @@ const toVietnamCurrency = (input: number | string) => {
 export const InvoiceItem = ({ item }: { item: ItfInvoiceItem }) => {
   const [isExpanded, setIsExpanded] = React.useState(false);
   const [value, setValue] = useState<string>(item.status);
+  const [showDialog, setShowDialog] = useState<boolean>(false);
 
   const [confirmInvoice, { isSuccess, error: isError }] =
     useSetInvoiceToPaidMutation();
-
-  const statusList = [
-    { value: InvoiceStatus.CREATED, label: InvoiceStatusText.CREATED },
-    { value: InvoiceStatus.PAID, label: InvoiceStatusText.PAID },
-    { value: InvoiceStatus.LOANED, label: InvoiceStatusText.LOANED },
-    { value: InvoiceStatus.EXPIRED, label: InvoiceStatusText.EXPIRED },
-    {
-      value: InvoiceStatus.PAIDCONFIRMED,
-      label: InvoiceStatusText.PAIDCONFIRMED,
-    },
-  ];
 
   const styles = StyleSheet.create({
     cardTitle: {
@@ -84,11 +80,17 @@ export const InvoiceItem = ({ item }: { item: ItfInvoiceItem }) => {
     selectedTextStyle: {
       fontSize: 14,
     },
+    radioStyle: {
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+      textAlignVertical: 'bottom',
+    },
   });
 
   /** confirm change invoice status */
-  const confirmChangeStatus = (status: { value: string; label: string }) => {
-    if (status.value === item.status) return;
+  const confirmChangeStatus = () => {
+    setShowDialog(false);
     confirmInvoice({ id: item.invoice_id });
   };
 
@@ -101,81 +103,86 @@ export const InvoiceItem = ({ item }: { item: ItfInvoiceItem }) => {
   }, [isSuccess, isError]);
 
   return (
-    <Card style={{ width: wp(90), margin: wp(1) }}>
-      <Card.Content>
+    <>
+      <Card style={{ width: wp(92), margin: wp(1) }}>
         <Card.Content>
-          <View style={styles.cardTitle}>
-            <Text variant='titleMedium'>{item.name}</Text>
-            <Text>{toVietnamCurrency(item.total)}</Text>
-          </View>
+          <Card.Content>
+            <View style={styles.cardTitle}>
+              <Text variant='titleMedium'>{item.name}</Text>
+              <Text>{toVietnamCurrency(item.total)}</Text>
+            </View>
 
-          <View style={styles.cardTitle}>
-            <Text variant='titleMedium'>Trạng thái</Text>
-            <Dropdown
-              data={statusList}
-              style={styles.dropdown}
-              placeholderStyle={styles.placeholderStyle}
-              selectedTextStyle={styles.selectedTextStyle}
-              // inputSearchStyle={styles.inputSearchStyle}
-              // iconStyle={styles.iconStyle}
-              // search
-              maxHeight={300}
-              labelField='label'
-              valueField='value'
-              placeholder='Select item'
-              searchPlaceholder='Search...'
-              value={value}
-              onChange={item => confirmChangeStatus(item)}
-            />
-          </View>
+            <View style={styles.cardTitle}>
+              <Text variant='titleMedium'>Trạng thái</Text>
+              <Text>
+                {
+                  // @ts-ignore
+                  InvoiceStatusText[String(item.status).toUpperCase()]
+                }
+              </Text>
+            </View>
+          </Card.Content>
+
+          {isExpanded && (
+            <>
+              <DataTable style={styles.dataTable}>
+                <DataTable.Header>
+                  <DataTable.Title>Tên</DataTable.Title>
+                  <DataTable.Title numeric>Tiêu thụ</DataTable.Title>
+                  <DataTable.Title numeric>Số tiền</DataTable.Title>
+                </DataTable.Header>
+                {item.costs
+                  .filter(_ => _.cost > 0)
+                  .map((_, idx: number) => (
+                    <DataTable.Row
+                      style={{ borderColor: 'transparent' }}
+                      key={idx}
+                    >
+                      <DataTable.Cell>
+                        {
+                          // @ts-ignore
+                          PaymentName[_.name]
+                        }
+                      </DataTable.Cell>
+                      <DataTable.Cell numeric> </DataTable.Cell>
+                      <DataTable.Cell numeric>
+                        {toVietnamCurrency(_.cost)}
+                      </DataTable.Cell>
+                    </DataTable.Row>
+                  ))}
+              </DataTable>
+            </>
+          )}
         </Card.Content>
-
-        {!isExpanded && (
+        <Card.Actions>
           <Button
-            icon={'chevron-double-down'}
-            onPress={() => setIsExpanded(true)}
+            icon={isExpanded ? 'chevron-double-up' : 'chevron-double-down'}
+            onPress={() => setIsExpanded(!isExpanded)}
           >
-            Chi tiết
+            {isExpanded ? 'Thu gọn' : 'Chi tiết'}
           </Button>
-        )}
-
-        {isExpanded && (
-          <>
-            <DataTable style={styles.dataTable}>
-              <DataTable.Header>
-                <DataTable.Title>Tên</DataTable.Title>
-                <DataTable.Title numeric>Tiêu thụ</DataTable.Title>
-                <DataTable.Title numeric>Số tiền</DataTable.Title>
-              </DataTable.Header>
-              {item.costs
-                .filter(_ => _.cost > 0)
-                .map((_, idx: number) => (
-                  <DataTable.Row
-                    style={{ borderColor: 'transparent' }}
-                    key={idx}
-                  >
-                    <DataTable.Cell>
-                      {
-                        // @ts-ignore
-                        PaymentName[_.name]
-                      }
-                    </DataTable.Cell>
-                    <DataTable.Cell numeric> </DataTable.Cell>
-                    <DataTable.Cell numeric>
-                      {toVietnamCurrency(_.cost)}
-                    </DataTable.Cell>
-                  </DataTable.Row>
-                ))}
-            </DataTable>
-            <Button
-              icon={'chevron-double-up'}
-              onPress={() => setIsExpanded(false)}
-            >
-              Thu gọn
-            </Button>
-          </>
-        )}
-      </Card.Content>
-    </Card>
+          <Button
+            disabled={item.status === InvoiceStatus.PAID}
+            onPress={() => setShowDialog(true)}
+          >
+            Xác nhận đã thanh toán
+          </Button>
+        </Card.Actions>
+      </Card>
+      <Portal>
+        <Dialog visible={showDialog} onDismiss={() => setShowDialog(false)}>
+          <Dialog.Title>Cảnh báo</Dialog.Title>
+          <Dialog.Content>
+            <Text variant='bodyMedium'>
+              Bạn có chắn chắn muốn xác nhận hoá đơn này đã được thanh toán
+              không?
+            </Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={confirmChangeStatus}>Xác nhận</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+    </>
   );
 };
