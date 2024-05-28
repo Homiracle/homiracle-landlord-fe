@@ -13,7 +13,6 @@ export const AuthStack = () => {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name={RootScreens.SIGNIN} component={SignInContainer} />
       <Stack.Screen name={RootScreens.SIGNUP} component={SignUpContainer} />
-      <Stack.Screen name={'TabNavigator'} component={TabNavigator} />
     </Stack.Navigator>
   );
 };

@@ -13,7 +13,6 @@ export const ProfileStack = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name={RootScreens.PROFILE} component={ProfileContainer} />
-      <Stack.Screen name={'AuthStack'} component={AuthStack} />
       {/* Add more screens here if needed */}
     </Stack.Navigator>
   );
