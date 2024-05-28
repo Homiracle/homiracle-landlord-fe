@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "Homiracle Chủ Nhà",
-    "slug": "expo-redux-template",
+    "name": "Homiracle Chủ Trọ",
+    "slug": "landlord-fe",
+    "owner": "homiracle",
     "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -23,7 +24,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.hpcc.expo_redux_template",
+      "package": "com.hpcc.homiracle.landlord",
       "blockedPermissions": [
         "android.permission.RECORD_AUDIO"
       ]
@@ -33,6 +34,11 @@
     },
     "plugins": [
       "expo-localization"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "a98bdd88-eafc-43b8-8e4a-276a61775669"
+      }
+    }
   }
 }
