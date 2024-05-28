@@ -1,3 +1,4 @@
+import { invalid } from 'moment';
 import { API } from '../base';
 import { Attendance } from './type';
 
@@ -10,6 +11,7 @@ const attendanceApi = API.injectEndpoints({
           method: 'POST',
           body: data,
         }),
+        invalidatesTags: ['Attendance', 'Contract', 'Room', 'Floor', 'RoomingHouse'],
       },
     ),
     getListTenant: build.query<
@@ -29,6 +31,7 @@ const attendanceApi = API.injectEndpoints({
         }
         return `attendances/landlord?house_id=${house_id}`;
       },
+      providesTags: ['Attendance'],
     }),
   }),
   overrideExisting: true,

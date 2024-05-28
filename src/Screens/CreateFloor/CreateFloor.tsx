@@ -153,12 +153,16 @@ export const CreateFloor = () => {
   const handleSubmit = async () => {
     console.log(floorData);
     await createFloor(floorData as Partial<FloorProps>);
-    if (isSuccess) {
-      console.log(error);
-    } else if (isError) {
-      console.log('error', error);
-    }
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      console.log(data);
+      navigation.goBack();
+    } else if (isError) {
+      console.log(error);
+    }
+  }, [isSuccess, isError]);
 
   const isTouched = (field: string, nestedField?: string) => {
     if (nestedField) {
@@ -336,7 +340,8 @@ export const CreateFloor = () => {
             textColor={theme.colors.onPrimary}
             style={styles.button}
             onPress={handleSubmit}
-            disabled={!formik.isValid}
+            loading={isLoading}
+            disabled={!formik.isValid || isLoading}
           >
             Tạo tầng
           </Button>

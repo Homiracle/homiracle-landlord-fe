@@ -33,6 +33,7 @@ const authApi = API.injectEndpoints({
           user: { ...response.user } as User,
         } as userSigninResponse;
       },
+      invalidatesTags: ['RoomingHouse', 'User'],
     }),
     signUp: build.mutation<userSigninResponse, userSignup>({
       query: (credentials: userSignup) => ({

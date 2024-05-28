@@ -1,22 +1,14 @@
 import React from "react";
 import {FloorDetail} from "./FloorDetail";
-import { RouteProp } from "@react-navigation/native";
-import { RootStackFloorParamList } from "@/Components";
-import { RootScreens } from "@/Constants/RootScreen";
+import { RootStackParamList } from "../../Constants/RootStackParam";
+import { RootScreens } from "../../Constants/RootScreen";
+import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack';
 
-import { StackNavigationProp } from '@react-navigation/stack';
-
-type FloorDetailsRouteProp = RouteProp<RootStackFloorParamList, RootScreens.FLOORDETAIL>;
-export type FloorDetailsNavigationProp = StackNavigationProp<
-  RootStackFloorParamList,
-  RootScreens.FLOORDETAIL, 
-  RootScreens.CREATE_ROOM
+export type FloorDetailsNavigationProp = StackScreenProps<
+  RootStackParamList,
+  RootScreens.FLOORDETAIL
 >;
 
-type Props = {
-  route: FloorDetailsRouteProp;
-  navigation: FloorDetailsNavigationProp;
-}
-export const FloorDetailContainer = ({route, navigation}:Props) => {
-  return <FloorDetail navigation={navigation} />;
+export const FloorDetailContainer = ({ route, navigation }: FloorDetailsNavigationProp) => {
+  return <FloorDetail route={route} navigation={navigation} />;
 };

@@ -234,7 +234,7 @@ export const CreateDevice = ({ route, navigation }: CreateDeviceProps) => {
                 marginTop: hp(1),
               }}
             >
-              <View>
+              {/* <View>
                 <Text style={styles.subTitle}>Vị trí thiết bị</Text>
                 <TextInput
                   placeholder='Nhà test-tầng 1-phòng 2'
@@ -247,7 +247,7 @@ export const CreateDevice = ({ route, navigation }: CreateDeviceProps) => {
                 {isTouched('name') ? (
                   <Text style={styles.badText}>{formik.errors.name}</Text>
                 ) : null}
-              </View>
+              </View> */}
               <View>
                 <Text style={styles.subTitle}>Tên thiết bị</Text>
                 <TextInput
@@ -297,7 +297,8 @@ export const CreateDevice = ({ route, navigation }: CreateDeviceProps) => {
             textColor={theme.colors.onPrimary}
             style={styles.button}
             onPress={handleSubmit}
-            disabled={!formik.isValid}
+            loading={isLoading}
+            disabled={!formik.isValid || isLoading}
           >
             Thêm thiết bị
           </Button>
