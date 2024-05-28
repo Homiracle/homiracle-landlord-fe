@@ -7,3 +7,4 @@ export * from './rooms';
 export * from './contract';
 export * from './devices';
 export * from './attendances';
+export * from './province';

@@ -12,25 +12,12 @@ import { Button, Surface, Portal } from 'react-native-paper';
 import { Dropdown } from 'react-native-searchable-dropdown-kj';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
-import { useCreateRoomingHouseMutation } from '../../Services';
+import { useCreateRoomingHouseMutation, useGetDistrictsQuery, useGetProvincesQuery, useGetWardsQuery } from '../../Services';
 import { RoomingHouse as RoomingHouseProps } from '../../Services/rooming-houses/interface';
 import { useAppSelector } from '../../Store/hook';
 import { selectUserId } from '../../Store/reducers';
 import { roomingHouseFormValidationSchema as schema } from '../../Utils';
 import { useFormik } from 'formik';
-
-const province = [
-  { id: 1, name: 'Hà Nội' },
-  { id: 2, name: 'TP. Hồ Chí Minh' },
-];
-const district = [
-  { id: 1, name: 'Quận Ba Đình' },
-  { id: 2, name: 'Quận 10' },
-];
-const commune = [
-  { id: 1, name: 'Phường A' },
-  { id: 2, name: 'Phường B' },
-];
 
 export const CreateRoomingHouse = () => {
   // styles
@@ -101,6 +88,12 @@ export const CreateRoomingHouse = () => {
 
   // other hooks
   const navigation = useNavigation();
+  const [province, setProvince] = React.useState<{id: string, name: string}[]>([]);
+  const [district, setDistrict] = React.useState<{id: string, name: string}[]>([]);
+  const [commune, setCommune] = React.useState<{id: string, name: string}[]>([]);
+  const [currentProvince, setCurrentProvince] = React.useState<string>('');
+  const [currentDistrict, setCurrentDistrict] = React.useState<string>('');
+  const [currentCommune, setCurrentCommune] = React.useState<string>('');
   const [backDialog, showBackDialog] = React.useState(false);
   const [cancelDialog, showCancelDialog] = React.useState(false);
   const [datetimePicker, showDatetimePicker] = React.useState({
@@ -135,6 +128,28 @@ export const CreateRoomingHouse = () => {
       },
     });
 
+  const { data: provinceData } = useGetProvincesQuery({});
+  const { data: districtData } = useGetDistrictsQuery(currentProvince);
+  const { data: communeData } = useGetWardsQuery(currentDistrict);
+
+  useEffect(() => {
+    if (provinceData) {
+      setProvince(provinceData);
+    }
+  }, [provinceData]);
+
+  useEffect(() => {
+    if (districtData) {
+      setDistrict(districtData);
+    }
+  }, [districtData]);
+
+  useEffect(() => {
+    if (communeData) {
+      setCommune(communeData);
+    }
+  }, [communeData]);
+
   const [createRoomingHouse, { data, error, isSuccess, isLoading, isError }] =
     useCreateRoomingHouseMutation();
 
@@ -160,6 +175,7 @@ export const CreateRoomingHouse = () => {
     fieldName: string,
     text: string | number,
     nestedField?: string,
+    id?: string,
   ) => {
     // console.log(fieldName, text);
     if (nestedField) {
@@ -170,6 +186,13 @@ export const CreateRoomingHouse = () => {
           [nestedField]: text,
         },
       }));
+      if (nestedField === 'province') {
+        setCurrentProvince(id as string);
+      } else if (nestedField === 'district') {
+        setCurrentDistrict(id as string);
+      } else if (nestedField === 'commune') {
+        setCurrentCommune(id as string);
+      }
       formik.handleChange(`${fieldName}.${nestedField}`)(String(text));
     } else {
       setRoomingHouseData(prevData => ({
@@ -317,7 +340,7 @@ export const CreateRoomingHouse = () => {
                   labelField='name'
                   valueField='id'
                   onChange={item =>
-                    handleInputChange('address', item.name, 'province')
+                    handleInputChange('address', item.name, 'province', item.id)
                   }
                   placeholder='Chọn tỉnh/thành phố'
                   search
@@ -340,7 +363,7 @@ export const CreateRoomingHouse = () => {
                     labelField='name'
                     valueField='id'
                     onChange={item =>
-                      handleInputChange('address', item.name, 'district')
+                      handleInputChange('address', item.name, 'district', item.id)
                     }
                     placeholder='Chọn quận/huyện'
                     search
@@ -362,7 +385,7 @@ export const CreateRoomingHouse = () => {
                     labelField='name'
                     valueField='id'
                     onChange={item =>
-                      handleInputChange('address', item.name, 'commune')
+                      handleInputChange('address', item.name, 'commune', item.id)
                     }
                     placeholder='Chọn phường/xã'
                     search

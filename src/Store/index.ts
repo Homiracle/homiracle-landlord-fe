@@ -19,9 +19,11 @@ import {
   userReducers,
   roomingHouseReducers,
 } from './reducers';
+import { provinceApi } from '../Services/province';
 
 const reducers = combineReducers({
   api: API.reducer,
+  [provinceApi.reducerPath]: provinceApi.reducer,
   theme: themeReducers,
   home: homeReducers,
   user: userReducers,
@@ -44,7 +46,9 @@ const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(API.middleware);
+    })
+      .concat(API.middleware)
+      .concat(provinceApi.middleware);
 
     // if (__DEV__ && !process.env.JEST_WORKER_ID) {
     //   const createDebugger = require("redux-flipper").default;
