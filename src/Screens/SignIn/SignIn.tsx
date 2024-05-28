@@ -8,9 +8,12 @@ import { Button, TextInput } from 'react-native-paper';
 import { useSigninMutation } from '../../Services';
 import { useAppDispatch } from '../../Store/hook';
 import { saveToken, setUser } from '../../Store/reducers';
+import { CustomStatusBar } from '../../Components';
+import { useAppTheme } from '../../Theme';
 
 export const SignIn = () => {
   const navigation = useNavigation();
+  const theme = useAppTheme();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -38,6 +41,7 @@ export const SignIn = () => {
 
   return (
     <View style={styles.container}>
+      <CustomStatusBar backgroundColor={theme.colors.onPrimary} barStyle='dark-content' />
       <Login />
       <View style={styles.container1}>
         <View style={[styles.leftContainer, { flex: 8 }]}>
@@ -78,8 +82,8 @@ export const SignIn = () => {
       <Button
         style={styles.button}
         onPress={handleLogin}
-        // loading={isLoading}
-        // disabled={isLoading}
+        loading={isLoading}
+        disabled={isLoading}
         mode='outlined'
       >
         Đăng nhập
@@ -100,7 +104,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 70,
     alignItems: 'center',
-    backgroundColor: '#f4f4f4',
+    backgroundColor: '#fff',
   },
   logo: {
     width: 148,

@@ -20,6 +20,7 @@ import {
   roomingHouseReducers,
 } from './reducers';
 import { provinceApi } from '../Services/province';
+import { onboardingReducers } from './reducers/onboarding';
 
 const reducers = combineReducers({
   api: API.reducer,
@@ -29,12 +30,13 @@ const reducers = combineReducers({
   user: userReducers,
   auth: authReducers,
   roomingHouse: roomingHouseReducers,
+  onboarding: onboardingReducers
 });
 
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['theme', 'auth'],
+  whitelist: ['theme', 'auth', 'onboarding'],
 };
 
 const persistedReducer = persistReducer(persistConfig, reducers);
