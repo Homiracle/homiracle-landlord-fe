@@ -17,14 +17,8 @@ import { StyleSheet, NativeScrollEvent} from 'react-native';
 import { useAppTheme } from '../../Theme';
 import {FloorDetailsNavigationProp} from './FloorDetailContainer';
 import { DeviceScope } from '../../Constants/DeviceScope';
-export const FloorDetail = (
-  {
-    navigation,
-  }: {
-    navigation: FloorDetailsNavigationProp;
-  }
-) => {
 
+export const FloorDetail = ({route, navigation}: FloorDetailsNavigationProp) => {
   const house_id = useAppSelector(getHouseId) as string;
   const floor_id = useAppSelector(getFloorId) as string;
   const {
@@ -140,7 +134,10 @@ export const FloorDetail = (
           label={label}
           extended={isExtended}
           onPress={() => {
-            navigation.navigate(RootScreens.CREATE_ROOM as never);
+            if (status === 'room')
+              navigation.navigate(RootScreens.CREATE_ROOM as never);
+            else if (status === 'device')
+              navigation.navigate(RootScreens.CREATE_DEVICE, {isFloor: true});
           }}
           visible={true}
           animateFrom={'right'}

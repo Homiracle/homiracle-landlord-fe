@@ -15,8 +15,8 @@ export const FloorList = ({ data, onScroll }: FloorListProps) => {
     <View>
       <FlatList
         contentContainerStyle={{
-          justifyContent: 'center',
-          alignSelf: 'center',
+          justifyContent: 'flex-start',
+          alignContent: 'center',
           paddingBottom: hp(10)
         }}
         horizontal={false}

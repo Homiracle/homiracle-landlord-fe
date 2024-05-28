@@ -156,7 +156,7 @@ export const RoomingHouseDetail = ({
             if (status === 'device') {
               navigation.navigate(RootScreens.CREATE_DEVICE, { isHouse: true });
             } else {
-              navigation.navigate(screen as never);
+              navigation.navigate(RootScreens.CREATE_FLOOR as never);
             }
           }}
           visible={true}

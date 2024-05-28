@@ -556,7 +556,8 @@ export const CreateContract = () => {
             textColor={theme.colors.onPrimary}
             style={styles.button}
             onPress={handleSubmit}
-            disabled={!formik.isValid}
+            loading={isLoading}
+            disabled={!formik.isValid || isLoading}
           >
             Tạo hợp đồng
           </Button>

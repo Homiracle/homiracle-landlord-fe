@@ -154,7 +154,16 @@ export const CreateRoom = () => {
     console.log(roomData);
     await createRoom(roomData as Partial<RoomProps>);
   };
-  useEffect
+  useEffect(() => {
+    if (isSuccess) {
+      console.log('Create room success:', data);
+      navigation.goBack();
+    }
+    if (isError) {
+      console.log('Create room error:', error);
+    }
+  }, [isSuccess, isError, data, error]);
+
   const isTouched = (field: string, nestedField?: string) => {
     if (nestedField) {
       return (
@@ -394,7 +403,9 @@ export const CreateRoom = () => {
                   keyboardType='numeric'
                 />
                 {isTouched('max_number_of_tenant') ? (
-                  <Text style={styles.badText}>{formik.errors.max_number_of_tenant}</Text>
+                  <Text style={styles.badText}>
+                    {formik.errors.max_number_of_tenant}
+                  </Text>
                 ) : null}
               </View>
             </View>
@@ -416,7 +427,8 @@ export const CreateRoom = () => {
             textColor={theme.colors.onPrimary}
             style={styles.button}
             onPress={handleSubmit}
-            disabled={!formik.isValid}
+            loading={isLoading}
+            disabled={!formik.isValid || isLoading}
           >
             Tạo phòng
           </Button>

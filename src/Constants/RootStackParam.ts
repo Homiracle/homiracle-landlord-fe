@@ -10,15 +10,15 @@ export type RootStackParamList = {
   [RootScreens.ROOMING_HOUSED_DETAIL]: undefined;
   [RootScreens.INVOICE]: undefined;
   [RootScreens.FINANCE]: undefined;
-  [RootScreens.PROFILE]: { setIsGuest: (value: boolean) => void };
+  [RootScreens.PROFILE]: undefined;
   [RootScreens.CREATE_ROOMING_HOUSE]: undefined;
-  [RootScreens.FLOORDETAIL]: undefined;
+  [RootScreens.FLOORDETAIL]: {};
   [RootScreens.ROOMDETAIL]: undefined;
   [RootScreens.CREATE_FLOOR]: undefined;
   [RootScreens.CREATE_ROOM]: undefined;
   [RootScreens.CREATE_CONTRACT]: undefined;
   [RootScreens.NOTIFICATION]: undefined;
-  [RootScreens.CREATE_DEVICE]: undefined;
+  [RootScreens.CREATE_DEVICE]: { isHouse?: boolean, isRoom?: boolean, isFloor?: boolean};
   [RootScreens.ADD_TENANT]: undefined;
   [RootScreens.DEVICE_DETAIL]: undefined;
   [RootScreens.CONTRACT_DETAIL]: { contract_id: string};

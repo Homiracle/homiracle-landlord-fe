@@ -33,7 +33,7 @@ const RoomApi = API.injectEndpoints({
         method: 'POST',
         body: data,
       }),
-      invalidatesTags: ['Room'],
+      invalidatesTags: ['Room', 'Floor', 'RoomingHouse'],
     }),
     getRooms: build.query<ListRoom, { house_id: string; floor_id: string }>({
       query: ({ house_id, floor_id }) =>
