@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Checkbox, TextInput } from 'react-native-paper';
+import { Button, Checkbox, TextInput } from 'react-native-paper';
 import { useSignUpMutation } from '../../Services';
 import Logo from '../../static/image/logo';
 import { useNavigation } from '@react-navigation/native';
@@ -43,7 +43,10 @@ export const SignUp = () => {
 
   return (
     <View style={styles.container}>
-      <CustomStatusBar backgroundColor={theme.colors.onPrimary} barStyle='dark-content' />
+      <CustomStatusBar
+        backgroundColor={theme.colors.onPrimary}
+        barStyle='dark-content'
+      />
       <View style={styles.header}>
         <Logo />
         <Text
@@ -127,11 +130,15 @@ export const SignUp = () => {
         position='leading'
         labelStyle={{ fontSize: 12 }}
       /> */}
-      <TouchableOpacity style={styles.button} onPress={handleSignUp}>
-        <Text style={{ color: '#006c49', fontSize: 14, fontWeight: 'bold' }}>
-          Tạo Tài Khoản
-        </Text>
-      </TouchableOpacity>
+      <Button
+        style={styles.button}
+        onPress={handleSignUp}
+        loading={isLoading}
+        disabled={isLoading}
+        mode='outlined'
+      >
+        Đăng ký
+      </Button>
     </View>
   );
 };
@@ -158,13 +165,13 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   button: {
-    backgroundColor: '#fff',
-    padding: 16,
-    borderRadius: 12,
-    width: 250,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#006C49',
+    // backgroundColor: '#fff',
+    // padding: 16,
+    // borderRadius: 12,
+    // width: 200,
+    // alignItems: 'center',
+    // borderWidth: 1,
+    // borderColor: '#006C49',
     marginTop: 40,
   },
 });
