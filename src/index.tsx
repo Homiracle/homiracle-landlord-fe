@@ -9,6 +9,8 @@ import { ApplicationNavigator } from './Navigation';
 import theme from './Theme';
 import { PaperProvider } from 'react-native-paper';
 import { LogBox } from 'react-native';
+import { AuthProvider } from './Hooks/AuthContext';
+import { OnboardingProvider } from './Hooks/OnboardingContext';
 
 // language
 i18n.locale = Localization.locale;
@@ -25,7 +27,11 @@ export default function App() {
       <Provider store={store}>
         <PaperProvider theme={theme}>
           <PersistGate loading={null} persistor={persistor}>
-            <ApplicationNavigator />
+            <AuthProvider>
+              <OnboardingProvider>
+                <ApplicationNavigator />
+              </OnboardingProvider>
+            </AuthProvider>
           </PersistGate>
         </PaperProvider>
       </Provider>

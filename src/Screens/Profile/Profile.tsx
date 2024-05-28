@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Header } from '../../Components';
 import { useAppTheme } from '../../Theme';
 import { useAppDispatch, useAppSelector } from '../../Store/hook';
@@ -13,8 +13,9 @@ import {
 import { removeUser, selectUser, signout } from '../../Store/reducers';
 import { ProfileScreenNavigatorProps } from './ProfileContainer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AuthContext, AuthContextProps } from '../../Hooks/AuthContext';
 
-export const Profile = ({route, navigation}: ProfileScreenNavigatorProps) => {
+export const Profile = ({ route, navigation }: ProfileScreenNavigatorProps) => {
   const theme = useAppTheme();
   const dispatch = useAppDispatch();
 
@@ -66,21 +67,29 @@ export const Profile = ({route, navigation}: ProfileScreenNavigatorProps) => {
   });
 
   const user = useAppSelector(selectUser);
+  const authContext = useContext<AuthContextProps>(
+    AuthContext as React.Context<AuthContextProps>,
+  ); // Update the type of AuthContext
+
+  const { setIsGuest } = authContext;
 
   const handleLogout = async () => {
     // handle logout here
+    setIsGuest(true);
     dispatch(signout());
     dispatch(removeUser());
-    navigation.dispatch(StackActions.popToTop());
     try {
       // Lấy trạng thái lưu trữ hiện tại
       const persistedState = await AsyncStorage.getItem('persist:root');
       if (persistedState !== null) {
         const parsedState = JSON.parse(persistedState);
-        
+
         // Xóa token đăng nhập
         if (parsedState.auth) {
-          parsedState.auth = JSON.stringify({ accessToken: null, refreshToken: null});
+          parsedState.auth = JSON.stringify({
+            accessToken: null,
+            refreshToken: null,
+          });
         }
 
         // Lưu lại trạng thái đã cập nhật
@@ -89,7 +98,8 @@ export const Profile = ({route, navigation}: ProfileScreenNavigatorProps) => {
     } catch (error) {
       console.error('Error logging out:', error);
     }
-  }
+
+  };
 
   const profile = {
     user_name: user.user_name || 'Sample',

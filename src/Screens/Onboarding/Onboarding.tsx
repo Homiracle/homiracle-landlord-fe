@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, StyleSheet } from 'react-native';
 import OnboardingPlugin from 'react-native-onboarding-swiper';
 import { RootScreens } from '../../Constants/RootScreen';
@@ -13,6 +13,7 @@ import { useAppDispatch } from '../../Store/hook';
 import { hideOnboarding } from '../../Store/reducers/onboarding';
 import { CustomStatusBar } from '../../Components';
 import { useAppTheme } from '../../Theme';
+import { OnboardingContext } from '../../Hooks/OnboardingContext';
 
 export const Onboarding = (props: {
   onNavigate: (string: RootScreens) => void;
@@ -20,10 +21,17 @@ export const Onboarding = (props: {
   const theme = useAppTheme();
 
   const dispatch = useAppDispatch();
+  const onboardingContext = useContext(OnboardingContext);
+
+  if (!onboardingContext) {
+    throw new Error('useOnboarding must be used within a OnboardingProvider');
+  }
+
+  const { setIsShowOnboarding } = onboardingContext;
 
   const goToAuthStack = () => {
-    props.onNavigate('AuthStack' as never);
     dispatch(hideOnboarding());
+    setIsShowOnboarding(false);
   };
 
   return (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { TabNavigator } from './TabNavigation';
@@ -8,58 +8,33 @@ import { useAppTheme } from '../Theme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ActivityIndicator } from 'react-native-paper';
 import { View } from 'react-native';
+import {
+  AuthContext,
+  AuthContextProps,
+  AuthProvider,
+} from '../Hooks/AuthContext';
+import { OnboardingContext } from '../Hooks/OnboardingContext';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 const ApplicationNavigator = () => {
   const theme = useAppTheme();
-  const [isLoading, setIsLoading] = useState(true);
-  const [isGuest, setIsGuest] = useState(true);
-  const [isShowOnboarding, setIsShowOnboarding] = useState(true);
+  const authContext = useContext<AuthContextProps>(
+    AuthContext as React.Context<AuthContextProps>,
+  ); // Update the type of AuthContext
+  const onboardingContext = useContext(OnboardingContext);
 
-  const getAuthToken = async () => {
-    try {
-      const persistedState = await AsyncStorage.getItem('persist:root');
-      if (persistedState !== null) {
-        const parsedState = JSON.parse(persistedState);
-        const authData = JSON.parse(parsedState.auth); // parse the auth data
-        return authData.accessToken;
-      }
-      return null;
-    } catch (error) {
-      console.error('Error fetching auth data from AsyncStorage', error);
-      return null;
-    }
-  };
+  if (!authContext || !onboardingContext) {
+    throw new Error('Contexts must be used within their respective providers');
+  }
 
-  const getOnboardingShow = async () => {
-    try {
-      const persistedState = await AsyncStorage.getItem('persist:root');
-      if (persistedState !== null) {
-        const parsedState = JSON.parse(persistedState);
-        const onboarding = JSON.parse(parsedState.onboarding); // parse the onboarding data
-        return onboarding.isShow;
-      }
-      return null;
-    } catch (error) {
-      console.error('Error fetching onboarding data from AsyncStorage', error);
-      return null;
-    }
-  };
+  const { isGuest, isLoading, checkAuthToken } = authContext;
+  const { isShowOnboarding } = onboardingContext;
 
   useEffect(() => {
-    const fetchData = async () => {
-      const token = await getAuthToken();
-      const onboardingShow = await getOnboardingShow();
-
-      setIsGuest(!token); // set isGuest to true if no token
-      setIsShowOnboarding(onboardingShow);
-
-      setIsLoading(false); // Set loading to false after data is fetched
-    };
-
-    fetchData();
-  }, []);
+    const intervalId = setInterval(checkAuthToken, 3000);
+    return () => clearInterval(intervalId);
+  }, [checkAuthToken]);
 
   if (isLoading) {
     return (

@@ -31,7 +31,6 @@ export const SignIn = () => {
       const { accessToken, refreshToken, user } = data as any;
       dispatch(saveToken({ accessToken, refreshToken }));
       dispatch(setUser({ user }));
-      navigation.navigate('TabNavigator' as never);
     }
   }, [isSuccess]);
 

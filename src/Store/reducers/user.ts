@@ -46,10 +46,19 @@ const slice = createSlice({
   },
 });
 
-// export const selectUserId = (state: RootState) => state.user?.user_id;
+
 export const selectUser = createSelector(
   (state: {user: UserState}) => state['user'],
   (user: UserState) => user
 );
+
+export const selectUserId = createSelector(
+  (state: {user: UserState}) => state['user'],
+  (user: UserState) => {
+    console.log("🚀 ~ user:", user)
+    return user.user_id
+  }
+);
+
 export const { setUser, removeUser } = slice.actions;
 export const userReducers = slice.reducer;
