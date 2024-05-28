@@ -30,7 +30,7 @@ export const SignIn = () => {
     if (isSuccess) {
       const { accessToken, refreshToken, user } = data as any;
       dispatch(saveToken({ accessToken, refreshToken }));
-      dispatch(setUser(user));
+      dispatch(setUser({ user }));
       navigation.navigate('TabNavigator' as never);
     }
   }, [isSuccess]);
@@ -41,7 +41,10 @@ export const SignIn = () => {
 
   return (
     <View style={styles.container}>
-      <CustomStatusBar backgroundColor={theme.colors.onPrimary} barStyle='dark-content' />
+      <CustomStatusBar
+        backgroundColor={theme.colors.onPrimary}
+        barStyle='dark-content'
+      />
       <Login />
       <View style={styles.container1}>
         <View style={[styles.leftContainer, { flex: 8 }]}>

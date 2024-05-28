@@ -10,9 +10,9 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { removeUser, signout } from '../../Store/reducers';
+import { removeUser, selectUser, signout } from '../../Store/reducers';
 import { ProfileScreenNavigatorProps } from './ProfileContainer';
-import { Stack } from 'native-base';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const Profile = ({route, navigation}: ProfileScreenNavigatorProps) => {
   const theme = useAppTheme();
@@ -65,15 +65,30 @@ export const Profile = ({route, navigation}: ProfileScreenNavigatorProps) => {
     },
   });
 
-  const user = useAppSelector(rootState => rootState.user);
+  const user = useAppSelector(selectUser);
 
-  // const { setIsGuest } = route.params;
-
-  const handleLogout = () => {
+  const handleLogout = async () => {
     // handle logout here
     dispatch(signout());
     dispatch(removeUser());
     navigation.dispatch(StackActions.popToTop());
+    try {
+      // Lấy trạng thái lưu trữ hiện tại
+      const persistedState = await AsyncStorage.getItem('persist:root');
+      if (persistedState !== null) {
+        const parsedState = JSON.parse(persistedState);
+        
+        // Xóa token đăng nhập
+        if (parsedState.auth) {
+          parsedState.auth = JSON.stringify({ accessToken: null, refreshToken: null});
+        }
+
+        // Lưu lại trạng thái đã cập nhật
+        await AsyncStorage.setItem('persist:root', JSON.stringify(parsedState));
+      }
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
   }
 
   const profile = {
