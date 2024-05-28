@@ -10,7 +10,7 @@ export type RootStackParamList = {
   [RootScreens.ROOMING_HOUSED_DETAIL]: undefined;
   [RootScreens.INVOICE]: undefined;
   [RootScreens.FINANCE]: undefined;
-  [RootScreens.PROFILE]: undefined;
+  [RootScreens.PROFILE]: { setIsGuest: (value: boolean) => void };
   [RootScreens.CREATE_ROOMING_HOUSE]: undefined;
   [RootScreens.FLOORDETAIL]: undefined;
   [RootScreens.ROOMDETAIL]: undefined;

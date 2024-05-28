@@ -1,12 +1,16 @@
-import React, { useState , useEffect} from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { Checkbox, TextInput  } from "react-native-paper";
-import { useSignUpMutation } from "../../Services";
-import Logo from "../../static/image/logo";
-import { useNavigation } from "@react-navigation/native";
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Checkbox, TextInput } from 'react-native-paper';
+import { useSignUpMutation } from '../../Services';
+import Logo from '../../static/image/logo';
+import { useNavigation } from '@react-navigation/native';
+import { CustomStatusBar } from '../../Components';
+import { useAppTheme } from '../../Theme';
 export const SignUp = () => {
   const navigation = useNavigation();
+  const theme = useAppTheme();
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [user_name, setFullName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -16,91 +20,119 @@ export const SignUp = () => {
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-  const [signup, { data, isSuccess, isLoading, isError }] = useSignUpMutation();
+  const [signup, { data, isSuccess, isLoading, error }] = useSignUpMutation();
   const handleSignUp = () => {
     // Thực hiện xử lý đăng ký ở đây
-    signup({email, password, user_name,role});
-    console.log(`Email: ${email}, Full Name: ${user_name}, Password: ${password}, Confirm Password: ${confirmPassword}, Agreement: ${isChecked}`);
+    signup({ email, password, user_name, role, phone });
+    console.log(
+      `Email: ${email}, Full Name: ${user_name}, Password: ${password}, Confirm Password: ${confirmPassword}, Agreement: ${isChecked}`,
+    );
   };
-useEffect(() => {
+  useEffect(() => {
     if (isSuccess) {
       console.log(data);
       navigation.navigate('SignIn' as never);
     }
   }, [isSuccess]);
+
+  // useEffect(() => {
+  //   if (error) {
+  //     console.log(error);
+  //   }
+  // }, [error]);
+
   return (
     <View style={styles.container}>
-      <View style ={styles.header}>
+      <CustomStatusBar backgroundColor={theme.colors.onPrimary} barStyle='dark-content' />
+      <View style={styles.header}>
         <Logo />
-        <Text style={{fontSize:25, fontWeight:'bold', textAlign:'center', paddingBottom: 20}} >ĐĂNG KÝ</Text>
+        <Text
+          style={{
+            fontSize: 25,
+            fontWeight: 'bold',
+            textAlign: 'center',
+            paddingBottom: 20,
+          }}
+        >
+          ĐĂNG KÝ
+        </Text>
       </View>
       <TextInput
         style={styles.input}
-        onChangeText={(text) => setEmail(text)}
+        onChangeText={text => setEmail(text)}
         value={email}
         mode='outlined'
-        label="Email"
+        label='Email'
+      />
+      <TextInput
+        style={styles.input}
+        onChangeText={text => setPhone(text)}
+        value={phone}
+        mode='outlined'
+        label='Số điện thoại'
       />
 
-    <TextInput
-      style={styles.input}
-      label="Họ và Tên"
-      onChangeText={(text) => setFullName(text)}
-      value={user_name}
-      mode='outlined'
-    />
+      <TextInput
+        style={styles.input}
+        label='Họ và Tên'
+        onChangeText={text => setFullName(text)}
+        value={user_name}
+        mode='outlined'
+      />
 
-    <TextInput
-      style={styles.input}
-      label="Mật khẩu"
-      onChangeText={(text) => setPassword(text)}
-      value={password}
-      mode='outlined'
-      secureTextEntry={!showPassword}
-      right={
-        <TextInput.Icon
-          icon={showPassword ? "eye-off" : "eye"}
-          onPress={handleTogglePasswordVisibility}
-          style={{
-            paddingTop: 20,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        />
-      }
-    />
+      <TextInput
+        style={styles.input}
+        label='Mật khẩu'
+        onChangeText={text => setPassword(text)}
+        value={password}
+        mode='outlined'
+        secureTextEntry={!showPassword}
+        right={
+          <TextInput.Icon
+            icon={showPassword ? 'eye-off' : 'eye'}
+            onPress={handleTogglePasswordVisibility}
+            style={{
+              paddingTop: 20,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          />
+        }
+      />
 
-    <TextInput
-      style={styles.input}
-      label="Xác nhận mật khẩu"
-      onChangeText={(text) => setConfirmPassword(text)}
-      value={confirmPassword}
-      mode='outlined'
-      secureTextEntry={!showPassword}
-      right={
-        <TextInput.Icon
-          icon={showPassword ? "eye-off" : "eye"}
-          onPress={handleTogglePasswordVisibility}
-          style={{
-            paddingTop: 20,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        />
-      }
-    />
-    <Checkbox.Item
-        label="Bạn đồng ý với điều khoản và chính sách bảo mật"
-        status={isChecked ? "checked" : "unchecked"}
+      {/* <TextInput
+        style={styles.input}
+        label='Xác nhận mật khẩu'
+        onChangeText={text => setConfirmPassword(text)}
+        value={confirmPassword}
+        mode='outlined'
+        secureTextEntry={!showPassword}
+        right={
+          <TextInput.Icon
+            icon={showPassword ? 'eye-off' : 'eye'}
+            onPress={handleTogglePasswordVisibility}
+            style={{
+              paddingTop: 20,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          />
+        }
+      />
+      <Checkbox.Item
+        label='Bạn đồng ý với điều khoản và chính sách bảo mật'
+        status={isChecked ? 'checked' : 'unchecked'}
         onPress={() => setChecked(!isChecked)}
-        color="#006c49"
-        position="leading"
+        color='#006c49'
+        position='leading'
         labelStyle={{ fontSize: 12 }}
-      />
-    <TouchableOpacity style={styles.button} onPress={handleSignUp}>
-      <Text style={{ color: '#006c49', fontSize: 14, fontWeight: 'bold' }}>Tạo Tài Khoản</Text>
-    </TouchableOpacity>
-  </View>
+      /> */}
+      <TouchableOpacity style={styles.button} onPress={handleSignUp}>
+        <Text style={{ color: '#006c49', fontSize: 14, fontWeight: 'bold' }}>
+          Tạo Tài Khoản
+        </Text>
+      </TouchableOpacity>
+    </View>
   );
 };
 
@@ -110,8 +142,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
+    backgroundColor: '#fff',
   },
-  header:{
+  header: {
     paddingTop: 0,
     fontSize: 25,
     fontWeight: 'bold',

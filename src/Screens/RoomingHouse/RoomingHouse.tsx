@@ -28,7 +28,7 @@ export const RoomingHouseList = () => {
   const { data, isLoading, isSuccess, isError } = useGetRoomingHousesQuery();
   useEffect(() => {
     if (isSuccess) {
-      console.log('data', data);
+      // console.log('data', data);
     } else if (isError) {
       console.log('error', isError);
     }

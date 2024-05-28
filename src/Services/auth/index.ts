@@ -10,6 +10,7 @@ export interface userSignup {
   password: string;
   user_name: string;
   role: string;
+  phone: string
 }
 export interface userSigninResponse {
   accessToken: string;

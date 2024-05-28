@@ -1,8 +1,9 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { OnboardingContainer } from '../../Screens';
+import { OnboardingContainer, SignInContainer } from '../../Screens';
 import { RootScreens } from '../../Constants/RootScreen';
 import { RootStackParamList } from '../../Constants/RootStackParam';
+import { AuthStack } from './AuthStack';
 
 // Create a stack navigator
 const Stack = createStackNavigator<RootStackParamList>();
@@ -14,6 +15,10 @@ export const OnboardingStack = () => {
       <Stack.Screen
         name={RootScreens.ONBOARDING}
         component={OnboardingContainer}
+      />
+      <Stack.Screen
+        name={'AuthStack'}
+        component={AuthStack}
       />
       {/* Add more screens here if needed */}
     </Stack.Navigator>
