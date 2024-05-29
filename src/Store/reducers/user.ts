@@ -9,7 +9,7 @@ export interface UserState {
   role: string;
   isMale: boolean | null;
   date_of_birth: Date | null;
-  phone: number | null;
+  phone: string | null;
   CID: string | null;
   address: string | null;
 }
