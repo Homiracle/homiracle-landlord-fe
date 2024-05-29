@@ -1,5 +1,5 @@
 import { FlatList } from 'native-base';
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -10,7 +10,7 @@ import { TenantItem } from './TenantItem';
 import { DeviceScope as Scope } from '../../Constants/DeviceScope';
 import { useAppSelector } from '../../Store/hook';
 import { getFloorId, getHouseId, getRoomId } from '../../Store/reducers';
-import { useGetListTenantQuery } from '../../Services';
+import { useLazyGetListTenantQuery } from '../../Services';
 
 export interface TenantListProps {
   scope: string;
@@ -22,11 +22,24 @@ export const TenantList = ({ onScroll, scope }: TenantListProps) => {
   const floor_id = useAppSelector(getFloorId) as string;
   const room_id = useAppSelector(getRoomId) as string;
 
-  const { data: tenantData } = useGetListTenantQuery({
-    house_id,
-    floor_id,
-    room_id,
-  });
+  const [ getListTenant, { data: tenantData } ]= useLazyGetListTenantQuery();
+
+  useEffect(() => {
+    if (scope === Scope.HOUSE) {
+      getListTenant({ house_id });
+    } else if (scope === Scope.FLOOR) {
+      getListTenant({ house_id, floor_id });
+    }
+    else if (scope === Scope.ROOM) {
+      getListTenant({ house_id, floor_id, room_id });
+    }
+  }, [scope]);
+
+  // useEffect(() => {
+  //   if (tenantData) {
+  //     console.log('Tenant Data:', tenantData);
+  //   }
+  // }, [tenantData]);
 
   return (
     <FlatList
@@ -44,8 +57,8 @@ export const TenantList = ({ onScroll, scope }: TenantListProps) => {
           tenant_id={item.tenant?.user_id}
           tenant_name={item.tenant?.user_name}
           phone={item.tenant?.phone || '033xxxxxxx'}
-          role={'Thành viên'}
-          room_name={'Phòng 101'}
+          role={item.tenant?.role || 'Thành viên'}
+          room_name={item.room?.name || 'Phòng 101'}
         />
       )}
       onScroll={onScroll}

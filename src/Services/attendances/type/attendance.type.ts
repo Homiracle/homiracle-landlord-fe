@@ -6,5 +6,10 @@ export type Attendance = {
     user_id: string;
     user_name: string;
     phone: string;
+    role: 'Trưởng phòng' | 'Thành viên';
+  };
+  room: {
+    room_id: string;
+    name: string;
   };
 };
