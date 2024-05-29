@@ -115,13 +115,13 @@ export const TenantItem = ({
                     numberOfLines={1}
                     ellipsizeMode='tail'
                 >
-                    {'Phòng ' + room_name}
+                    {room_name}
                 </Text>
 
                 <Text
                     style={[
                         {
-                        color: role!=='truong phong'? '#410E0B': '#0B57D0',
+                        color: role!=='Trưởng phòng'? '#410E0B': '#0B57D0',
                         },
                         homiralceTheme.fonts.titleSmall,
                     ]}
