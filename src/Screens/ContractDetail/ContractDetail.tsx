@@ -166,6 +166,7 @@ export const ContractDetail = ({
   // console.log(useAppSelector(state => state.user));
 
   const user = useAppSelector(selectUser);
+  console.log("🚀 ~ user:", user)
 
   return (
     <View style={styles.container}>
@@ -200,7 +201,7 @@ export const ContractDetail = ({
                   editable={false}
                 />
                 <TextInput
-                  placeholder={user.CID || ''}
+                  value={user.phone || ''}
                   style={styles.textInput}
                   editable={false}
                 />
