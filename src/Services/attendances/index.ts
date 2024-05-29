@@ -1,19 +1,41 @@
 import { invalid } from 'moment';
 import { API } from '../base';
 import { Attendance } from './type';
+import { err } from 'react-native-svg/lib/typescript/xml';
 
 const attendanceApi = API.injectEndpoints({
   endpoints: build => ({
-    addTenant: build.mutation<void, { contract_id: string; tenant_id: string }>(
-      {
-        query: data => ({
-          url: 'attendances',
-          method: 'POST',
-          body: data,
-        }),
-        invalidatesTags: ['Attendance', 'Contract', 'Room', 'Floor', 'RoomingHouse'],
+    addTenant: build.mutation<void, { room_id: string; tenant_id: string }>({
+      query: data => ({
+        url: 'attendances',
+        method: 'POST',
+        body: data,
+      }),
+      transformErrorResponse: error => {
+        if (
+          (error.data as { message: string }).message === 'Contract Not found!'
+        ) {
+          return 'Phòng chưa có hợp đồng! Vui lòng tạo hợp đồng';
+        } else if (
+          (error.data as { message: string }).message ===
+          'Contract is not signed!'
+        ) {
+          return 'Hợp đồng chưa được ký! Vui lòng ký hợp đồng';
+        } else if (
+          (error.data as { message: string }).message ===
+          'Attendances is exits!'
+        ) {
+          return 'Người thuê đã ở trong phòng này!';
+        }
       },
-    ),
+      invalidatesTags: [
+        'Attendance',
+        'Contract',
+        'Room',
+        'Floor',
+        'RoomingHouse',
+      ],
+    }),
     getListTenant: build.query<
       Attendance[],
       { house_id: string; floor_id?: string; room_id?: string }
@@ -40,7 +62,10 @@ const attendanceApi = API.injectEndpoints({
             user_id: item.tenant.user_id,
             user_name: item.tenant.user_name,
             phone: item.tenant.phone,
-            role: item.tenant.user_id === item.contract.tenant.user_id ? 'Trưởng phòng' : 'Thành viên',
+            role:
+              item.tenant.user_id === item.contract.tenant.user_id
+                ? 'Trưởng phòng'
+                : 'Thành viên',
           },
           room: {
             // room_id: item.room.room_id,
@@ -54,4 +79,5 @@ const attendanceApi = API.injectEndpoints({
   overrideExisting: true,
 });
 
-export const { useAddTenantMutation, useLazyGetListTenantQuery } = attendanceApi;
+export const { useAddTenantMutation, useLazyGetListTenantQuery } =
+  attendanceApi;

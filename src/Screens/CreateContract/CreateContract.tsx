@@ -20,7 +20,7 @@ import { getHouseId, getFloorId, getRoomId, selectUserId } from '../../Store/red
 import { contractFormValidationSchema as schema } from '../../Utils';
 import { useFormik } from 'formik';
 import { selectUser } from '../../Store/reducers';
-import { useAddTenantMutation, useLazySearchUserQuery } from '../../Services';
+import { useAddTenantMutation, useLazySearchTenantQuery } from '../../Services';
 
 export const CreateContract = () => {
   // styles
@@ -215,21 +215,21 @@ export const CreateContract = () => {
   const [searchQuery, setSearchQuery] = React.useState<string>('');
   const [isSearching, setIsSearching] = React.useState<boolean>(false);
   const [
-    searchUser,
+    searchTenant,
     {
       data: userData,
       error: userError,
       isSuccess: userSuccess,
       isFetching: userFetching,
     },
-  ] = useLazySearchUserQuery();
+  ] = useLazySearchTenantQuery();
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       if (searchQuery) {
         console.log('Searching for:', searchQuery);
         setIsSearching(true);
-        searchUser({ phone: searchQuery }).then(() => {
+        searchTenant({ phone: searchQuery }).then(() => {
           setIsSearching(false);
         });
       }
@@ -533,7 +533,7 @@ export const CreateContract = () => {
               </View>
               <View>
                 <Text style={styles.subTitle}>Khách thuê</Text>
-                {!userData && <Text>Không tìm thấy kết quả</Text>}
+                {userSuccess && !userData && <Text>Không tìm thấy kết quả</Text>}
                 {userSuccess && userData && <Text>{userData.user_name}</Text>}
               </View>
             </View>

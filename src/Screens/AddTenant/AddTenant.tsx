@@ -18,7 +18,7 @@ import { Header, CustomDialog } from '../../Components';
 import {
   useAddTenantMutation,
   useGetContractIdByRoomIdQuery,
-  useLazySearchUserQuery,
+  useLazySearchTenantQuery,
 } from '../../Services';
 import { useAppSelector } from '../../Store/hook';
 import { getRoomId } from '../../Store/reducers';
@@ -70,27 +70,41 @@ const AddTenant = () => {
   const [searchQuery, setSearchQuery] = React.useState<string>('');
   const [isSearching, setIsSearching] = React.useState<boolean>(false);
   const [confirmDialog, setConfirmDialog] = React.useState<boolean>(false);
-  const [successfulDialog, setSuccessfulDialog] =
-    React.useState<boolean>(false);
-  const [errorDialog, setErrorDialog] = React.useState<boolean>(false);
 
   const [
-    searchUser,
+    searchTenant,
     {
       data: userData,
       error: userError,
       isSuccess: userSuccess,
       isFetching: userFetching,
     },
-  ] = useLazySearchUserQuery();
+  ] = useLazySearchTenantQuery();
+
+  
+  const [isSuccessful, setIsSuccessful] = React.useState<boolean>(false);
+  const [noResults, setNoResults] = React.useState<boolean>(false);
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       if (searchQuery) {
         console.log('Searching for:', searchQuery);
         setIsSearching(true);
-        searchUser({ phone: searchQuery }).then(() => {
+        setIsSuccessful(false);
+        setNoResults(false); // Reset trạng thái trước khi tìm kiếm
+        searchTenant({ phone: searchQuery }).then((response) => {
           setIsSearching(false);
+          if (response.data) {
+            setIsSuccessful(true);
+            setNoResults(false);
+          } else {
+            setIsSuccessful(true);
+            setNoResults(true);
+          }
+        }).catch(() => {
+          setIsSearching(false);
+          setIsSuccessful(true);
+          setNoResults(true);
         });
       }
     }, 1000);
@@ -99,12 +113,10 @@ const AddTenant = () => {
   }, [searchQuery]);
 
   useEffect(() => {
-    if (userData) {
-      console.log('userData:', userData);
-    } else if (userError) {
-      console.log('userError:', userError);
+    if (userError) {
+      alert(userError);
     }
-  }, [userData, userError]);
+  }, [userError]);
 
   const onBack = () => {
     navigation.goBack();
@@ -114,36 +126,23 @@ const AddTenant = () => {
     useAddTenantMutation();
 
   const roomId = useAppSelector(getRoomId) || '';
-  const [contractId, setContractId] = React.useState<string>('');
-  const { data: ContractIdData } = useGetContractIdByRoomIdQuery(roomId);
-
-  useEffect(() => {
-    if (ContractIdData) {
-      setContractId(ContractIdData.contract_id);
-    }
-  }, [ContractIdData]);
 
   const onAddTenant = () => {
     // call api here
-    if (contractId !== '' || !contractId) {
-      console.log('🚀 ~ onAddTenant ~ contractId:', contractId);
-      addTenant({
-        contract_id: contractId as string,
-        // contract_id: '',
-        tenant_id: userData?.user_id as string,
-      });
-    }
+    addTenant({
+      room_id: roomId as string,
+      tenant_id: userData?.user_id as string,
+    });
   };
 
   useEffect(() => {
     if (addTenantSuccess) {
-      console.log('addTenantSuccess:', addTenantSuccess);
+      // console.log('addTenantSuccess:', addTenantSuccess);
       setConfirmDialog(false);
-      setSuccessfulDialog(true);
+      alert('Mời người thuê vào phòng thành công!');
     } else if (addTenantError) {
       setConfirmDialog(false);
-      setErrorDialog(true);
-      console.log('addTenantError:', addTenantError);
+      alert(addTenantError) 
     }
   }, [addTenantSuccess, addTenantError]);
 
@@ -168,8 +167,8 @@ const AddTenant = () => {
       </Header>
       <View style={styles.tenanContent}>
         {userFetching && <ActivityIndicator animating={true} size={30} />}
-        {userSuccess && !userData && <Text>Không tìm thấy kết quả</Text>}
-        {userSuccess && userData && (
+        {isSuccessful && noResults && <Text>Không tìm thấy kết quả</Text>}
+        {isSuccessful && userData && (
           <>
             <View style={styles.tenantContainer}>
               <Image
@@ -207,7 +206,7 @@ const AddTenant = () => {
           onConfirm={onAddTenant}
         />
       </Portal>
-      <Portal>
+      {/* <Portal>
         <CustomDialog
           visible={successfulDialog}
           content='Mời người thuê vào phòng thành công!'
@@ -224,7 +223,7 @@ const AddTenant = () => {
             setErrorDialog(false);
           }}
         />
-      </Portal>
+      </Portal> */}
     </View>
   );
 };
