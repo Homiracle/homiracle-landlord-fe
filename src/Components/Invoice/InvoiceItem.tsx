@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, TouchableHighlight, View } from 'react-native';
+import { Alert, StyleSheet, TouchableHighlight, View } from 'react-native';
 import {
   Card,
   Text,
@@ -97,9 +97,10 @@ export const InvoiceItem = ({ item }: { item: ItfInvoiceItem }) => {
   // show message after updating
   React.useEffect(() => {
     if (isSuccess) {
-      alert('Cập nhật trạng thái thành công');
+      // alert('Cập nhật trạng thái thành công');
+      Alert.alert("", "Cập nhật trạng thái thành công!")
       setValue(value);
-    } else if (isError) alert('Cập nhật thất bại');
+    } else if (isError) Alert.alert("Lỗi", "Cập nhật thất bại!")
   }, [isSuccess, isError]);
 
   return (
