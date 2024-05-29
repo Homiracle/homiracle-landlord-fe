@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Image, StyleSheet, TouchableHighlight } from 'react-native';
+import { View, Image, StyleSheet, TouchableHighlight, Alert } from 'react-native';
 import {
   Searchbar,
   Button,
@@ -142,7 +142,8 @@ const AddTenant = () => {
       alert('Mời người thuê vào phòng thành công!');
     } else if (addTenantError) {
       setConfirmDialog(false);
-      alert(addTenantError) 
+      // alert(addTenantError) 
+      Alert.alert("Lỗi", addTenantError as string)
     }
   }, [addTenantSuccess, addTenantError]);
 
