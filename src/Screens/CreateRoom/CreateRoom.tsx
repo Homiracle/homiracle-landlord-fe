@@ -7,7 +7,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { StyleSheet, TextInput, TextStyle } from 'react-native';
+import { Alert, StyleSheet, TextInput, TextStyle } from 'react-native';
 import { Button, Surface, Portal } from 'react-native-paper';
 import { Room as RoomProps, useCreateRoomMutation } from '../../Services';
 import { useAppSelector } from '../../Store/hook';
@@ -154,19 +154,17 @@ export const CreateRoom = () => {
   };
 
   const handleSubmit = async () => {
-    if (roomData.acreage <= 0 || roomData.number_of_bedroom <= 0 || roomData.number_of_bathroom <= 0) {
-      console.error('All values must be positive numbers');
-      return;
-    }
     console.log(roomData);
     await createRoom(roomData as Partial<RoomProps>);
   };
   useEffect(() => {
     if (isSuccess) {
+      Alert.alert('Tạo phòng thành công');
       console.log('Create room success:', data);
       navigation.goBack();
     }
     if (isError) {
+      Alert.alert('Lỗi khi tạo phòng', error as string);
       console.log('Create room error:', error);
     }
   }, [isSuccess, isError, data, error]);

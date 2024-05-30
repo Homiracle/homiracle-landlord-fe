@@ -7,7 +7,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { Pressable, StyleSheet, TextInput, TextStyle } from 'react-native';
+import { Alert, Pressable, StyleSheet, TextInput, TextStyle } from 'react-native';
 import { Button, Surface, Portal } from 'react-native-paper';
 import { Dropdown } from 'react-native-searchable-dropdown-kj';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -179,9 +179,11 @@ export const CreateContract = () => {
   };
   useEffect(() => {
     if (isSuccess) {
+      Alert.alert('Tạo hợp đồng thành công');
       console.log('Create contract success');
       navigation.goBack();
     } else if (isError) {
+      Alert.alert('Lỗi khi tạo hợp đồng', error as string);
       console.log(error);
     }
   }, [isSuccess, isError]);

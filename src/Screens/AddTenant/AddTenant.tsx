@@ -139,7 +139,7 @@ const AddTenant = () => {
     if (addTenantSuccess) {
       // console.log('addTenantSuccess:', addTenantSuccess);
       setConfirmDialog(false);
-      alert('Mời người thuê vào phòng thành công!');
+      Alert.alert('Mời người thuê vào phòng thành công!');
     } else if (addTenantError) {
       setConfirmDialog(false);
       // alert(addTenantError) 

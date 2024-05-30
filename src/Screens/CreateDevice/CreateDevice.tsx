@@ -7,7 +7,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { StyleSheet, TextInput, TextStyle } from 'react-native';
+import { Alert, StyleSheet, TextInput, TextStyle } from 'react-native';
 import { Button, Surface, Portal } from 'react-native-paper';
 import { Dropdown } from 'react-native-searchable-dropdown-kj';
 
@@ -166,9 +166,11 @@ export const CreateDevice = ({ route, navigation }: CreateDeviceProps) => {
 
   useEffect(() => {
     if (isSuccess) {
+      Alert.alert('Thêm thiết bị thành công');
       console.log('Create device success:', data);
       navigation.goBack();
     } else if (isError) {
+      Alert.alert('Lỗi khi thêm thiết bị', error as string);
       console.log('Create device error:', error);
     }
   }, [isSuccess, isError, data, error]);
