@@ -70,7 +70,7 @@ export const RoomDetail = ({
   const { data: roomData, isSuccess: isRoomSuccess } = useGetRoomQuery(room_id);
   const [screen, setScreen] = React.useState(RootScreens.CREATE_CONTRACT as string);
   useEffect(() => {
-    if (isRoomSuccess) {
+    if (isRoomSuccess && status === 'info') {
       setFocus(<RoomDetailComponent data={roomData} />);
       console.log('Room Data:', roomData);
     }
@@ -127,7 +127,7 @@ export const RoomDetail = ({
                 setLabel('Thêm khách thuê');
               }}
             />
-              <TabButton
+            <TabButton
               isClicked={status === 'contract'}
               name='Hợp đồng'
               number={contractsData?.length}

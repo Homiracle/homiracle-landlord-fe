@@ -8,7 +8,10 @@ export type Room = {
   number_of_bathroom: number;
   max_number_of_tenant?: number;
   floor: {
-    floor_id: string;
+    floor_id?: string;
+  };
+  rooming_house: {
+    rooming_house_id: string;
   };
   reference_cost: {
     deposit?: number;
@@ -29,7 +32,7 @@ const RoomApi = API.injectEndpoints({
   endpoints: build => ({
     createRoom: build.mutation<RoomResponse, Partial<Room>>({
       query: data => ({
-        url: 'Rooms',
+        url: 'rooms',
         method: 'POST',
         body: data,
       }),
