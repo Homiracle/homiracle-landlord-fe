@@ -7,7 +7,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { StyleSheet, TextInput, TextStyle } from 'react-native';
+import { Alert, StyleSheet, TextInput, TextStyle } from 'react-native';
 import { Button, Surface, Portal } from 'react-native-paper';
 import {
   Floor as FloorProps,
@@ -158,8 +158,10 @@ export const CreateFloor = () => {
   useEffect(() => {
     if (isSuccess) {
       console.log(data);
+      Alert.alert('Tạo tầng thành công');
       navigation.goBack();
     } else if (isError) {
+      Alert.alert('Lỗi khi tạo tầng', error as string);
       console.log(error);
     }
   }, [isSuccess, isError]);

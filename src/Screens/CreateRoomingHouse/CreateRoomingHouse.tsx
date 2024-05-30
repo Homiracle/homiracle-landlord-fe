@@ -7,7 +7,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { Pressable, StyleSheet, TextInput, TextStyle } from 'react-native';
+import { Pressable, StyleSheet, TextInput, TextStyle, Alert } from 'react-native';
 import { Button, Surface, Portal } from 'react-native-paper';
 import { Dropdown } from 'react-native-searchable-dropdown-kj';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -150,7 +150,7 @@ export const CreateRoomingHouse = () => {
     }
   }, [communeData]);
 
-  const [createRoomingHouse, { data, error, isSuccess, isLoading, isError }] =
+  const [createRoomingHouse, { data, error, isSuccess, isLoading, isError: isCreateError }] =
     useCreateRoomingHouseMutation();
 
   const formik = useFormik({
@@ -211,12 +211,13 @@ export const CreateRoomingHouse = () => {
   useEffect(() => {
     if (isSuccess) {
       console.log('Create rooming house success');
+      Alert.alert('Tạo nhà trọ thành công');
       navigation.goBack();
-    } else if (isError) {
+    } else if (isCreateError) {
+      Alert.alert("Lỗi", error as string)
       console.log(error);
     }
-  }, [isSuccess, isError]);
-
+  }, [isSuccess, isCreateError]);
   const isTouched = (field: string, nestedField?: string) => {
     if (nestedField) {
       return (
