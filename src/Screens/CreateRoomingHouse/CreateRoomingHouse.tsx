@@ -18,7 +18,7 @@ import { useAppSelector } from '../../Store/hook';
 import { selectUserId } from '../../Store/reducers';
 import { roomingHouseFormValidationSchema as schema } from '../../Utils';
 import { useFormik } from 'formik';
-
+import { toVietnamCurrency } from '../../Utils';
 export const CreateRoomingHouse = () => {
   // styles
   const theme = useAppTheme();
@@ -431,7 +431,7 @@ export const CreateRoomingHouse = () => {
               }}
             >
               <View>
-                <Text style={styles.subTitle}>Tiền cọc tham khảo</Text>
+                <Text style={styles.subTitle}>Tiền cọc tham khảo (Đơn vị VND)</Text>
                 <TextInput
                   placeholder='Nhập tiền cọc tham khảo'
                   style={styles.textInput}
@@ -440,6 +440,7 @@ export const CreateRoomingHouse = () => {
                   }
                   keyboardType='numeric'
                   onBlur={() => onBlur('reference_cost', 'deposit')}
+                  value = {toVietnamCurrency(roomingHouseData.reference_cost.deposit || '')}
                 />
               </View>
               <View>

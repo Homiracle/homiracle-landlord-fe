@@ -21,7 +21,7 @@ import { contractFormValidationSchema as schema } from '../../Utils';
 import { useFormik } from 'formik';
 import { selectUser } from '../../Store/reducers';
 import { useAddTenantMutation, useLazySearchTenantQuery } from '../../Services';
-
+import { toVietnamCurrency } from '../../Utils';
 export const CreateContract = () => {
   // styles
   const theme = useAppTheme();
@@ -460,7 +460,7 @@ export const CreateContract = () => {
               }}
             >
               <View>
-                <Text style={styles.subTitle}>Tiền cọc tham khảo</Text>
+                <Text style={styles.subTitle}>Tiền cọc tham khảo </Text>
                 <TextInput
                   placeholder='Nhập tiền cọc tham khảo'
                   style={styles.textInput}
