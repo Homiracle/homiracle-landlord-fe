@@ -18,7 +18,7 @@ import { useAppSelector } from '../../Store/hook';
 import { selectUserId } from '../../Store/reducers';
 import { roomingHouseFormValidationSchema as schema } from '../../Utils';
 import { useFormik } from 'formik';
-import { toVietnamCurrency } from '../../Utils';
+import { toVietnamCurrency, parseVietnamCurrency } from '../../Utils';
 export const CreateRoomingHouse = () => {
   // styles
   const theme = useAppTheme();
@@ -127,7 +127,12 @@ export const CreateRoomingHouse = () => {
         // cost_per_room: 0,
       },
     });
-
+    const [formattedValues, setFormattedValues] = React.useState({
+      deposit: '',
+      room_cost: '',
+      water_cost: '',
+      power_cost: '',
+    });
   const { data: provinceData } = useGetProvincesQuery({});
   const { data: districtData } = useGetDistrictsQuery(currentProvince);
   const { data: communeData } = useGetWardsQuery(currentDistrict);
@@ -163,7 +168,7 @@ export const CreateRoomingHouse = () => {
     validateOnBlur: true,
     validateOnMount: true,
   });
-
+  console.log(formik.errors);
   const onBack = () => {
     showBackDialog(true);
     console.log('back');
@@ -177,13 +182,13 @@ export const CreateRoomingHouse = () => {
     nestedField?: string,
     id?: string,
   ) => {
-    // console.log(fieldName, text);
     if (nestedField) {
       setRoomingHouseData(prevData => ({
         ...prevData,
         [fieldName]: {
           ...prevData[fieldName],
           [nestedField]: text,
+          
         },
       }));
       if (nestedField === 'province') {
@@ -435,48 +440,78 @@ export const CreateRoomingHouse = () => {
                 <TextInput
                   placeholder='Nhập tiền cọc tham khảo'
                   style={styles.textInput}
-                  onChangeText={text =>
-                    handleInputChange('reference_cost', text, 'deposit')
+                  onChangeText={text =>{
+                    const numericValue = parseVietnamCurrency(text);
+                    handleInputChange('reference_cost', numericValue, 'deposit')
+                    setFormattedValues(prevState => ({
+                      ...prevState,
+                      deposit: toVietnamCurrency(numericValue)
+                    }));
+                  }
+                    
                   }
                   keyboardType='numeric'
                   onBlur={() => onBlur('reference_cost', 'deposit')}
-                  value = {toVietnamCurrency(roomingHouseData.reference_cost.deposit || '')}
+                  value = {formattedValues['deposit']}
                 />
               </View>
               <View>
-                <Text style={styles.subTitle}>Giá phòng tham khảo</Text>
+                <Text style={styles.subTitle}>Giá phòng tham khảo (Đơn vị VND)</Text>
                 <TextInput
                   placeholder='Nhập giá phòng tham khảo'
                   style={styles.textInput}
-                  onChangeText={text =>
-                    handleInputChange('reference_cost', text, 'room_cost')
+                  onChangeText={text =>{
+                    const numericValue = parseVietnamCurrency(text);
+                    handleInputChange('reference_cost', Number(numericValue), 'room_cost')
+                    setFormattedValues(prevState => ({
+                      ...prevState,
+                      room_cost: toVietnamCurrency(numericValue)
+                    }));
+                  }
+                    
                   }
                   keyboardType='numeric'
                   onBlur={() => onBlur('reference_cost', 'room_cost')}
+                  value={formattedValues['room_cost']}
                 />
               </View>
               <View>
-                <Text style={styles.subTitle}>Giá điện tham khảo</Text>
+                <Text style={styles.subTitle}>Giá điện tham khảo (Đơn vị VND/ kWh)</Text>
                 <TextInput
                   placeholder='Nhập giá điện tham khảo'
                   style={styles.textInput}
-                  onChangeText={text =>
-                    handleInputChange('reference_cost', text, 'power_cost')
+                  onChangeText={text =>{
+                    const numericValue = parseVietnamCurrency(text);
+                    handleInputChange('reference_cost', Number(numericValue), 'power_cost')
+                    setFormattedValues(prevState => ({
+                      ...prevState,
+                      power_cost: toVietnamCurrency(numericValue)
+                    }));
+                  }
                   }
                   keyboardType='numeric'
                   onBlur={() => onBlur('reference_cost', 'power_cost')}
+                  value={formattedValues['power_cost']}
                 />
               </View>
               <View>
-                <Text style={styles.subTitle}>Giá nước tham khảo</Text>
+                <Text style={styles.subTitle}>Giá nước tham khảo (Đơn vị VND/m{`\u00B3`})</Text>
                 <TextInput
                   placeholder='Nhập giá nước tham khảo'
                   style={styles.textInput}
-                  onChangeText={text =>
-                    handleInputChange('reference_cost', text, 'water_cost')
+                  onChangeText={text => {
+                    const numericValue = parseVietnamCurrency(text);
+                    handleInputChange('reference_cost', Number(numericValue), 'water_cost')
+                    setFormattedValues(prevState => ({
+                      ...prevState,
+                      water_cost: toVietnamCurrency(numericValue)
+                    }));
+                  }
+                   
                   }
                   keyboardType='numeric'
                   onBlur={() => onBlur('reference_cost', 'water_cost')}
+                  value={formattedValues['water_cost']}
                 />
               </View>
               {/* <View>

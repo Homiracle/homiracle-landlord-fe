@@ -16,12 +16,12 @@ import { useCreateContractMutation, useGetRoomQuery } from '../../Services';
 
 import {Contract as ContractProps } from '../../Services/contract/interface';
 import { useAppSelector } from '../../Store/hook';
-import { getHouseId, getFloorId, getRoomId, selectUserId, getRoom } from '../../Store/reducers';
+import { getHouseId, getFloorId, getRoomId, selectUserId, getRoom, getFloor } from '../../Store/reducers';
 import { contractFormValidationSchema as schema } from '../../Utils';
 import { useFormik } from 'formik';
 import { selectUser } from '../../Store/reducers';
 import { useAddTenantMutation, useLazySearchTenantQuery } from '../../Services';
-import { toVietnamCurrency } from '../../Utils';
+import { toVietnamCurrency, parseVietnamCurrency } from '../../Utils';
 export const CreateContract = () => {
   // styles
   const theme = useAppTheme();
@@ -127,7 +127,8 @@ export const CreateContract = () => {
           cost_per_room: 0,
         },
     });
-
+  console.log(useAppSelector(getRoom));
+  console.log(contractData);
   const [createContract, { data, error, isSuccess, isLoading, isError }] =
     useCreateContractMutation();
 
@@ -244,6 +245,13 @@ export const CreateContract = () => {
       handleInputChange('tenant_id', userData.user_id);
     }
   }, [userSuccess, userData]);
+
+  const [formattedValues, setFormattedValues] = React.useState({
+    deposit: toVietnamCurrency(contractData.reference_cost.deposit || ''),
+    room_cost: toVietnamCurrency(contractData.reference_cost.room_cost || ''),
+    water_cost: toVietnamCurrency(contractData.reference_cost.water_cost || ''),
+    power_cost: toVietnamCurrency(contractData.reference_cost.power_cost || ''),
+  });
   return (
     <View style={styles.container}>
       {(datetimePicker.endDate || datetimePicker.startDate || datetimePicker.feeDay) && (
@@ -460,51 +468,81 @@ export const CreateContract = () => {
               }}
             >
               <View>
-                <Text style={styles.subTitle}>Tiền cọc tham khảo </Text>
+                <Text style={styles.subTitle}>Tiền cọc tham khảo (Đơn vị VND)</Text>
                 <TextInput
                   placeholder='Nhập tiền cọc tham khảo'
                   style={styles.textInput}
-                  onChangeText={text =>
-                    handleInputChange('reference_cost', text, 'deposit')
+                  onChangeText={text =>{
+                    const numericValue = parseVietnamCurrency(text);
+                    handleInputChange('reference_cost', numericValue, 'deposit')
+                    setFormattedValues(prevState => ({
+                      ...prevState,
+                      deposit: toVietnamCurrency(numericValue)
+                    }));
+                  }
                   }
                   keyboardType='numeric'
                   onBlur={() => onBlur('reference_cost', 'deposit')}
+                  value={String(formattedValues['deposit'])}
                 />
               </View>
               <View>
-                <Text style={styles.subTitle}>Giá phòng tham khảo</Text>
+                <Text style={styles.subTitle}>Giá phòng tham khảo (Đơn vị VND)</Text>
                 <TextInput
                   placeholder='Nhập giá phòng tham khảo'
                   style={styles.textInput}
-                  onChangeText={text =>
-                    handleInputChange('reference_cost', text, 'room_cost')
+                  onChangeText={text =>{
+                    const numericValue = parseVietnamCurrency(text);
+                    handleInputChange('reference_cost', numericValue, 'room_cost')
+                    setFormattedValues(prevState => ({
+                      ...prevState,
+                      room_cost: toVietnamCurrency(numericValue)
+                    }));
+                  }
+                    
                   }
                   keyboardType='numeric'
                   onBlur={() => onBlur('reference_cost', 'room_cost')}
+                  value={String(formattedValues['room_cost'])}
                 />
               </View>
               <View>
-                <Text style={styles.subTitle}>Giá điện tham khảo</Text>
+                <Text style={styles.subTitle}>Giá điện tham khảo (Đơn vị VND/ kWh)</Text>
                 <TextInput
                   placeholder='Nhập giá điện tham khảo'
                   style={styles.textInput}
-                  onChangeText={text =>
-                    handleInputChange('reference_cost', text, 'power_cost')
+                  onChangeText={text =>{
+                    const numericValue = parseVietnamCurrency(text);
+                    handleInputChange('reference_cost', numericValue, 'power_cost')
+                    setFormattedValues(prevState => ({
+                      ...prevState,
+                      power_cost: toVietnamCurrency(numericValue)
+                    }));
+                  }
                   }
                   keyboardType='numeric'
                   onBlur={() => onBlur('reference_cost', 'power_cost')}
+                  value={String(formattedValues['power_cost'])}
                 />
               </View>
               <View>
-                <Text style={styles.subTitle}>Giá nước tham khảo</Text>
+                <Text style={styles.subTitle}>Giá nước tham khảo (Đơn vị VND/m{`\u00B3`})</Text>
                 <TextInput
                   placeholder='Nhập giá nước tham khảo'
                   style={styles.textInput}
-                  onChangeText={text =>
-                    handleInputChange('reference_cost', text, 'water_cost')
+                  onChangeText={text => {
+                    const numericValue = parseVietnamCurrency(text);
+                    handleInputChange('reference_cost', numericValue, 'water_cost')
+                    setFormattedValues(prevState => ({
+                      ...prevState,
+                      water_cost: toVietnamCurrency(numericValue)
+                    }));
+                  }
+                   
                   }
                   keyboardType='numeric'
                   onBlur={() => onBlur('reference_cost', 'water_cost')}
+                  value={String(formattedValues['water_cost'])}
                 />
               </View>
 
