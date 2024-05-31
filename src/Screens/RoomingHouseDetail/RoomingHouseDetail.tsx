@@ -20,8 +20,8 @@ import {
   useGetFloorsQuery,
   useGetRoomingHouseDetailsQuery,
 } from '../../Services';
-import { useAppSelector } from '../../Store/hook';
-import { getHouseId } from '../../Store/reducers';
+import { useAppDispatch, useAppSelector } from '../../Store/hook';
+import { getHouseId, storeHouse } from '../../Store/reducers';
 import { NativeScrollEvent, StyleSheet } from 'react-native';
 import { AnimatedFAB } from 'react-native-paper';
 import { RoomingHouseDetailsNavigationProp } from './RoomingHouseDetailContainer';
@@ -34,6 +34,7 @@ export const RoomingHouseDetail = ({
   navigation: RoomingHouseDetailsNavigationProp;
 }) => {
   const theme = useAppTheme();
+  const dispatch = useAppDispatch();
   const styles = StyleSheet.create({
     fabStyle: {
       position: 'absolute',
@@ -50,6 +51,14 @@ export const RoomingHouseDetail = ({
     isError: isRoomingHouseError,
   } = useGetRoomingHouseDetailsQuery(house_id);
 
+  useEffect(() => {
+    if (isRoomingHouseSuccess && roomingHouseData) {
+      // console.log('Rooming House Data:', roomingHouseData);
+      dispatch(storeHouse({ house: roomingHouseData }));
+    } else if (isRoomingHouseError) {
+      console.log('Error fetching rooming house data');
+    }
+  }, [isRoomingHouseSuccess, isRoomingHouseError, roomingHouseData]);
 
   // Gọi useQuery cho floors
   const {
@@ -59,16 +68,15 @@ export const RoomingHouseDetail = ({
   } = useGetFloorsQuery(house_id);
 
   // Xử lý thành công và lỗi cho floors
-  useEffect(() => {
-    if (isFloorsSuccess) {
-      console.log('Floors Data:', floorsData);
-      setFocus(<FloorList data={floorsData} />);
-    } else if (isFloorsError) {
-      console.log('Error fetching floors data');
-    }
-  }, [isFloorsSuccess, isFloorsError, floorsData]);
+  // useEffect(() => {
+  //   if (isFloorsSuccess) {
+  //     console.log('Floors Data:', floorsData);
+  //     setFocus(<FloorList data={floorsData} />);
+  //   } else if (isFloorsError) {
+  //     console.log('Error fetching floors data');
+  //   }
+  // }, [isFloorsSuccess, isFloorsError, floorsData]);
 
-  const [focus, setFocus] = useState(<FloorList data={[]} />);
   const [search, setSearch] = useState('');
   const [placeholder, setPlaceholder] = useState('Tìm kiếm tầng' as string);
   const [label, setLabel] = useState('Thêm tầng');
@@ -121,7 +129,6 @@ export const RoomingHouseDetail = ({
           number={roomingHouseData?.number_of_floors}
           onFocus={() => {
             setStatusFilter('floor');
-            setFocus(<FloorList data={floorsData} onScroll={onScroll} />);
           }}
         />
         <TabButton
@@ -131,7 +138,6 @@ export const RoomingHouseDetail = ({
           number={roomingHouseData?.number_of_devices}
           onFocus={() => {
             setStatusFilter('device');
-            setFocus(<DeviceList scope={DeviceScope.HOUSE} scope_id={house_id} onScroll={onScroll} />);
           }}
         />
         <TabButton
@@ -141,12 +147,19 @@ export const RoomingHouseDetail = ({
           number={roomingHouseData?.number_of_tenants}
           onFocus={() => {
             setStatusFilter('tenant');
-            setFocus(<TenantList scope={DeviceScope.HOUSE} onScroll={onScroll} />);
           }}
         />
       </TabView>
       {/* <SearchBar placeholder={placeholder} value={search} /> */}
-      {focus}
+      {
+        status === 'floor' ? (
+          <FloorList data={floorsData} onScroll={onScroll} />
+        ) : status === 'device' ? (
+          <DeviceList scope={DeviceScope.HOUSE} scope_id={house_id} onScroll={onScroll} />
+        ) : status === 'tenant' ? (
+          <TenantList scope={DeviceScope.HOUSE} onScroll={onScroll} />
+        ) : <></>
+      }
       {status !== 'tenant' && (
         <AnimatedFAB
           icon={'plus'}

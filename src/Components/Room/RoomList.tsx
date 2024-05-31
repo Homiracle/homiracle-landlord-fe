@@ -5,7 +5,7 @@ import { ListRoom } from '../../Services/rooms/type';
 import { NativeScrollEvent } from 'react-native';
 
 export interface RoomListProps {
-  data: any;
+  data: ListRoom;
   onScroll?: ({ nativeEvent }: { nativeEvent: NativeScrollEvent }) => void;
 }
 export const RoomList = ({ data, onScroll }: RoomListProps) => {

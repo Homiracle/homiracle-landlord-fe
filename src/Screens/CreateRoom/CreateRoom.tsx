@@ -11,7 +11,7 @@ import { Alert, StyleSheet, TextInput, TextStyle } from 'react-native';
 import { Button, Surface, Portal } from 'react-native-paper';
 import { Room as RoomProps, useCreateRoomMutation } from '../../Services';
 import { useAppSelector } from '../../Store/hook';
-import { getHouseId, getFloorId } from '../../Store/reducers';
+import { getHouseId, getFloorId, getFloor } from '../../Store/reducers';
 import { roomFormValidationSchema as schema } from '../../Utils';
 import { useFormik } from 'formik';
 
@@ -98,10 +98,10 @@ export const CreateRoom = () => {
     rooming_house: {
       rooming_house_id: useAppSelector(getHouseId)},
     reference_cost: {
-      deposit: 0,
-      room_cost: 0,
-      water_cost: 0,
-      power_cost: 0,
+      deposit: useAppSelector(getFloor)?.deposit || 0,
+      room_cost: useAppSelector(getFloor)?.room_cost || 0,
+      water_cost: useAppSelector(getFloor)?.water_cost || 0,
+      power_cost: useAppSelector(getFloor)?.power_cost || 0,
       // cost_per_person: 0,
       // cost_per_room: 0,
     },
