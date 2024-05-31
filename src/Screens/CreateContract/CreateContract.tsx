@@ -337,12 +337,12 @@ export const CreateContract = () => {
               <View>
                 <Text style={styles.subTitle}>Đại diện bên cho thuê</Text>
                 <TextInput
-                  placeholder={user.user_name}
+                  value={user.user_name}
                   style={styles.textInput}
                   editable={false}
                 />
                 <TextInput
-                  placeholder={user.phone || ''}
+                  value={user.phone || ''}
                   style={styles.textInput}
                   editable={false}
                 />
@@ -351,7 +351,7 @@ export const CreateContract = () => {
               <View>
               <Text style={styles.subTitle}>Số phòng</Text>
                 <TextInput
-                  placeholder= {roomData?.name}
+                  value= {roomData?.name}
                   style={styles.textInput}
                   editable={false}
                 />

@@ -207,12 +207,12 @@ export const ContractDetail = ({
                 />
                 <Text style={styles.subTitle}>Đại diện bên thuê</Text>
                 <TextInput
-                  value = {ContractDetail?.tenant.user_name}
+                  value = {ContractDetail?.tenant?.user_name}
                   style={styles.textInput}
                   editable={false}
                 />
                 <TextInput
-                 value = {ContractDetail?.tenant.phone}
+                 value = {ContractDetail?.tenant?.phone}
                   style={styles.textInput}
                   editable={false}
                 />  
