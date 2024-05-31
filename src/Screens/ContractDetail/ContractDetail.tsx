@@ -120,7 +120,7 @@ export const ContractDetail = ({
       couting_fee_day: '',
       paying_cost_cycle: 0,
       maximum_number_of_peoples: 4,
-      reference_cost: {
+      cost: {
           deposit: 0,
           room_cost: 0,
           water_cost: 0,
@@ -207,12 +207,12 @@ export const ContractDetail = ({
                 />
                 <Text style={styles.subTitle}>Đại diện bên thuê</Text>
                 <TextInput
-                  value = {ContractDetail?.tenant.user_name}
+                  value = {ContractDetail?.tenant?.user_name}
                   style={styles.textInput}
                   editable={false}
                 />
                 <TextInput
-                 value = {ContractDetail?.tenant.phone}
+                 value = {ContractDetail?.tenant?.phone}
                   style={styles.textInput}
                   editable={false}
                 />  

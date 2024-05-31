@@ -60,7 +60,6 @@ export const RoomDetail = ({
   const room_id = useAppSelector(getRoomId) as string;
   const house_id = useAppSelector(getHouseId) as string;
   const floor_id = useAppSelector(getFloorId) as string;
-  const src = 'accepted';
   const [isExtended, setIsExtended] = React.useState(true);
   const onScroll = ({ nativeEvent }: { nativeEvent: NativeScrollEvent }) => {
     const currentScrollPosition =
@@ -81,7 +80,7 @@ export const RoomDetail = ({
     isSuccess: isCTSuccess,
     isError: isCTError,
     error,
-  } = useGetContractListQuery({house_id,floor_id, room_id,src});
+  } = useGetContractListQuery({house_id,floor_id, room_id});
   console.log(contractsData,isCTSuccess)
   return (
     <View style={styles.container}>

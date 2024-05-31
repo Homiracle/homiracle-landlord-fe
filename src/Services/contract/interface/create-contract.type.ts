@@ -7,7 +7,7 @@ export type Contract = {
     couting_fee_day:string;
     paying_cost_cycle: number;
     maximum_number_of_peoples: number;
-    reference_cost: {
+    cost: {
         deposit?: number;
         room_cost?: number;
         water_cost?: number;

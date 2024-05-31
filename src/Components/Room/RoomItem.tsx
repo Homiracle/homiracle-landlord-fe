@@ -9,7 +9,7 @@ import { RootScreens } from '../../Constants/RootScreen';
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useAppDispatch } from '../../Store/hook';
 import { storeId } from '../../Store/reducers';
-
+import { toVietnamCurrency } from '../../Utils';
 export interface RoomItemProps {
     room_id: string,
     room_name: string,
@@ -84,7 +84,7 @@ export const RoomItem = ({
                 }, homiralceTheme.fonts.bodyMedium]}
                 numberOfLines={2}
                 ellipsizeMode='tail'
-            >{"Giá phòng: " + cost}</Text>
+            >{"Giá phòng: " + toVietnamCurrency(cost)}</Text>
 
             
             <Icon 

@@ -27,13 +27,7 @@ import {
 import { DeviceType } from '../../Constants/DeviceType';
 import { Props as CreateDeviceProps } from './DeviceDetailContainer';
 
-const deviceType = [
-  { id: 1, type: DeviceType.CAMERA, name: 'Camera' },
-  { id: 2, type: DeviceType.LIGHT, name: 'Đèn' },
-  { id: 3, type: DeviceType.FAN, name: 'Quạt' },
-  { id: 4, type: DeviceType.HUMIDTY_SENSOR, name: 'Cảm biến độ ẩm' },
-  { id: 5, type: DeviceType.TEMPERATURE_SENSOR, name: 'Cảm biến nhiệt độ' },
-];
+
 
 export const DeviceDetail = ({ route, navigation }: CreateDeviceProps) => {
   // styles
@@ -194,15 +188,6 @@ export const DeviceDetail = ({ route, navigation }: CreateDeviceProps) => {
                 marginTop: hp(1),
               }}
             >
-              <View>
-                <Text style={styles.subTitle}>Vị trí thiết bị</Text>
-                <TextInput
-                  placeholder='Nhà test-tầng 1-phòng 2'
-                  style={styles.textInput}
-                  value='Nhà test-tầng 1-phòng 2'
-                  editable={false}
-                />
-              </View>
               <View>
                 <Text style={styles.subTitle}>Tên thiết bị</Text>
                 <TextInput
