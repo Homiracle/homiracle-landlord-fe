@@ -16,7 +16,7 @@ import { useCreateContractMutation, useGetRoomQuery } from '../../Services';
 
 import {Contract as ContractProps } from '../../Services/contract/interface';
 import { useAppSelector } from '../../Store/hook';
-import { getHouseId, getFloorId, getRoomId, selectUserId } from '../../Store/reducers';
+import { getHouseId, getFloorId, getRoomId, selectUserId, getRoom } from '../../Store/reducers';
 import { contractFormValidationSchema as schema } from '../../Utils';
 import { useFormik } from 'formik';
 import { selectUser } from '../../Store/reducers';
@@ -119,10 +119,10 @@ export const CreateContract = () => {
       paying_cost_cycle: 0,
       maximum_number_of_peoples: 0,
       reference_cost: {
-          deposit: 0,
-          room_cost: 0,
-          water_cost: 8,
-          power_cost: 0,
+          deposit: useAppSelector(getRoom)?.deposit || 0,
+          room_cost: useAppSelector(getRoom)?.room_cost || 0,
+          water_cost: useAppSelector(getRoom)?.water_cost || 0,
+          power_cost: useAppSelector(getRoom)?.power_cost || 0,
           cost_per_person: 0,
           cost_per_room: 0,
         },
@@ -334,7 +334,7 @@ export const CreateContract = () => {
                   editable={false}
                 />
                 <TextInput
-                  placeholder={user.CID || ''}
+                  placeholder={user.phone || ''}
                   style={styles.textInput}
                   editable={false}
                 />
