@@ -16,21 +16,23 @@ import {
   import { useGetRoomingHousesQuery } from '../../Services';
 import { Text } from 'react-native-paper';
 import { RootStackParamList } from '@/Constants/RootStackParam';
+import { ContractDetails } from '../../Services/contract/interface';
 
 
-export interface ContractItemProps{
-    floor_id :string,
-    room_id: string,
-    contract_id: string,
-    room_cost:   number,
-}
-
+export type ContractItemProps = {
+    user_name?: string;
+    cost: number;
+    address: any;
+    room_name:string;
+    contract_id: string;
+};
 
 export const ContractItem = ({
     contract_id,
-    room_id,
-    floor_id,
-    room_cost,
+    user_name,
+    cost,
+    address,
+    room_name
 }:ContractItemProps) => {
     const homiralceTheme = useAppTheme();
     const styles = StyleSheet.create({
@@ -69,7 +71,7 @@ export const ContractItem = ({
                         color:'white',
                         }, homiralceTheme.fonts.titleMedium]}
                         numberOfLines={2}
-                    >{'Tầng ' + floor_id}</Text>
+                    >{user_name || ''}</Text>
                     </View>
                     <View style={{ flex: 1 }}>
                         <Text
@@ -79,7 +81,7 @@ export const ContractItem = ({
                         }, homiralceTheme.fonts.titleMedium]}
                         numberOfLines={1}
                         ellipsizeMode='head'
-                    >{'Phòng ' + room_id }</Text>
+                    >{'Phòng ' + room_name}</Text>
                     </View>
     
             </View>
@@ -104,7 +106,7 @@ export const ContractItem = ({
                     }, homiralceTheme.fonts.titleMedium]}
                     numberOfLines={1}
                     ellipsizeMode='head'
-                >{room_cost}</Text>
+                >{cost}</Text>
                 </View>
                 
             </View>
