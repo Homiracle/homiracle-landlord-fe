@@ -125,7 +125,7 @@ export const RoomDetail = ({
                 setLabel('Thêm khách thuê');
               }}
             />
-              <TabButton
+            <TabButton
               isClicked={status === 'contract'}
               name='Hợp đồng'
               number={contractsData?.length}

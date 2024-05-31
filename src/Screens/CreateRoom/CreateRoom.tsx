@@ -7,11 +7,11 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { StyleSheet, TextInput, TextStyle } from 'react-native';
+import { Alert, StyleSheet, TextInput, TextStyle } from 'react-native';
 import { Button, Surface, Portal } from 'react-native-paper';
 import { Room as RoomProps, useCreateRoomMutation } from '../../Services';
 import { useAppSelector } from '../../Store/hook';
-import { getHouseId } from '../../Store/reducers';
+import { getHouseId, getFloorId } from '../../Store/reducers';
 import { roomFormValidationSchema as schema } from '../../Utils';
 import { useFormik } from 'formik';
 
@@ -93,8 +93,10 @@ export const CreateRoom = () => {
     acreage: 0,
     max_number_of_tenant: 0,
     floor: {
-      floor_id: useAppSelector(getHouseId),
+      floor_id: useAppSelector(getFloorId),
     },
+    rooming_house: {
+      rooming_house_id: useAppSelector(getHouseId)},
     reference_cost: {
       deposit: 0,
       room_cost: 0,
@@ -103,6 +105,7 @@ export const CreateRoom = () => {
       // cost_per_person: 0,
       // cost_per_room: 0,
     },
+
   });
 
   const [createRoom, { data, error, isSuccess, isLoading, isError }] =
@@ -131,7 +134,7 @@ export const CreateRoom = () => {
     text: string | number,
     nestedField?: string,
   ) => {
-    // console.log(fieldName, text);
+    console.log(fieldName, text);
     if (nestedField) {
       setroomData(prevData => ({
         ...prevData,
@@ -156,10 +159,12 @@ export const CreateRoom = () => {
   };
   useEffect(() => {
     if (isSuccess) {
+      Alert.alert('Tạo phòng thành công');
       console.log('Create room success:', data);
       navigation.goBack();
     }
     if (isError) {
+      Alert.alert('Lỗi khi tạo phòng', error as string);
       console.log('Create room error:', error);
     }
   }, [isSuccess, isError, data, error]);
