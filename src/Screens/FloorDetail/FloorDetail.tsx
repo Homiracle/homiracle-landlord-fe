@@ -9,16 +9,18 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import { TabButton } from '../../Components/TabView/TabButton';
-import { useAppSelector } from '../../Store/hook';
-import { getFloorId, getHouseId } from '../../Store/reducers';
+import { useAppDispatch, useAppSelector } from '../../Store/hook';
+import { getFloorId, getHouseId, storeFloor } from '../../Store/reducers';
 import { useGetFloorDetailQuery, useGetRoomsQuery } from '../../Services';
 import { AnimatedFAB, Surface} from 'react-native-paper';
 import { StyleSheet, NativeScrollEvent} from 'react-native';
 import { useAppTheme } from '../../Theme';
 import {FloorDetailsNavigationProp} from './FloorDetailContainer';
 import { DeviceScope } from '../../Constants/DeviceScope';
+import { ListRoom } from '../../Services/rooms/type';
 
 export const FloorDetail = ({route, navigation}: FloorDetailsNavigationProp) => {
+  const dispatch = useAppDispatch();
   const house_id = useAppSelector(getHouseId) as string;
   const floor_id = useAppSelector(getFloorId) as string;
   const {
@@ -26,6 +28,15 @@ export const FloorDetail = ({route, navigation}: FloorDetailsNavigationProp) => 
     isSuccess: isFloorSuccess,
     isError: isFloorError,
   } = useGetFloorDetailQuery(floor_id);
+
+  useEffect(() => {
+    if (isFloorSuccess && floorData) {
+      // console.log('Floors Data:', floorData);
+      dispatch(storeFloor({ floor: floorData }));
+    } else if (isFloorError) {
+      console.log('Error fetching floors data');
+    }
+  }, [isFloorSuccess, isFloorError, floorData]);
 
   const {
     data: roomData,
@@ -35,13 +46,11 @@ export const FloorDetail = ({route, navigation}: FloorDetailsNavigationProp) => 
 
   useEffect(() => {
     if (isRoomSuccess) {
-      console.log('Floors Data:', roomData);
-      setFocus(<RoomList data={roomData} />);
+      // console.log('Floors Data:', roomData);
     } else if (isRoomError) {
       console.log('Error fetching floors data');
     }
   }, [isRoomSuccess, isRoomError, roomData]);
-  const [focus, setFocus] = React.useState(<RoomList data = {roomData}/>)
   const [status, setStatus] = React.useState('room');
   const [placeholder, setPlaceholder] = React.useState('Tìm kiếm phòng' as string);
   const [search, setSearch] = React.useState('');
@@ -99,7 +108,6 @@ export const FloorDetail = ({route, navigation}: FloorDetailsNavigationProp) => 
           number={floorData?.number_of_rooms}
           onFocus={() => {
             setStatusFilter('room');
-            setFocus(<RoomList data={roomData} onScroll={onScroll} />);
           }}
         />
         <TabButton
@@ -109,7 +117,6 @@ export const FloorDetail = ({route, navigation}: FloorDetailsNavigationProp) => 
           number={floorData?.number_of_devices}
           onFocus={() => {
             setStatusFilter('device');
-            setFocus(<DeviceList scope={DeviceScope.FLOOR} scope_id={floor_id} onScroll={onScroll} />);
           }}
         />
         <TabButton
@@ -119,13 +126,20 @@ export const FloorDetail = ({route, navigation}: FloorDetailsNavigationProp) => 
           number={floorData?.number_of_tenants}
           onFocus={() => {
             setStatusFilter('tenant');
-            setFocus(<TenantList scope={DeviceScope.FLOOR} onScroll={onScroll} />);
           }}
         />
       </TabView>
       {/* <SearchBar placeholder={placeholder} value={search} /> */}
 
-        {focus}
+      {
+        status === 'room' ? (
+          <RoomList data={roomData as ListRoom} onScroll={onScroll} />
+        ) : status === 'device' ? (
+          <DeviceList scope={DeviceScope.FLOOR} scope_id={floor_id} onScroll={onScroll} />
+        ) : status === 'tenant' ? (
+          <TenantList scope={DeviceScope.FLOOR} onScroll={onScroll} />
+        ) : <></>
+      }
         
 
       {status !== 'tenant' && (

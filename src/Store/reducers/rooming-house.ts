@@ -1,27 +1,64 @@
+import { RoomDetail } from '../../Services/rooms/type';
+import { FloorDetail } from '../../Services/floors/type';
+import { HouseDetails } from '../../Services/rooming-houses/interface';
 import { createSlice, createSelector } from '@reduxjs/toolkit';
 
 export interface roomingHouseState {
   house_id: string;
   floor_id?: string;
   room_id?: string;
+  house: HouseDetails;
+  floor: FloorDetail;
+  room: RoomDetail;
 }
 
 const slice = createSlice({
   name: 'roomingHouse',
-  initialState: {
-    house_id: '',
-    floor_id: '',
-    room_id: '',
-  } as roomingHouseState,
+  initialState: {} as roomingHouseState,
   reducers: {
-    storeId: (
+    storeId : (
       state: roomingHouseState,
       { payload: { field, id } }: { payload: { field: string; id: string } },
     ) => {
-      console.log(state)
       return {
         ...state,
         [field]: id,
+      };
+    },
+    storeHouse: (
+      state: roomingHouseState,
+      { payload: { house } }: { payload: { house: HouseDetails } },
+    ) => {
+      return {
+        ...state,
+        house: house,
+      };
+    },
+    storeFloor: (
+      state: roomingHouseState,
+      { payload: { floor } }: { payload: { floor: FloorDetail } },
+    ) => {
+      return {
+        ...state,
+        floor: floor,
+      };
+    },
+    storeRoom: (
+      state: roomingHouseState,
+      { payload: { room } }: { payload: { room: RoomDetail } },
+    ) => {
+      return {
+        ...state,
+        room: room,
+      };
+    },
+    reset: (
+      state: roomingHouseState,
+      { payload: { field } }: { payload: { field: string } },
+    ) => {
+      return {
+        ...state,
+        [field]: {},
       };
     },
     resetId: (
@@ -51,5 +88,20 @@ export const getRoomId = createSelector(
   (roomingHouse: roomingHouseState) => roomingHouse['room_id'],
 );
 
-export const { storeId, resetId } = slice.actions;
+export const getHouse = createSelector(
+  (state: { roomingHouse: roomingHouseState }) => state['roomingHouse'],
+  (roomingHouse: roomingHouseState) => roomingHouse.house,
+);
+
+export const getFloor = createSelector(
+  (state: { roomingHouse: roomingHouseState }) => state['roomingHouse'],
+  (roomingHouse: roomingHouseState) => roomingHouse.floor,
+);
+
+export const getRoom = createSelector(
+  (state: { roomingHouse: roomingHouseState }) => state['roomingHouse'],
+  (roomingHouse: roomingHouseState) => roomingHouse.room,
+);
+
+export const { storeHouse, storeFloor, storeRoom, reset, storeId, resetId } = slice.actions;
 export const roomingHouseReducers = slice.reducer;
