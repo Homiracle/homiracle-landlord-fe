@@ -17,7 +17,7 @@ import {
 import { Text } from 'react-native-paper';
 import { RootStackParamList } from '@/Constants/RootStackParam';
 import { ContractDetails } from '../../Services/contract/interface';
-
+import { toVietnamCurrency } from '../../Utils';
 
 export type ContractItemProps = {
     user_name?: string;
@@ -106,7 +106,7 @@ export const ContractItem = ({
                     }, homiralceTheme.fonts.titleMedium]}
                     numberOfLines={1}
                     ellipsizeMode='head'
-                >{cost}</Text>
+                >{toVietnamCurrency(cost)}</Text>
                 </View>
                 
             </View>

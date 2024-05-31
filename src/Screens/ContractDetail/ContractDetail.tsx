@@ -120,7 +120,7 @@ export const ContractDetail = ({
       couting_fee_day: '',
       paying_cost_cycle: 0,
       maximum_number_of_peoples: 4,
-      reference_cost: {
+      cost: {
           deposit: 0,
           room_cost: 0,
           water_cost: 0,

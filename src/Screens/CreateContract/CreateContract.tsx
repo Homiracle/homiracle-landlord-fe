@@ -118,7 +118,7 @@ export const CreateContract = () => {
       couting_fee_day: '',
       paying_cost_cycle: 0,
       maximum_number_of_peoples: 0,
-      reference_cost: {
+      cost: {
           deposit: useAppSelector(getRoom)?.deposit || 0,
           room_cost: useAppSelector(getRoom)?.room_cost || 0,
           water_cost: useAppSelector(getRoom)?.water_cost || 0,
@@ -247,10 +247,10 @@ export const CreateContract = () => {
   }, [userSuccess, userData]);
 
   const [formattedValues, setFormattedValues] = React.useState({
-    deposit: toVietnamCurrency(contractData.reference_cost.deposit || ''),
-    room_cost: toVietnamCurrency(contractData.reference_cost.room_cost || ''),
-    water_cost: toVietnamCurrency(contractData.reference_cost.water_cost || ''),
-    power_cost: toVietnamCurrency(contractData.reference_cost.power_cost || ''),
+    deposit: toVietnamCurrency(contractData.cost.deposit || ''),
+    room_cost: toVietnamCurrency(contractData.cost.room_cost || ''),
+    water_cost: toVietnamCurrency(contractData.cost.water_cost || ''),
+    power_cost: toVietnamCurrency(contractData.cost.power_cost || ''),
   });
   return (
     <View style={styles.container}>
