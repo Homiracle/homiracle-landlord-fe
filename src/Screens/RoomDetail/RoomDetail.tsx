@@ -19,8 +19,8 @@ import {
 } from 'react-native-responsive-screen';
 import { RoomDetailComponent } from '../../Components/Room/RoomDetailComponent';
 import { Room as RoomProps, useGetRoomQuery, useGetContractListQuery } from '../../Services';
-import { useAppSelector } from '../../Store/hook';
-import { getRoomId, getFloorId, getHouseId } from '../../Store/reducers';
+import { useAppDispatch, useAppSelector } from '../../Store/hook';
+import { getRoomId, getFloorId, getHouseId, storeRoom } from '../../Store/reducers';
 import { ContractList } from '../../Components/Contract/ContractList';
 import { RoomDetailsNavigationProp } from './RoomDetailContainer';
 import { DeviceScope } from '../../Constants/DeviceScope';
@@ -32,6 +32,7 @@ export const RoomDetail = ({
   navigation: RoomDetailsNavigationProp;
 }) => {
   //hooks
+  const dispatch = useAppDispatch();
   const [status, setStatus] = React.useState('info');
   const [label, setLabel] = React.useState('Thêm hợp đồng');
   const setStatusFilter = (status: string) => {
@@ -55,7 +56,7 @@ export const RoomDetail = ({
     },
   });
   
-  const [focus, setFocus] = React.useState(<RoomDetailComponent data={[]}/>);
+  // const [focus, setFocus] = React.useState(<RoomDetailComponent data={[]}/>);
   const room_id = useAppSelector(getRoomId) as string;
   const house_id = useAppSelector(getHouseId) as string;
   const floor_id = useAppSelector(getFloorId) as string;
@@ -70,9 +71,9 @@ export const RoomDetail = ({
   const { data: roomData, isSuccess: isRoomSuccess } = useGetRoomQuery(room_id);
   const [screen, setScreen] = React.useState(RootScreens.CREATE_CONTRACT as string);
   useEffect(() => {
-    if (isRoomSuccess && status === 'info') {
-      setFocus(<RoomDetailComponent data={roomData} />);
-      console.log('Room Data:', roomData);
+    if (isRoomSuccess && roomData) {
+      // console.log('Room Data:', roomData);
+      dispatch(storeRoom({room: roomData}));
     }
   }, [isRoomSuccess, roomData]);
   const {
@@ -100,7 +101,6 @@ export const RoomDetail = ({
                 setStatusFilter('info');
                 setLabel('Thêm hợp đồng');
                 setScreen(RootScreens.CREATE_CONTRACT);
-                setFocus(<RoomDetailComponent data={roomData}/>);
               }}
             />
             <TabButton
@@ -112,7 +112,6 @@ export const RoomDetail = ({
                 setStatusFilter('device');
                 setLabel('Thêm thiết bị');
                 setScreen(RootScreens.CREATE_DEVICE);
-                setFocus(<DeviceList scope={DeviceScope.ROOM} scope_id={room_id} onScroll={onScroll}/>);
               }}
             />
             <TabButton
@@ -122,7 +121,6 @@ export const RoomDetail = ({
               displayNumber={true}
               onFocus={() => {
                 setStatusFilter('tenant');
-                setFocus(<TenantList scope={DeviceScope.ROOM} onScroll={onScroll} />);
                 setScreen(RootScreens.ADD_TENANT);
                 setLabel('Thêm khách thuê');
               }}
@@ -134,14 +132,23 @@ export const RoomDetail = ({
               displayNumber={true}
               onFocus={() => {
                 setStatusFilter('contract');
-                setFocus(<ContractList data = {contractsData }onScroll={onScroll} />);
                 setScreen(RootScreens.CREATE_CONTRACT);
                 setLabel('Thêm hợp đồng');
               }}
             />
           </TabView>
         </View>
-            {focus}
+        {
+          status === 'info' ? (
+            <RoomDetailComponent data={roomData}/>
+          ) : status === 'device' ? (
+            <DeviceList scope={DeviceScope.ROOM} scope_id={room_id} onScroll={onScroll}/>
+          ) : status === 'tenant' ? (
+            <TenantList scope={DeviceScope.ROOM} onScroll={onScroll}/>
+          ) : status === 'contract' ? (
+            <ContractList data = {contractsData} onScroll={onScroll}/>
+          ) : <></>
+        }
         {status !== 'info' &&(
         <AnimatedFAB
           icon={'plus'}

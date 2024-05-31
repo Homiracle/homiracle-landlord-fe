@@ -14,7 +14,7 @@ import {
   useCreateFloorMutation
 } from '../../Services';
 import { useAppSelector } from '../../Store/hook';
-import { getHouseId } from '../../Store/reducers';
+import { getHouse, getHouseId } from '../../Store/reducers';
 import { floorFormValidationSchema as schema } from '../../Utils';
 import { useFormik } from 'formik';
 
@@ -96,10 +96,10 @@ export const CreateFloor = () => {
         rooming_house_id: useAppSelector(getHouseId),
       },
       reference_cost: {
-        deposit: 0,
-        room_cost: 0,
-        water_cost: 0,
-        power_cost: 0,
+        deposit: useAppSelector(getHouse)?.deposit ?? 0,
+        room_cost: useAppSelector(getHouse)?.room_cost ?? 0,
+        water_cost: useAppSelector(getHouse)?.water_cost ?? 0,
+        power_cost: useAppSelector(getHouse)?.power_cost ?? 0,
         // cost_per_person: 0,
         // cost_per_room: 0,
       },

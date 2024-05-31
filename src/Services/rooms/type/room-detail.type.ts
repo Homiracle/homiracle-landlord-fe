@@ -7,4 +7,8 @@ export type RoomDetail = {
   max_tenant: number;
   number_of_tenants: number;
   number_of_devices: number;
+  deposit: number,
+  water_cost: number,
+  power_cost: number,
+  room_cost: number,
 }
