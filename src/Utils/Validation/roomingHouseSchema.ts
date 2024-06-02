@@ -7,14 +7,21 @@ export const roomingHouseFormValidationSchema = Yup.object().shape({
   number_of_period_days: Yup.number().positive().required(''),
   closing_money_date: Yup.number()
     .positive()
-    .required('Closing money date is required'),
+    .required('Closing money date is required')
+    .test('range','Vui lòng chọn 1 ngày trong tháng', function(value) {
+      return value > 0 && value < 32;
+    }),
   start_receiving_money_date: Yup.number().required(
     'Ngày bắt đầu đóng tiền không được để trống',
-  ),
+  ).test('range','Ngày bắt đầu phải là ngày trong tháng', function(value) {
+    return value > 0 && value < 32;
+  }),
   end_receiving_money_date: Yup.number().required(
     'Ngày hết hạn đóng tiền không được để trống',
   ).test('end-receiving-money-date', 'Ngày hết hạn đóng tiền phải sau ngày bắt đầu đóng tiền', function(value) {
     return moment(value).isAfter(this.parent.start_receiving_money_date);
+  }).test('range','Ngày kết thúc phải là ngày trong tháng', function(value) {
+    return value > 0 && value < 32;
   }),
   address: Yup.object({
     province: Yup.string().required('Tỉnh/Thành phố không được để trống'),

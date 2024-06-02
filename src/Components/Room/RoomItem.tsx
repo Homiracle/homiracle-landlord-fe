@@ -86,31 +86,17 @@ export const RoomItem = ({
                 ellipsizeMode='tail'
             >{"Giá phòng: " + toVietnamCurrency(cost)}</Text>
 
-            
-            <Icon 
-                style={{
-                    right: 138,
-                    bottom: 9,
-                    position: 'absolute',
-                }}
-                name='home-variant'size={24} color={homiralceTheme.colors.primary}
-            />
-            <Text
-                style={[
-                    {
-                        position: 'absolute',
-                        right: 123,
-                        bottom: 12,
-                        color: homiralceTheme.colors.primary,
-                    },
-                    homiralceTheme.fonts.bodySmall,
-                ]}>
-                {num_of_device}
-            </Text>
+            <View style={{ flexDirection: 'row', gap: 2}}>
+                <View style = {{flex: 1}}>
 
+                </View>
+                <View style = {{flex: 1}}>
+                    
+                </View>
+            </View>
             <Icon 
                 style={{
-                    right: 52,
+                    right: 82,
                     bottom: 9,
                     position: 'absolute',
                 }}
@@ -126,7 +112,7 @@ export const RoomItem = ({
                     },
                     homiralceTheme.fonts.bodySmall
                 ]}>
-                {num_of_tenant}
+                {(num_of_tenant?? 0 ) + " người"}
             </Text>
 
 

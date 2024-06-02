@@ -1,8 +1,9 @@
 import * as Yup from 'yup';
 import moment from 'moment';
+
 export const contractFormValidationSchema = Yup.object().shape({
   start_date: Yup.string().required(),
-  end_date: Yup.string().required().test('end-date', 'Ngày kết thúc phải sau ngày bắt đầu', function(value) {
+  end_date: Yup.string().required().test('end_date', 'Ngày kết thúc phải sau ngày bắt đầu', function(value) {
     return moment(value).isAfter(this.parent.start_date);
   }),
   couting_fee_day: Yup.string().required().test('count_day', 'Ngày tính phí phải là một ngày trong tháng', function(value) {
