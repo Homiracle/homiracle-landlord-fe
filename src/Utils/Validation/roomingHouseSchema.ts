@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-
+import moment from 'moment';
 export const roomingHouseFormValidationSchema = Yup.object().shape({
   name: Yup.string().required('Tên tòa nhà không được để trống'),
   opening_hour: Yup.string().required('Giờ mở cửa không được để trống'),
@@ -13,7 +13,9 @@ export const roomingHouseFormValidationSchema = Yup.object().shape({
   ),
   end_receiving_money_date: Yup.number().required(
     'Ngày hết hạn đóng tiền không được để trống',
-  ),
+  ).test('end-receiving-money-date', 'Ngày hết hạn đóng tiền phải sau ngày bắt đầu đóng tiền', function(value) {
+    return moment(value).isAfter(this.parent.start_receiving_money_date);
+  }),
   address: Yup.object({
     province: Yup.string().required('Tỉnh/Thành phố không được để trống'),
     district: Yup.string().required('Quận/Huyện không được để trống'),
