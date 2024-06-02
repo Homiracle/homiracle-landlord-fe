@@ -106,7 +106,7 @@ export const CreateContract = () => {
   const [datetimePicker, showDatetimePicker] = React.useState({
     startDate: false,
     endDate: false,
-    feeDay: false,
+
   });
   const [contractData, setContractData] =
     React.useState<ContractProps>({
@@ -147,7 +147,6 @@ export const CreateContract = () => {
     showBackDialog(true);
     console.log('back');
   };
-
   // console.log(useAppSelector(state => state.user));
   const { data: roomData, isSuccess: isRoomSuccess } = useGetRoomQuery(useAppSelector(getRoomId) as string);
   const handleInputChange = (
@@ -173,7 +172,7 @@ export const CreateContract = () => {
     }
     console.log(formik.errors);
   };
-
+  console.log(formik.errors.end_date);
   const handleSubmit = async () => {
     console.log(contractData);
     await createContract(contractData as Partial<ContractProps>);
@@ -254,7 +253,7 @@ export const CreateContract = () => {
   });
   return (
     <View style={styles.container}>
-      {(datetimePicker.endDate || datetimePicker.startDate || datetimePicker.feeDay) && (
+      {(datetimePicker.endDate || datetimePicker.startDate) && (
         <DateTimePicker
           value={new Date()}
           mode='date'
@@ -277,15 +276,7 @@ export const CreateContract = () => {
                         moment(selectedDate).format("L"),
                     );
                 }
-            } else if (datetimePicker.feeDay) {
-                showDatetimePicker({ ...datetimePicker, feeDay: false });
-                if (selectedDate) {
-                    handleInputChange(
-                        'couting_fee_day',
-                        moment(selectedDate).format("L"),
-                    );
-                }
-            }
+            } 
         }}
         />
       )}
@@ -378,6 +369,11 @@ export const CreateContract = () => {
                       onBlur={() => onBlur('start_date')}
                       editable = {false}
                     />
+                     {isTouched('start_date') ? (
+                    <Text style={styles.badText}>
+                      {formik.errors.start_date}
+                    </Text>
+                  ) : null}
                   </Pressable>
                 </View>
                 <View style={{ flex: 1 }}>
@@ -399,33 +395,36 @@ export const CreateContract = () => {
                       showSoftInputOnFocus
                       value={contractData.end_date}
                       onBlur={() => onBlur('end_date')}
-                      editable = {false}
+                      // editable = {false}
                     />
                   </Pressable>
+                  {isTouched('end_date') ? (
+                    <Text style={styles.badText}>
+                      {formik.errors.end_date}
+                    </Text>
+                  ) : null}
                 </View>
               </View>
               <View>
                 <Text style={styles.subTitle}>Ngày bắt đầu tính tiền</Text>
-                <Pressable
-                    onPress={() =>{
-                      showDatetimePicker({
-                        ...datetimePicker,
-                        feeDay: true,
-                      });
-                    }}
-                  >
+                <Pressable>
                     <TextInput
-                      placeholder='1/1/2024'
+                      placeholder='1-31'
                       style={styles.textInput}
                       onChangeText={text =>
                         handleInputChange('couting_fee_day', text)
                       }
                       showSoftInputOnFocus
                       value={contractData.couting_fee_day}
+                      keyboardType='numeric'
                       onBlur={() => onBlur('couting_fee_day')}
-                      editable = {false}
                     />
-                </Pressable>         
+                </Pressable>     
+                {isTouched('couting_fee_day') ? (
+                    <Text style={styles.badText}>
+                      {formik.errors.couting_fee_day}
+                    </Text>
+                  ) : null}    
               </View>
               <View>
                 <Text style={styles.subTitle}>Kì thanh toán tiền phòng (Đơn vị: tháng)</Text>

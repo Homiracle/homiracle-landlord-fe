@@ -207,12 +207,12 @@ export const ContractDetail = ({
                 />
                 <Text style={styles.subTitle}>Đại diện bên thuê</Text>
                 <TextInput
-                  value = {ContractDetail?.tenant?.user_name}
+                  value = {ContractDetail?.tenant?.user_name ||''}
                   style={styles.textInput}
                   editable={false}
                 />
                 <TextInput
-                 value = {ContractDetail?.tenant?.phone}
+                 value = {ContractDetail?.tenant?.phone ||''}
                   style={styles.textInput}
                   editable={false}
                 />  
@@ -220,7 +220,7 @@ export const ContractDetail = ({
               <View>
               <Text style={styles.subTitle}>Số phòng</Text>
                 <TextInput
-                  value = {ContractDetail?.room.name}
+                  value = {ContractDetail?.room.name ||''}
                   style={styles.textInput}
                   editable={false}
                 />
@@ -232,7 +232,7 @@ export const ContractDetail = ({
                       
                       style={styles.textInput}
                       showSoftInputOnFocus
-                      value={ContractDetail?.start_date}
+                      value={ContractDetail?.start_date ||''}
                 
                       editable = {false}
                     />
@@ -242,7 +242,7 @@ export const ContractDetail = ({
                     <TextInput
                      
                       style={styles.textInput}
-                      value= {ContractDetail?.end_date}
+                      value= {ContractDetail?.end_date || ''}
                       editable = {false}
                     />
                 </View>
@@ -252,7 +252,7 @@ export const ContractDetail = ({
                     <TextInput
                     
                       style={styles.textInput}
-                      value={ContractDetail?.couting_fee_day}
+                      value={ContractDetail?.couting_fee_day || ''}
                       editable = {false}
                     />        
               </View>
@@ -264,7 +264,7 @@ export const ContractDetail = ({
                       style={styles.textInput}
                      
                       showSoftInputOnFocus
-                      value={ContractDetail?.paying_cost_cycle +""}
+                      value={ContractDetail?.paying_cost_cycle +"" || ''}
                     
                     />
          
@@ -285,9 +285,8 @@ export const ContractDetail = ({
               <View>
                 <Text style={styles.subTitle}>Tiền cọc tham khảo</Text>
                 <TextInput
-                  placeholder='Nhập tiền cọc tham khảo'
                   style={styles.textInput}
-                  value= {ContractDetail?.cost?.deposit + ""}
+                  value= {ContractDetail?.cost?.deposit + ""|| ''}
                 />
               </View>
               <View>
@@ -295,23 +294,22 @@ export const ContractDetail = ({
                 <TextInput
                   
                   style={styles.textInput}
-                  value= {ContractDetail?.cost?.room_cost +""}
+                  value= {ContractDetail?.cost?.room_cost +""||''}
                 />
               </View>
               <View>
                 <Text style={styles.subTitle}>Giá điện tham khảo</Text>
                 <TextInput
-                  placeholder='Nhập giá điện tham khảo'
+                  
                   style={styles.textInput}
-                  value={ContractDetail?.cost?.power_cost +""}
+                  value={ContractDetail?.cost?.power_cost +"" || ''}
                 />
               </View>
               <View>
                 <Text style={styles.subTitle}>Giá nước tham khảo</Text>
                 <TextInput
-                  placeholder='Nhập giá nước tham khảo'
                   style={styles.textInput}
-                  value={ContractDetail?.cost?.water_cost +""}
+                  value={ContractDetail?.cost?.water_cost +""|| ''}
                 />
               </View>
        
