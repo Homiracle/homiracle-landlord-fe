@@ -105,7 +105,7 @@ export const InvoiceItem = ({ item }: { item: ItfInvoiceItem }) => {
 
   return (
     <>
-      <Card style={{ width: wp(92), margin: wp(1) }}>
+      <Card style={{ width: wp(92), margin: wp(1), backgroundColor: theme.colors.onPrimary }}>
         <Card.Content>
           <Card.Content>
             <View style={styles.cardTitle}>
@@ -159,6 +159,7 @@ export const InvoiceItem = ({ item }: { item: ItfInvoiceItem }) => {
           <Button
             icon={isExpanded ? 'chevron-double-up' : 'chevron-double-down'}
             onPress={() => setIsExpanded(!isExpanded)}
+            mode='text'
           >
             {isExpanded ? 'Thu gọn' : 'Chi tiết'}
           </Button>

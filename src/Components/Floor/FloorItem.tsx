@@ -72,7 +72,7 @@ export const FloorItem = ({
                     bottom: 7,
                     position: 'absolute',
                 }}
-                name='home-variant'size={24} color={homiralceTheme.colors.primary}
+                name='door'size={24} color={homiralceTheme.colors.primary}
             />
 
             <Text 
