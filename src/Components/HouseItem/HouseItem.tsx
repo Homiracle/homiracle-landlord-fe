@@ -100,7 +100,7 @@ export const HouseItem = ({
                     bottom: 9,
                     position: 'absolute',
                 }}
-                name='home-variant'size={24} color={homiralceTheme.colors.primary}
+                name='door'size={24} color={homiralceTheme.colors.primary}
             />
             <Text
                 style={[
@@ -112,7 +112,7 @@ export const HouseItem = ({
                     },
                     homiralceTheme.fonts.bodySmall,
                 ]}>
-                {num_of_room}
+                {num_of_room} 
             </Text>
 
             <Icon 

@@ -96,7 +96,8 @@ export const RoomItem = ({
             </View>
             <Icon 
                 style={{
-                    right: 82,
+                    // right: 82,
+                    left: 175,
                     bottom: 9,
                     position: 'absolute',
                 }}
@@ -106,7 +107,8 @@ export const RoomItem = ({
                 style={[
                     {
                         position: 'absolute',
-                        right: 32,
+                        // right: 32,
+                        left: 200,
                         bottom: 12,
                         color: homiralceTheme.colors.primary,
                     },
